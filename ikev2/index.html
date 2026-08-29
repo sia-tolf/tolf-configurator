@@ -84,7 +84,7 @@
 
     .field,
     .switch-row,
-    .exception-row {
+    .rule-row {
       display: flex;
       align-items: center;
       min-height: 50px;
@@ -93,8 +93,7 @@
     }
 
     .field:last-child,
-    .switch-row:last-child,
-    .exception-row:last-child {
+    .switch-row:last-child {
       border-bottom: 0;
     }
 
@@ -107,8 +106,8 @@
 
     .field input,
     .field select,
-    .exception-row input,
-    .exception-row select {
+    .rule-row input,
+    .rule-row select {
       width: 100%;
       min-width: 0;
       border: 0;
@@ -125,7 +124,7 @@
     }
 
     .field input::placeholder,
-    .exception-row input::placeholder {
+    .rule-row input::placeholder {
       color: #a1a1a6;
     }
 
@@ -184,16 +183,20 @@
       display: block;
     }
 
-    .exception-row {
+    .rule-row {
       gap: 12px;
     }
 
-    .exception-row input {
+    .rule-type {
+      flex: 0 0 160px;
+    }
+
+    .rule-value {
       flex: 1 1 auto;
     }
 
-    .exception-row select {
-      flex: 0 0 145px;
+    .rule-action {
+      flex: 0 0 130px;
       text-align: right;
     }
 
@@ -262,6 +265,26 @@
       line-height: 1.45;
     }
 
+    @media (max-width: 680px) {
+      .rule-row {
+        flex-wrap: wrap;
+        padding: 10px 16px;
+      }
+
+      .rule-type {
+        flex: 1 1 42%;
+      }
+
+      .rule-value {
+        flex: 1 1 42%;
+      }
+
+      .rule-action {
+        flex: 1 1 calc(100% - 40px);
+        text-align: left;
+      }
+    }
+
     @media (max-width: 560px) {
       main {
         padding-top: 28px;
@@ -288,18 +311,10 @@
         text-align: left;
       }
 
-      .exception-row {
-        flex-wrap: wrap;
-        padding: 10px 16px;
-      }
-
-      .exception-row input {
-        flex: 1 1 calc(100% - 40px);
-      }
-
-      .exception-row select {
+      .rule-type,
+      .rule-value,
+      .rule-action {
         flex: 1 1 100%;
-        text-align: left;
       }
     }
 
@@ -322,12 +337,12 @@
 
       .field,
       .switch-row,
-      .exception-row {
+      .rule-row {
         border-color: #38383a;
       }
 
       .field input::placeholder,
-      .exception-row input::placeholder {
+      .rule-row input::placeholder {
         color: #7c7c80;
       }
 
@@ -362,6 +377,7 @@
       Create an IKEv2 configuration profile for iPhone and iPad.
     </p>
 
+
     <div class="section-title">Connection</div>
 
     <div class="group">
@@ -388,6 +404,7 @@
 
     </div>
 
+
     <div class="section-title">Authentication</div>
 
     <div class="group">
@@ -413,6 +430,7 @@
       </div>
 
     </div>
+
 
     <details>
 
@@ -480,6 +498,7 @@
 
     </details>
 
+
     <div class="section-title">On Demand</div>
 
     <div class="group">
@@ -490,6 +509,7 @@
       </div>
 
     </div>
+
 
     <div id="on-demand-options" class="on-demand-options">
 
@@ -505,6 +525,7 @@
       <p id="always-on-hint" class="always-on-hint">
         Connect automatically on all networks.
       </p>
+
 
       <div id="manual-rules" class="manual-rules">
 
@@ -534,27 +555,29 @@
 
         </div>
 
-        <div class="subsection-title">Wi-Fi Exceptions</div>
 
-        <div id="exceptions-group" class="group">
+        <div class="subsection-title">Additional Rules</div>
+
+        <div id="rules-group" class="group">
 
           <button
-            id="add-exception"
+            id="add-rule"
             class="add-rule"
             type="button"
           >
-            + Add Wi-Fi Rule
+            + Add Rule
           </button>
 
         </div>
 
         <p class="hint">
-          Wi-Fi exception rules are checked before the default Wi-Fi action.
+          Additional rules are checked before the default actions.
         </p>
 
       </div>
 
     </div>
+
 
     <div class="action">
       <button
@@ -566,7 +589,9 @@
       </button>
     </div>
 
+
     <p id="error" class="error"></p>
+
 
     <p class="note">
       Profile data is processed locally in your browser.
@@ -574,6 +599,7 @@
     </p>
 
   </main>
+
 
   <script>
 
@@ -585,6 +611,7 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&apos;");
     }
+
 
     function uuid() {
 
@@ -608,6 +635,7 @@
         .toUpperCase();
     }
 
+
     function safeFileName(value) {
 
       return value
@@ -616,6 +644,7 @@
         .replace(/\s+/g, " ")
         || "IKEv2";
     }
+
 
     const onDemandCheckbox =
       document.getElementById("on-demand");
@@ -632,11 +661,12 @@
     const alwaysOnHint =
       document.getElementById("always-on-hint");
 
-    const exceptionsGroup =
-      document.getElementById("exceptions-group");
+    const rulesGroup =
+      document.getElementById("rules-group");
 
-    const addExceptionButton =
-      document.getElementById("add-exception");
+    const addRuleButton =
+      document.getElementById("add-rule");
+
 
     function updateOnDemandVisibility() {
 
@@ -649,65 +679,92 @@
       updateAlwaysOnVisibility();
     }
 
+
     function updateAlwaysOnVisibility() {
 
       if (!onDemandCheckbox.checked) {
+
         manualRules.classList.remove("visible");
         alwaysOnHint.classList.remove("visible");
+
         return;
       }
 
       if (alwaysOnCheckbox.checked) {
+
         manualRules.classList.remove("visible");
         alwaysOnHint.classList.add("visible");
+
       } else {
+
         manualRules.classList.add("visible");
         alwaysOnHint.classList.remove("visible");
+
       }
     }
 
-    function createExceptionRow() {
+
+    function createRuleRow() {
 
       const row =
         document.createElement("div");
 
-      row.className = "exception-row";
+      row.className = "rule-row";
 
-      const ssid =
+
+      const type =
+        document.createElement("select");
+
+      type.className = "rule-type";
+
+      type.innerHTML = `
+        <option value="wifi">
+          Wi-Fi Network
+        </option>
+      `;
+
+
+      const value =
         document.createElement("input");
 
-      ssid.type = "text";
-      ssid.className = "exception-ssid";
-      ssid.placeholder = "Wi-Fi network name";
+      value.type = "text";
+      value.className = "rule-value";
+      value.placeholder = "Network name";
+
 
       const action =
         document.createElement("select");
 
-      action.className = "exception-action";
+      action.className = "rule-action";
 
       action.innerHTML = `
-        <option value="Disconnect" selected>
-          Disconnect
-        </option>
         <option value="Connect">
           Connect
         </option>
+
+        <option value="Disconnect" selected>
+          Disconnect
+        </option>
+
         <option value="Ignore">
           Ignore
         </option>
       `;
+
 
       const remove =
         document.createElement("button");
 
       remove.type = "button";
       remove.className = "remove-rule";
+
       remove.setAttribute(
         "aria-label",
-        "Remove Wi-Fi rule"
+        "Remove rule"
       );
 
       remove.textContent = "×";
+
 
       remove.addEventListener(
         "click",
@@ -716,43 +773,53 @@
         }
       );
 
-      row.appendChild(ssid);
+
+      row.appendChild(type);
+      row.appendChild(value);
       row.appendChild(action);
       row.appendChild(remove);
 
-      exceptionsGroup.insertBefore(
-        row,
-        addExceptionButton
-      );
 
-      ssid.focus();
+      rulesGroup.insertBefore(
+        row,
+        addRuleButton
+      );
     }
 
-    function getExceptionRules() {
+
+    function getAdditionalRules() {
 
       const rows =
-        exceptionsGroup
-          .querySelectorAll(".exception-row");
+        rulesGroup
+          .querySelectorAll(".rule-row");
 
       const rules = [];
 
+
       rows.forEach(function(row) {
 
-        const ssid =
+        const type =
           row
-            .querySelector(".exception-ssid")
+            .querySelector(".rule-type")
+            .value;
+
+        const value =
+          row
+            .querySelector(".rule-value")
             .value
             .trim();
 
         const action =
           row
-            .querySelector(".exception-action")
+            .querySelector(".rule-action")
             .value;
 
-        if (ssid) {
+
+        if (value) {
 
           rules.push({
-            ssid: ssid,
+            type: type,
+            value: value,
             action: action
           });
 
@@ -760,29 +827,36 @@
 
       });
 
+
       return rules;
     }
+
 
     onDemandCheckbox.addEventListener(
       "change",
       updateOnDemandVisibility
     );
 
+
     alwaysOnCheckbox.addEventListener(
       "change",
       updateAlwaysOnVisibility
     );
 
-    addExceptionButton.addEventListener(
+
+    addRuleButton.addEventListener(
       "click",
-      createExceptionRow
+      createRuleRow
     );
 
+
     updateOnDemandVisibility();
+
 
     document
       .getElementById("generate")
       .addEventListener("click", function() {
+
 
         const name =
           document
@@ -790,11 +864,13 @@
             .value
             .trim();
 
+
         const server =
           document
             .getElementById("server")
             .value
             .trim();
+
 
         const remoteId =
           document
@@ -802,11 +878,13 @@
             .value
             .trim();
 
+
         const localId =
           document
             .getElementById("local-id")
             .value
             .trim();
+
 
         const username =
           document
@@ -814,72 +892,88 @@
             .value
             .trim();
 
+
         const password =
           document
             .getElementById("password")
             .value;
+
 
         const encryption =
           document
             .getElementById("ike-encryption")
             .value;
 
+
         const integrity =
           document
             .getElementById("ike-integrity")
             .value;
+
 
         const dhGroup =
           document
             .getElementById("dh-group")
             .value;
 
+
         const dpd =
           document
             .getElementById("dpd")
             .value;
+
 
         const pfs =
           document
             .getElementById("pfs")
             .checked;
 
+
         const mobike =
           document
             .getElementById("mobike")
             .checked;
+
 
         const redirects =
           document
             .getElementById("redirects")
             .checked;
 
+
         const internalSubnet =
           document
             .getElementById("internal-subnet")
             .checked;
 
+
         const onDemand =
           onDemandCheckbox.checked;
 
+
         const alwaysOn =
           alwaysOnCheckbox.checked;
+
 
         const wifiAction =
           document
             .getElementById("wifi-action")
             .value;
 
+
         const cellularAction =
           document
             .getElementById("cellular-action")
             .value;
 
-        const exceptionRules =
-          getExceptionRules();
+
+        const additionalRules =
+          getAdditionalRules();
+
 
         const error =
           document.getElementById("error");
+
 
         if (
           !name ||
@@ -896,10 +990,13 @@
           return;
         }
 
+
         error.style.display = "none";
+
 
         const profileUUID = uuid();
         const vpnUUID = uuid();
+
 
         const localIdentifierXml =
           localId
@@ -908,6 +1005,7 @@
         <string>${xmlEscape(localId)}</string>`
             : "";
 
+
         const passwordXml =
           password
             ? `
@@ -915,13 +1013,16 @@
         <string>${xmlEscape(password)}</string>`
             : "";
 
+
         let onDemandXml = `
         <key>OnDemandEnabled</key>
         <integer>0</integer>`;
 
+
         if (onDemand) {
 
           let rulesXml = "";
+
 
           if (alwaysOn) {
 
@@ -931,33 +1032,15 @@
             <key>Action</key>
             <string>Connect</string>
 
-            <key>InterfaceTypeMatch</key>
-            <string>WiFi</string>
-
-          </dict>
-
-          <dict>
-
-            <key>Action</key>
-            <string>Connect</string>
-
-            <key>InterfaceTypeMatch</key>
-            <string>Cellular</string>
-
-          </dict>
-
-          <dict>
-
-            <key>Action</key>
-            <string>Connect</string>
-
           </dict>`;
 
           } else {
 
-            exceptionRules.forEach(function(rule) {
+            additionalRules.forEach(function(rule) {
 
-              rulesXml += `
+              if (rule.type === "wifi") {
+
+                rulesXml += `
           <dict>
 
             <key>Action</key>
@@ -968,12 +1051,15 @@
 
             <key>SSIDMatch</key>
             <array>
-              <string>${xmlEscape(rule.ssid)}</string>
+              <string>${xmlEscape(rule.value)}</string>
             </array>
 
           </dict>`;
 
+              }
+
             });
+
 
             rulesXml += `
           <dict>
@@ -986,6 +1072,7 @@
 
           </dict>
 
+
           <dict>
 
             <key>Action</key>
@@ -996,27 +1083,35 @@
 
           </dict>
 
+
           <dict>
 
             <key>Action</key>
             <string>Ignore</string>
 
           </dict>`;
+
           }
+
 
           onDemandXml = `
         <key>OnDemandEnabled</key>
         <integer>1</integer>
 
         <key>OnDemandRules</key>
+
         <array>
 ${rulesXml}
         </array>`;
+
         }
+
 
         const plist =
 `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 
 <plist version="1.0">
 
@@ -1051,6 +1146,7 @@ ${rulesXml}
 
       <key>VPNType</key>
       <string>IKEv2</string>
+
 
       <key>IKEv2</key>
 
@@ -1108,6 +1204,7 @@ ${onDemandXml}
 
         </dict>
 
+
         <key>ChildSecurityAssociationParameters</key>
 
         <dict>
@@ -1131,6 +1228,7 @@ ${onDemandXml}
     </dict>
 
   </array>
+
 
   <key>PayloadDisplayName</key>
   <string>${xmlEscape(name)}</string>
@@ -1160,6 +1258,7 @@ ${onDemandXml}
 
 </plist>`;
 
+
         const blob =
           new Blob(
             [plist],
@@ -1169,11 +1268,14 @@ ${onDemandXml}
             }
           );
 
+
         const url =
           URL.createObjectURL(blob);
 
+
         const link =
           document.createElement("a");
+
 
         link.href = url;
 
@@ -1181,11 +1283,13 @@ ${onDemandXml}
           safeFileName(name) +
           ".mobileconfig";
 
+
         document.body.appendChild(link);
 
         link.click();
 
         link.remove();
+
 
         setTimeout(function() {
           URL.revokeObjectURL(url);
