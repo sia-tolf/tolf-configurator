@@ -168,6 +168,14 @@
       line-height: 1.5;
     }
 
+    .error {
+      display: none;
+      margin: 14px 4px 0;
+      color: #b42318;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
     @media (max-width: 560px) {
       main {
         padding-top: 28px;
@@ -229,6 +237,10 @@
       .note {
         color: #9a9aa0;
       }
+
+      .error {
+        color: #ffb4ab;
+      }
     }
   </style>
 </head>
@@ -289,49 +301,51 @@
         <div class="field">
           <label for="ike-encryption">IKE Encryption</label>
           <select id="ike-encryption">
-            <option>AES-256</option>
-            <option>AES-128</option>
+            <option value="AES-256">AES-256</option>
+            <option value="AES-128">AES-128</option>
           </select>
         </div>
 
         <div class="field">
           <label for="ike-integrity">IKE Integrity</label>
           <select id="ike-integrity">
-            <option>SHA-256</option>
-            <option>SHA-384</option>
-            <option>SHA-512</option>
+            <option value="SHA-256">SHA-256</option>
+            <option value="SHA-384">SHA-384</option>
+            <option value="SHA-512">SHA-512</option>
           </select>
         </div>
 
         <div class="field">
           <label for="dh-group">Diffie-Hellman</label>
           <select id="dh-group">
-            <option>Group 14</option>
-            <option>Group 19</option>
-            <option>Group 20</option>
+            <option value="14">Group 14</option>
+            <option value="19">Group 19</option>
+            <option value="20">Group 20</option>
           </select>
         </div>
 
         <div class="switch-row">
           <span>Perfect Forward Secrecy</span>
-          <input type="checkbox" checked>
+          <input id="pfs" type="checkbox" checked>
         </div>
 
         <div class="switch-row">
           <span>MOBIKE</span>
-          <input type="checkbox" checked>
+          <input id="mobike" type="checkbox" checked>
         </div>
 
         <div class="switch-row">
           <span>On Demand</span>
-          <input type="checkbox">
+          <input id="on-demand" type="checkbox">
         </div>
       </div>
     </details>
 
     <div class="action">
-      <button type="button">Generate Profile</button>
+      <button id="generate" type="button">Generate Profile</button>
     </div>
+
+    <p id="error" class="error"></p>
 
     <p class="note">
       Profile data is processed locally in your browser.
@@ -339,5 +353,235 @@
     </p>
 
   </main>
+
+  <script>
+    function xmlEscape(value) {
+      return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&apos;");
+    }
+
+    function uuid() {
+      if (crypto.randomUUID) {
+        return crypto.randomUUID().toUpperCase();
+      }
+
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === "x" ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      }).toUpperCase();
+    }
+
+    function safeFileName(value) {
+      return value
+        .trim()
+        .replace(/[\/\\:*?"<>|]+/g, "-")
+        .replace(/\s+/g, " ")
+        || "IKEv2";
+    }
+
+    document.getElementById("generate").addEventListener("click", function() {
+      const name = document.getElementById("name").value.trim();
+      const server = document.getElementById("server").value.trim();
+      const remoteId = document.getElementById("remote-id").value.trim();
+      const localId = document.getElementById("local-id").value.trim();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      const encryption = document.getElementById("ike-encryption").value;
+      const integrity = document.getElementById("ike-integrity").value;
+      const dhGroup = document.getElementById("dh-group").value;
+
+      const pfs = document.getElementById("pfs").checked;
+      const mobike = document.getElementById("mobike").checked;
+      const onDemand = document.getElementById("on-demand").checked;
+
+      const error = document.getElementById("error");
+
+      if (!name || !server || !remoteId || !username) {
+        error.textContent =
+          "Name, Server, Remote ID and Username are required.";
+        error.style.display = "block";
+        return;
+      }
+
+      error.style.display = "none";
+
+      const profileUUID = uuid();
+      const vpnUUID = uuid();
+
+      const encryptionMap = {
+        "AES-256": "AES-256",
+        "AES-128": "AES-128"
+      };
+
+      const integrityMap = {
+        "SHA-256": "SHA2-256",
+        "SHA-384": "SHA2-384",
+        "SHA-512": "SHA2-512"
+      };
+
+      const localIdentifierXml = localId
+        ? `
+          <key>LocalIdentifier</key>
+          <string>${xmlEscape(localId)}</string>`
+        : "";
+
+      const passwordXml = password
+        ? `
+          <key>AuthPassword</key>
+          <string>${xmlEscape(password)}</string>`
+        : "";
+
+      const onDemandXml = onDemand
+        ? `
+        <key>OnDemandEnabled</key>
+        <integer>1</integer>
+        <key>OnDemandRules</key>
+        <array>
+          <dict>
+            <key>Action</key>
+            <string>Connect</string>
+          </dict>
+        </array>`
+        : `
+        <key>OnDemandEnabled</key>
+        <integer>0</integer>`;
+
+      const plist = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>PayloadDescription</key>
+      <string>Configures an IKEv2 VPN connection.</string>
+      <key>PayloadDisplayName</key>
+      <string>${xmlEscape(name)}</string>
+      <key>PayloadIdentifier</key>
+      <string>is.tolf.configurator.vpn.${vpnUUID.toLowerCase()}</string>
+      <key>PayloadType</key>
+      <string>com.apple.vpn.managed</string>
+      <key>PayloadUUID</key>
+      <string>${vpnUUID}</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+
+      <key>UserDefinedName</key>
+      <string>${xmlEscape(name)}</string>
+
+      <key>VPNType</key>
+      <string>IKEv2</string>
+
+      <key>IKEv2</key>
+      <dict>
+        <key>RemoteAddress</key>
+        <string>${xmlEscape(server)}</string>
+
+        <key>RemoteIdentifier</key>
+        <string>${xmlEscape(remoteId)}</string>
+${localIdentifierXml}
+
+        <key>AuthenticationMethod</key>
+        <string>None</string>
+
+        <key>ExtendedAuthEnabled</key>
+        <integer>1</integer>
+
+        <key>AuthName</key>
+        <string>${xmlEscape(username)}</string>
+${passwordXml}
+
+        <key>EnablePFS</key>
+        <integer>${pfs ? 1 : 0}</integer>
+
+        <key>DisableMOBIKE</key>
+        <integer>${mobike ? 0 : 1}</integer>
+
+        <key>IKESecurityAssociationParameters</key>
+        <dict>
+          <key>EncryptionAlgorithm</key>
+          <string>${encryptionMap[encryption]}</string>
+
+          <key>IntegrityAlgorithm</key>
+          <string>${integrityMap[integrity]}</string>
+
+          <key>DiffieHellmanGroup</key>
+          <integer>${dhGroup}</integer>
+
+          <key>LifeTimeInMinutes</key>
+          <integer>1440</integer>
+        </dict>
+
+        <key>ChildSecurityAssociationParameters</key>
+        <dict>
+          <key>EncryptionAlgorithm</key>
+          <string>${encryptionMap[encryption]}</string>
+
+          <key>IntegrityAlgorithm</key>
+          <string>${integrityMap[integrity]}</string>
+
+          <key>DiffieHellmanGroup</key>
+          <integer>${dhGroup}</integer>
+
+          <key>LifeTimeInMinutes</key>
+          <integer>1440</integer>
+        </dict>
+      </dict>
+${onDemandXml}
+    </dict>
+  </array>
+
+  <key>PayloadDisplayName</key>
+  <string>${xmlEscape(name)}</string>
+
+  <key>PayloadDescription</key>
+  <string>IKEv2 configuration profile generated by Tolf Configurator.</string>
+
+  <key>PayloadIdentifier</key>
+  <string>is.tolf.configurator.profile.${profileUUID.toLowerCase()}</string>
+
+  <key>PayloadOrganization</key>
+  <string>Tolf Configurator</string>
+
+  <key>PayloadRemovalDisallowed</key>
+  <false/>
+
+  <key>PayloadType</key>
+  <string>Configuration</string>
+
+  <key>PayloadUUID</key>
+  <string>${profileUUID}</string>
+
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>`;
+
+      const blob = new Blob(
+        [plist],
+        { type: "application/x-apple-aspen-config" }
+      );
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = safeFileName(name) + ".mobileconfig";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(function() {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    });
+  </script>
 </body>
 </html>
