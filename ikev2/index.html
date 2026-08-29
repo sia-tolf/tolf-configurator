@@ -1,4 +1,4 @@
-<!-- Tolf Configurator IKEv2 — Build 2026-08-29.6 -->
+<!-- Tolf Configurator IKEv2 — Build 2026-08-29.7 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -127,7 +127,14 @@
     }
 
     .field,
-    .switch-row,
+    .switch-row {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 4px 16px;
+      border-bottom: 1px solid #e5e5e7;
+    }
+
     .rule-row {
       display: flex;
       align-items: center;
@@ -402,7 +409,8 @@
 
       .field {
         display: block;
-        min-height: 0;
+        height: auto;
+        min-height: 48px;
         padding: 8px 16px;
       }
 
@@ -499,7 +507,7 @@
 
     <div class="title-row">
       <h1>IKEv2</h1>
-      <span class="build-number">Build 2026-08-29.6</span>
+      <span class="build-number">Build 2026-08-29.7</span>
     </div>
 
     <p class="subtitle">
