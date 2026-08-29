@@ -377,7 +377,6 @@
       Create an IKEv2 configuration profile for iPhone and iPad.
     </p>
 
-
     <div class="section-title">Connection</div>
 
     <div class="group">
@@ -404,7 +403,6 @@
 
     </div>
 
-
     <div class="section-title">Authentication</div>
 
     <div class="group">
@@ -430,7 +428,6 @@
       </div>
 
     </div>
-
 
     <details>
 
@@ -498,7 +495,6 @@
 
     </details>
 
-
     <div class="section-title">On Demand</div>
 
     <div class="group">
@@ -509,7 +505,6 @@
       </div>
 
     </div>
-
 
     <div id="on-demand-options" class="on-demand-options">
 
@@ -525,7 +520,6 @@
       <p id="always-on-hint" class="always-on-hint">
         Connect automatically on all networks.
       </p>
-
 
       <div id="manual-rules" class="manual-rules">
 
@@ -555,7 +549,6 @@
 
         </div>
 
-
         <div class="subsection-title">Additional Rules</div>
 
         <div id="rules-group" class="group">
@@ -578,7 +571,6 @@
 
     </div>
 
-
     <div class="action">
       <button
         id="generate"
@@ -589,9 +581,7 @@
       </button>
     </div>
 
-
     <p id="error" class="error"></p>
-
 
     <p class="note">
       Profile data is processed locally in your browser.
@@ -599,7 +589,6 @@
     </p>
 
   </main>
-
 
   <script>
 
@@ -611,7 +600,6 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&apos;");
     }
-
 
     function uuid() {
 
@@ -635,7 +623,6 @@
         .toUpperCase();
     }
 
-
     function safeFileName(value) {
 
       return value
@@ -644,7 +631,6 @@
         .replace(/\s+/g, " ")
         || "IKEv2";
     }
-
 
     const onDemandCheckbox =
       document.getElementById("on-demand");
@@ -667,7 +653,6 @@
     const addRuleButton =
       document.getElementById("add-rule");
 
-
     function updateOnDemandVisibility() {
 
       if (onDemandCheckbox.checked) {
@@ -678,7 +663,6 @@
 
       updateAlwaysOnVisibility();
     }
-
 
     function updateAlwaysOnVisibility() {
 
@@ -703,14 +687,12 @@
       }
     }
 
-
     function createRuleRow() {
 
       const row =
         document.createElement("div");
 
       row.className = "rule-row";
-
 
       const type =
         document.createElement("select");
@@ -723,14 +705,12 @@
         </option>
       `;
 
-
       const value =
         document.createElement("input");
 
       value.type = "text";
       value.className = "rule-value";
       value.placeholder = "Network name";
-
 
       const action =
         document.createElement("select");
@@ -751,7 +731,6 @@
         </option>
       `;
 
-
       const remove =
         document.createElement("button");
 
@@ -765,7 +744,6 @@
 
       remove.textContent = "×";
 
-
       remove.addEventListener(
         "click",
         function() {
@@ -773,19 +751,16 @@
         }
       );
 
-
       row.appendChild(type);
       row.appendChild(value);
       row.appendChild(action);
       row.appendChild(remove);
-
 
       rulesGroup.insertBefore(
         row,
         addRuleButton
       );
     }
-
 
     function getAdditionalRules() {
 
@@ -794,7 +769,6 @@
           .querySelectorAll(".rule-row");
 
       const rules = [];
-
 
       rows.forEach(function(row) {
 
@@ -814,7 +788,6 @@
             .querySelector(".rule-action")
             .value;
 
-
         if (value) {
 
           rules.push({
@@ -827,36 +800,29 @@
 
       });
 
-
       return rules;
     }
-
 
     onDemandCheckbox.addEventListener(
       "change",
       updateOnDemandVisibility
     );
 
-
     alwaysOnCheckbox.addEventListener(
       "change",
       updateAlwaysOnVisibility
     );
-
 
     addRuleButton.addEventListener(
       "click",
       createRuleRow
     );
 
-
     updateOnDemandVisibility();
-
 
     document
       .getElementById("generate")
       .addEventListener("click", function() {
-
 
         const name =
           document
@@ -864,13 +830,11 @@
             .value
             .trim();
 
-
         const server =
           document
             .getElementById("server")
             .value
             .trim();
-
 
         const remoteId =
           document
@@ -878,13 +842,11 @@
             .value
             .trim();
 
-
         const localId =
           document
             .getElementById("local-id")
             .value
             .trim();
-
 
         const username =
           document
@@ -892,88 +854,72 @@
             .value
             .trim();
 
-
         const password =
           document
             .getElementById("password")
             .value;
-
 
         const encryption =
           document
             .getElementById("ike-encryption")
             .value;
 
-
         const integrity =
           document
             .getElementById("ike-integrity")
             .value;
-
 
         const dhGroup =
           document
             .getElementById("dh-group")
             .value;
 
-
         const dpd =
           document
             .getElementById("dpd")
             .value;
-
 
         const pfs =
           document
             .getElementById("pfs")
             .checked;
 
-
         const mobike =
           document
             .getElementById("mobike")
             .checked;
-
 
         const redirects =
           document
             .getElementById("redirects")
             .checked;
 
-
         const internalSubnet =
           document
             .getElementById("internal-subnet")
             .checked;
 
-
         const onDemand =
           onDemandCheckbox.checked;
 
-
         const alwaysOn =
           alwaysOnCheckbox.checked;
-
 
         const wifiAction =
           document
             .getElementById("wifi-action")
             .value;
 
-
         const cellularAction =
           document
             .getElementById("cellular-action")
             .value;
 
-
         const additionalRules =
           getAdditionalRules();
 
-
         const error =
           document.getElementById("error");
-
 
         if (
           !name ||
@@ -990,13 +936,10 @@
           return;
         }
 
-
         error.style.display = "none";
-
 
         const profileUUID = uuid();
         const vpnUUID = uuid();
-
 
         const localIdentifierXml =
           localId
@@ -1005,7 +948,6 @@
         <string>${xmlEscape(localId)}</string>`
             : "";
 
-
         const passwordXml =
           password
             ? `
@@ -1013,16 +955,13 @@
         <string>${xmlEscape(password)}</string>`
             : "";
 
-
         let onDemandXml = `
         <key>OnDemandEnabled</key>
         <integer>0</integer>`;
 
-
         if (onDemand) {
 
           let rulesXml = "";
-
 
           if (alwaysOn) {
 
@@ -1060,7 +999,6 @@
 
             });
 
-
             rulesXml += `
           <dict>
 
@@ -1072,7 +1010,6 @@
 
           </dict>
 
-
           <dict>
 
             <key>Action</key>
@@ -1083,7 +1020,6 @@
 
           </dict>
 
-
           <dict>
 
             <key>Action</key>
@@ -1092,7 +1028,6 @@
           </dict>`;
 
           }
-
 
           onDemandXml = `
         <key>OnDemandEnabled</key>
@@ -1105,7 +1040,6 @@ ${rulesXml}
         </array>`;
 
         }
-
 
         const plist =
 `<?xml version="1.0" encoding="UTF-8"?>
@@ -1146,7 +1080,6 @@ ${rulesXml}
 
       <key>VPNType</key>
       <string>IKEv2</string>
-
 
       <key>IKEv2</key>
 
@@ -1204,7 +1137,6 @@ ${onDemandXml}
 
         </dict>
 
-
         <key>ChildSecurityAssociationParameters</key>
 
         <dict>
@@ -1228,7 +1160,6 @@ ${onDemandXml}
     </dict>
 
   </array>
-
 
   <key>PayloadDisplayName</key>
   <string>${xmlEscape(name)}</string>
@@ -1258,7 +1189,6 @@ ${onDemandXml}
 
 </plist>`;
 
-
         const blob =
           new Blob(
             [plist],
@@ -1268,14 +1198,11 @@ ${onDemandXml}
             }
           );
 
-
         const url =
           URL.createObjectURL(blob);
 
-
         const link =
           document.createElement("a");
-
 
         link.href = url;
 
@@ -1283,13 +1210,11 @@ ${onDemandXml}
           safeFileName(name) +
           ".mobileconfig";
 
-
         document.body.appendChild(link);
 
         link.click();
 
         link.remove();
-
 
         setTimeout(function() {
           URL.revokeObjectURL(url);
