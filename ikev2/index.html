@@ -1,4 +1,4 @@
-<!-- Tolf Configurator IKEv2 — Build 2026-08-29.3 -->
+<!-- Tolf Configurator IKEv2 — Build 2026-08-29.4 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -189,13 +189,59 @@
 
     .switch-row {
       justify-content: space-between;
+      gap: 18px;
       font-size: 17px;
       font-weight: 500;
     }
 
-    .switch-row input {
-      width: 22px;
-      height: 22px;
+    .ios-switch {
+      position: relative;
+      flex: 0 0 auto;
+      width: 51px;
+      height: 31px;
+      margin: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      border: 0;
+      border-radius: 999px;
+      background: #e9e9eb;
+      outline: none;
+      cursor: pointer;
+      transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    .ios-switch::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.18),
+        0 2px 5px rgba(0, 0, 0, 0.08);
+      transition: transform 0.18s ease;
+    }
+
+    .ios-switch:checked {
+      background: #34c759;
+    }
+
+    .ios-switch:checked::after {
+      transform: translateX(20px);
+    }
+
+    .ios-switch:focus-visible {
+      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.18);
+    }
+
+    .ios-switch:disabled {
+      opacity: 0.45;
+      cursor: default;
     }
 
     .on-demand-options {
@@ -422,6 +468,14 @@
         color: #1d1d1f;
       }
 
+      .ios-switch {
+        background: #39393d;
+      }
+
+      .ios-switch:checked {
+        background: #30d158;
+      }
+
       .note,
       .hint,
       .subsection-title,
@@ -445,7 +499,7 @@
 
     <div class="title-row">
       <h1>IKEv2</h1>
-      <span class="build-number">Build 2026-08-29.3</span>
+      <span class="build-number">Build 2026-08-29.4</span>
     </div>
 
     <p class="subtitle">
@@ -549,22 +603,22 @@
 
         <div class="switch-row">
           <span>Perfect Forward Secrecy</span>
-          <input id="pfs" type="checkbox" checked>
+          <input id="pfs" class="ios-switch" type="checkbox" checked>
         </div>
 
         <div class="switch-row">
           <span>MOBIKE</span>
-          <input id="mobike" type="checkbox" checked>
+          <input id="mobike" class="ios-switch" type="checkbox" checked>
         </div>
 
         <div class="switch-row">
           <span>Redirects</span>
-          <input id="redirects" type="checkbox">
+          <input id="redirects" class="ios-switch" type="checkbox">
         </div>
 
         <div class="switch-row">
           <span>IPv4/IPv6 Internal Subnet Attributes</span>
-          <input id="internal-subnet" type="checkbox">
+          <input id="internal-subnet" class="ios-switch" type="checkbox">
         </div>
       </div>
     </details>
@@ -574,7 +628,7 @@
     <div class="group">
       <div class="switch-row">
         <span>Enable On Demand</span>
-        <input id="on-demand" type="checkbox">
+        <input id="on-demand" class="ios-switch" type="checkbox">
       </div>
     </div>
 
@@ -583,7 +637,7 @@
       <div class="group">
         <div class="switch-row">
           <span>Always On</span>
-          <input id="always-on" type="checkbox">
+          <input id="always-on" class="ios-switch" type="checkbox">
         </div>
       </div>
 
