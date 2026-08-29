@@ -86,8 +86,8 @@
     }
 
     .field label {
-      width: 180px;
-      flex: 0 0 180px;
+      width: 230px;
+      flex: 0 0 230px;
       font-size: 17px;
       font-weight: 500;
     }
@@ -285,12 +285,22 @@
     <div class="group">
       <div class="field">
         <label for="username">Username</label>
-        <input id="username" type="text" autocomplete="username" placeholder="Username">
+        <input
+          id="username"
+          type="text"
+          autocomplete="username"
+          placeholder="Username"
+        >
       </div>
 
       <div class="field">
         <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" placeholder="Password">
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Password"
+        >
       </div>
     </div>
 
@@ -298,6 +308,7 @@
       <summary>Advanced Settings</summary>
 
       <div class="group advanced">
+
         <div class="field">
           <label for="ike-encryption">IKE Encryption</label>
           <select id="ike-encryption">
@@ -309,9 +320,9 @@
         <div class="field">
           <label for="ike-integrity">IKE Integrity</label>
           <select id="ike-integrity">
-            <option value="SHA-256">SHA-256</option>
-            <option value="SHA-384">SHA-384</option>
-            <option value="SHA-512">SHA-512</option>
+            <option value="SHA2-256">SHA-256</option>
+            <option value="SHA2-384">SHA-384</option>
+            <option value="SHA2-512">SHA-512</option>
           </select>
         </div>
 
@@ -321,6 +332,16 @@
             <option value="14">Group 14</option>
             <option value="19">Group 19</option>
             <option value="20">Group 20</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="dpd">Dead Peer Detection</label>
+          <select id="dpd">
+            <option value="None">None</option>
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
           </select>
         </div>
 
@@ -335,14 +356,31 @@
         </div>
 
         <div class="switch-row">
-          <span>On Demand</span>
-          <input id="on-demand" type="checkbox">
+          <span>Redirects</span>
+          <input id="redirects" type="checkbox" checked>
         </div>
+
+        <div class="switch-row">
+          <span>IPv4/IPv6 Internal Subnet Attributes</span>
+          <input id="internal-subnet" type="checkbox">
+        </div>
+
       </div>
     </details>
 
+    <div class="section-title">On Demand</div>
+
+    <div class="group">
+      <div class="switch-row">
+        <span>Enable On Demand</span>
+        <input id="on-demand" type="checkbox">
+      </div>
+    </div>
+
     <div class="action">
-      <button id="generate" type="button">Generate Profile</button>
+      <button id="generate" type="button">
+        Generate Profile
+      </button>
     </div>
 
     <p id="error" class="error"></p>
@@ -369,11 +407,16 @@
         return crypto.randomUUID().toUpperCase();
       }
 
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0;
-        const v = c === "x" ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      }).toUpperCase();
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+        .replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === "x"
+            ? r
+            : (r & 0x3 | 0x8);
+
+          return v.toString(16);
+        })
+        .toUpperCase();
     }
 
     function safeFileName(value) {
@@ -384,91 +427,130 @@
         || "IKEv2";
     }
 
-    document.getElementById("generate").addEventListener("click", function() {
-      const name = document.getElementById("name").value.trim();
-      const server = document.getElementById("server").value.trim();
-      const remoteId = document.getElementById("remote-id").value.trim();
-      const localId = document.getElementById("local-id").value.trim();
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
+    document
+      .getElementById("generate")
+      .addEventListener("click", function() {
 
-      const encryption = document.getElementById("ike-encryption").value;
-      const integrity = document.getElementById("ike-integrity").value;
-      const dhGroup = document.getElementById("dh-group").value;
+        const name =
+          document.getElementById("name").value.trim();
 
-      const pfs = document.getElementById("pfs").checked;
-      const mobike = document.getElementById("mobike").checked;
-      const onDemand = document.getElementById("on-demand").checked;
+        const server =
+          document.getElementById("server").value.trim();
 
-      const error = document.getElementById("error");
+        const remoteId =
+          document.getElementById("remote-id").value.trim();
 
-      if (!name || !server || !remoteId || !username) {
-        error.textContent =
-          "Name, Server, Remote ID and Username are required.";
-        error.style.display = "block";
-        return;
-      }
+        const localId =
+          document.getElementById("local-id").value.trim();
 
-      error.style.display = "none";
+        const username =
+          document.getElementById("username").value.trim();
 
-      const profileUUID = uuid();
-      const vpnUUID = uuid();
+        const password =
+          document.getElementById("password").value;
 
-      const encryptionMap = {
-        "AES-256": "AES-256",
-        "AES-128": "AES-128"
-      };
+        const encryption =
+          document.getElementById("ike-encryption").value;
 
-      const integrityMap = {
-        "SHA-256": "SHA2-256",
-        "SHA-384": "SHA2-384",
-        "SHA-512": "SHA2-512"
-      };
+        const integrity =
+          document.getElementById("ike-integrity").value;
 
-      const localIdentifierXml = localId
-        ? `
-          <key>LocalIdentifier</key>
-          <string>${xmlEscape(localId)}</string>`
-        : "";
+        const dhGroup =
+          document.getElementById("dh-group").value;
 
-      const passwordXml = password
-        ? `
-          <key>AuthPassword</key>
-          <string>${xmlEscape(password)}</string>`
-        : "";
+        const dpd =
+          document.getElementById("dpd").value;
 
-      const onDemandXml = onDemand
-        ? `
-        <key>OnDemandEnabled</key>
-        <integer>1</integer>
-        <key>OnDemandRules</key>
-        <array>
-          <dict>
-            <key>Action</key>
-            <string>Connect</string>
-          </dict>
-        </array>`
-        : `
-        <key>OnDemandEnabled</key>
-        <integer>0</integer>`;
+        const pfs =
+          document.getElementById("pfs").checked;
 
-      const plist = `<?xml version="1.0" encoding="UTF-8"?>
+        const mobike =
+          document.getElementById("mobike").checked;
+
+        const redirects =
+          document.getElementById("redirects").checked;
+
+        const internalSubnet =
+          document.getElementById("internal-subnet").checked;
+
+        const onDemand =
+          document.getElementById("on-demand").checked;
+
+        const error =
+          document.getElementById("error");
+
+        if (
+          !name ||
+          !server ||
+          !remoteId ||
+          !username
+        ) {
+          error.textContent =
+            "Name, Server, Remote ID and Username are required.";
+
+          error.style.display = "block";
+          return;
+        }
+
+        error.style.display = "none";
+
+        const profileUUID = uuid();
+        const vpnUUID = uuid();
+
+        const localIdentifierXml = localId
+          ? `
+        <key>LocalIdentifier</key>
+        <string>${xmlEscape(localId)}</string>`
+          : "";
+
+        const passwordXml = password
+          ? `
+        <key>AuthPassword</key>
+        <string>${xmlEscape(password)}</string>`
+          : "";
+
+        const onDemandXml = onDemand
+          ? `
+      <key>OnDemandEnabled</key>
+      <integer>1</integer>
+
+      <key>OnDemandRules</key>
+      <array>
+        <dict>
+          <key>Action</key>
+          <string>Connect</string>
+        </dict>
+      </array>`
+          : `
+      <key>OnDemandEnabled</key>
+      <integer>0</integer>`;
+
+        const plist =
+`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
   <key>PayloadContent</key>
   <array>
+
     <dict>
+
       <key>PayloadDescription</key>
       <string>Configures an IKEv2 VPN connection.</string>
+
       <key>PayloadDisplayName</key>
       <string>${xmlEscape(name)}</string>
+
       <key>PayloadIdentifier</key>
       <string>is.tolf.configurator.vpn.${vpnUUID.toLowerCase()}</string>
+
       <key>PayloadType</key>
       <string>com.apple.vpn.managed</string>
+
       <key>PayloadUUID</key>
       <string>${vpnUUID}</string>
+
       <key>PayloadVersion</key>
       <integer>1</integer>
 
@@ -480,6 +562,7 @@
 
       <key>IKEv2</key>
       <dict>
+
         <key>RemoteAddress</key>
         <string>${xmlEscape(server)}</string>
 
@@ -497,44 +580,60 @@ ${localIdentifierXml}
         <string>${xmlEscape(username)}</string>
 ${passwordXml}
 
+        <key>DeadPeerDetectionRate</key>
+        <string>${dpd}</string>
+
         <key>EnablePFS</key>
         <integer>${pfs ? 1 : 0}</integer>
 
         <key>DisableMOBIKE</key>
         <integer>${mobike ? 0 : 1}</integer>
 
+        <key>DisableRedirect</key>
+        <integer>${redirects ? 0 : 1}</integer>
+
+        <key>UseConfigurationAttributeInternalIPSubnet</key>
+        <integer>${internalSubnet ? 1 : 0}</integer>
+
         <key>IKESecurityAssociationParameters</key>
         <dict>
+
           <key>EncryptionAlgorithm</key>
-          <string>${encryptionMap[encryption]}</string>
+          <string>${encryption}</string>
 
           <key>IntegrityAlgorithm</key>
-          <string>${integrityMap[integrity]}</string>
+          <string>${integrity}</string>
 
           <key>DiffieHellmanGroup</key>
           <integer>${dhGroup}</integer>
 
           <key>LifeTimeInMinutes</key>
           <integer>1440</integer>
+
         </dict>
 
         <key>ChildSecurityAssociationParameters</key>
         <dict>
+
           <key>EncryptionAlgorithm</key>
-          <string>${encryptionMap[encryption]}</string>
+          <string>${encryption}</string>
 
           <key>IntegrityAlgorithm</key>
-          <string>${integrityMap[integrity]}</string>
+          <string>${integrity}</string>
 
           <key>DiffieHellmanGroup</key>
           <integer>${dhGroup}</integer>
 
           <key>LifeTimeInMinutes</key>
           <integer>1440</integer>
+
         </dict>
+
       </dict>
 ${onDemandXml}
+
     </dict>
+
   </array>
 
   <key>PayloadDisplayName</key>
@@ -560,28 +659,41 @@ ${onDemandXml}
 
   <key>PayloadVersion</key>
   <integer>1</integer>
+
 </dict>
 </plist>`;
 
-      const blob = new Blob(
-        [plist],
-        { type: "application/x-apple-aspen-config" }
-      );
+        const blob = new Blob(
+          [plist],
+          {
+            type:
+              "application/x-apple-aspen-config"
+          }
+        );
 
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+        const url =
+          URL.createObjectURL(blob);
 
-      link.href = url;
-      link.download = safeFileName(name) + ".mobileconfig";
+        const link =
+          document.createElement("a");
 
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+        link.href = url;
 
-      setTimeout(function() {
-        URL.revokeObjectURL(url);
-      }, 1000);
-    });
+        link.download =
+          safeFileName(name) +
+          ".mobileconfig";
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+        setTimeout(function() {
+          URL.revokeObjectURL(url);
+        }, 1000);
+      });
   </script>
+
 </body>
 </html>
