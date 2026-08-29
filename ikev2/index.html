@@ -377,6 +377,7 @@
       Create an IKEv2 configuration profile for iPhone and iPad.
     </p>
 
+
     <div class="section-title">Connection</div>
 
     <div class="group">
@@ -403,6 +404,7 @@
 
     </div>
 
+
     <div class="section-title">Authentication</div>
 
     <div class="group">
@@ -428,6 +430,7 @@
       </div>
 
     </div>
+
 
     <details>
 
@@ -495,6 +498,7 @@
 
     </details>
 
+
     <div class="section-title">On Demand</div>
 
     <div class="group">
@@ -505,6 +509,7 @@
       </div>
 
     </div>
+
 
     <div id="on-demand-options" class="on-demand-options">
 
@@ -520,6 +525,7 @@
       <p id="always-on-hint" class="always-on-hint">
         Connect automatically on all networks.
       </p>
+
 
       <div id="manual-rules" class="manual-rules">
 
@@ -549,6 +555,7 @@
 
         </div>
 
+
         <div class="subsection-title">Additional Rules</div>
 
         <div id="rules-group" class="group">
@@ -571,6 +578,7 @@
 
     </div>
 
+
     <div class="action">
       <button
         id="generate"
@@ -581,7 +589,9 @@
       </button>
     </div>
 
+
     <p id="error" class="error"></p>
+
 
     <p class="note">
       Profile data is processed locally in your browser.
@@ -590,9 +600,17 @@
 
   </main>
 
+
   <script>
 
+    const identityStorageKey =
+      "tolf.ikev2.profile-identities.v1";
+
+    const memoryIdentities = {};
+
+
     function xmlEscape(value) {
+
       return value
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -600,6 +618,7 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&apos;");
     }
+
 
     function uuid() {
 
@@ -610,7 +629,8 @@
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
         .replace(/[xy]/g, function(c) {
 
-          const r = Math.random() * 16 | 0;
+          const r =
+            Math.random() * 16 | 0;
 
           const v =
             c === "x"
@@ -623,6 +643,7 @@
         .toUpperCase();
     }
 
+
     function safeFileName(value) {
 
       return value
@@ -631,6 +652,98 @@
         .replace(/\s+/g, " ")
         || "IKEv2";
     }
+
+
+    function normalizeProfileName(value) {
+
+      return value
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLocaleLowerCase();
+    }
+
+
+    function loadIdentities() {
+
+      try {
+
+        const stored =
+          localStorage.getItem(
+            identityStorageKey
+          );
+
+        if (!stored) {
+          return {};
+        }
+
+        const parsed =
+          JSON.parse(stored);
+
+        if (
+          parsed &&
+          typeof parsed === "object"
+        ) {
+          return parsed;
+        }
+
+      } catch (error) {
+      }
+
+      return {};
+    }
+
+
+    function saveIdentities(identities) {
+
+      try {
+
+        localStorage.setItem(
+          identityStorageKey,
+          JSON.stringify(identities)
+        );
+
+        return true;
+
+      } catch (error) {
+
+        return false;
+      }
+    }
+
+
+    function getProfileIdentity(name) {
+
+      const key =
+        normalizeProfileName(name);
+
+      let identities =
+        loadIdentities();
+
+      if (identities[key]) {
+        return identities[key];
+      }
+
+      if (memoryIdentities[key]) {
+        return memoryIdentities[key];
+      }
+
+      const identity = {
+
+        profileUUID: uuid(),
+
+        vpnUUID: uuid()
+
+      };
+
+      identities[key] = identity;
+
+      if (!saveIdentities(identities)) {
+        memoryIdentities[key] = identity;
+      }
+
+      return identity;
+    }
+
 
     const onDemandCheckbox =
       document.getElementById("on-demand");
@@ -653,39 +766,65 @@
     const addRuleButton =
       document.getElementById("add-rule");
 
+
     function updateOnDemandVisibility() {
 
       if (onDemandCheckbox.checked) {
-        onDemandOptions.classList.add("visible");
+
+        onDemandOptions
+          .classList
+          .add("visible");
+
       } else {
-        onDemandOptions.classList.remove("visible");
+
+        onDemandOptions
+          .classList
+          .remove("visible");
+
       }
 
       updateAlwaysOnVisibility();
     }
 
+
     function updateAlwaysOnVisibility() {
 
       if (!onDemandCheckbox.checked) {
 
-        manualRules.classList.remove("visible");
-        alwaysOnHint.classList.remove("visible");
+        manualRules
+          .classList
+          .remove("visible");
+
+        alwaysOnHint
+          .classList
+          .remove("visible");
 
         return;
       }
 
       if (alwaysOnCheckbox.checked) {
 
-        manualRules.classList.remove("visible");
-        alwaysOnHint.classList.add("visible");
+        manualRules
+          .classList
+          .remove("visible");
+
+        alwaysOnHint
+          .classList
+          .add("visible");
 
       } else {
 
-        manualRules.classList.add("visible");
-        alwaysOnHint.classList.remove("visible");
+        manualRules
+          .classList
+          .add("visible");
+
+        alwaysOnHint
+          .classList
+          .remove("visible");
 
       }
     }
+
 
     function createRuleRow() {
 
@@ -693,6 +832,7 @@
         document.createElement("div");
 
       row.className = "rule-row";
+
 
       const type =
         document.createElement("select");
@@ -705,12 +845,14 @@
         </option>
       `;
 
+
       const value =
         document.createElement("input");
 
       value.type = "text";
       value.className = "rule-value";
       value.placeholder = "Network name";
+
 
       const action =
         document.createElement("select");
@@ -731,6 +873,7 @@
         </option>
       `;
 
+
       const remove =
         document.createElement("button");
 
@@ -744,6 +887,7 @@
 
       remove.textContent = "×";
 
+
       remove.addEventListener(
         "click",
         function() {
@@ -751,16 +895,19 @@
         }
       );
 
+
       row.appendChild(type);
       row.appendChild(value);
       row.appendChild(action);
       row.appendChild(remove);
+
 
       rulesGroup.insertBefore(
         row,
         addRuleButton
       );
     }
+
 
     function getAdditionalRules() {
 
@@ -769,6 +916,7 @@
           .querySelectorAll(".rule-row");
 
       const rules = [];
+
 
       rows.forEach(function(row) {
 
@@ -788,6 +936,7 @@
             .querySelector(".rule-action")
             .value;
 
+
         if (value) {
 
           rules.push({
@@ -800,172 +949,216 @@
 
       });
 
+
       return rules;
     }
+
 
     onDemandCheckbox.addEventListener(
       "change",
       updateOnDemandVisibility
     );
 
+
     alwaysOnCheckbox.addEventListener(
       "change",
       updateAlwaysOnVisibility
     );
+
 
     addRuleButton.addEventListener(
       "click",
       createRuleRow
     );
 
+
     updateOnDemandVisibility();
+
 
     document
       .getElementById("generate")
-      .addEventListener("click", function() {
+      .addEventListener(
+        "click",
+        function() {
 
-        const name =
-          document
-            .getElementById("name")
-            .value
-            .trim();
 
-        const server =
-          document
-            .getElementById("server")
-            .value
-            .trim();
+          const name =
+            document
+              .getElementById("name")
+              .value
+              .trim();
 
-        const remoteId =
-          document
-            .getElementById("remote-id")
-            .value
-            .trim();
 
-        const localId =
-          document
-            .getElementById("local-id")
-            .value
-            .trim();
+          const server =
+            document
+              .getElementById("server")
+              .value
+              .trim();
 
-        const username =
-          document
-            .getElementById("username")
-            .value
-            .trim();
 
-        const password =
-          document
-            .getElementById("password")
-            .value;
+          const remoteId =
+            document
+              .getElementById("remote-id")
+              .value
+              .trim();
 
-        const encryption =
-          document
-            .getElementById("ike-encryption")
-            .value;
 
-        const integrity =
-          document
-            .getElementById("ike-integrity")
-            .value;
+          const localId =
+            document
+              .getElementById("local-id")
+              .value
+              .trim();
 
-        const dhGroup =
-          document
-            .getElementById("dh-group")
-            .value;
 
-        const dpd =
-          document
-            .getElementById("dpd")
-            .value;
+          const username =
+            document
+              .getElementById("username")
+              .value
+              .trim();
 
-        const pfs =
-          document
-            .getElementById("pfs")
-            .checked;
 
-        const mobike =
-          document
-            .getElementById("mobike")
-            .checked;
+          const password =
+            document
+              .getElementById("password")
+              .value;
 
-        const redirects =
-          document
-            .getElementById("redirects")
-            .checked;
 
-        const internalSubnet =
-          document
-            .getElementById("internal-subnet")
-            .checked;
+          const encryption =
+            document
+              .getElementById("ike-encryption")
+              .value;
 
-        const onDemand =
-          onDemandCheckbox.checked;
 
-        const alwaysOn =
-          alwaysOnCheckbox.checked;
+          const integrity =
+            document
+              .getElementById("ike-integrity")
+              .value;
 
-        const wifiAction =
-          document
-            .getElementById("wifi-action")
-            .value;
 
-        const cellularAction =
-          document
-            .getElementById("cellular-action")
-            .value;
+          const dhGroup =
+            document
+              .getElementById("dh-group")
+              .value;
 
-        const additionalRules =
-          getAdditionalRules();
 
-        const error =
-          document.getElementById("error");
+          const dpd =
+            document
+              .getElementById("dpd")
+              .value;
 
-        if (
-          !name ||
-          !server ||
-          !remoteId ||
-          !username
-        ) {
 
-          error.textContent =
-            "Name, Server, Remote ID and Username are required.";
+          const pfs =
+            document
+              .getElementById("pfs")
+              .checked;
 
-          error.style.display = "block";
 
-          return;
-        }
+          const mobike =
+            document
+              .getElementById("mobike")
+              .checked;
 
-        error.style.display = "none";
 
-        const profileUUID = uuid();
-        const vpnUUID = uuid();
+          const redirects =
+            document
+              .getElementById("redirects")
+              .checked;
 
-        const localIdentifierXml =
-          localId
-            ? `
+
+          const internalSubnet =
+            document
+              .getElementById("internal-subnet")
+              .checked;
+
+
+          const onDemand =
+            onDemandCheckbox.checked;
+
+
+          const alwaysOn =
+            alwaysOnCheckbox.checked;
+
+
+          const wifiAction =
+            document
+              .getElementById("wifi-action")
+              .value;
+
+
+          const cellularAction =
+            document
+              .getElementById("cellular-action")
+              .value;
+
+
+          const additionalRules =
+            getAdditionalRules();
+
+
+          const error =
+            document.getElementById("error");
+
+
+          if (
+            !name ||
+            !server ||
+            !remoteId ||
+            !username
+          ) {
+
+            error.textContent =
+              "Name, Server, Remote ID and Username are required.";
+
+            error.style.display = "block";
+
+            return;
+          }
+
+
+          error.style.display = "none";
+
+
+          const identity =
+            getProfileIdentity(name);
+
+
+          const profileUUID =
+            identity.profileUUID;
+
+
+          const vpnUUID =
+            identity.vpnUUID;
+
+
+          const localIdentifierXml =
+            localId
+              ? `
         <key>LocalIdentifier</key>
         <string>${xmlEscape(localId)}</string>`
-            : "";
+              : "";
 
-        const passwordXml =
-          password
-            ? `
+
+          const passwordXml =
+            password
+              ? `
         <key>AuthPassword</key>
         <string>${xmlEscape(password)}</string>`
-            : "";
+              : "";
 
-        let onDemandXml = `
+
+          let onDemandXml = `
         <key>OnDemandEnabled</key>
         <integer>0</integer>`;
 
-        if (onDemand) {
 
-          let rulesXml = "";
+          if (onDemand) {
 
-          if (alwaysOn) {
+            let rulesXml = "";
 
-            rulesXml = `
+
+            if (alwaysOn) {
+
+              rulesXml = `
           <dict>
 
             <key>Action</key>
@@ -973,13 +1166,16 @@
 
           </dict>`;
 
-          } else {
+            } else {
 
-            additionalRules.forEach(function(rule) {
+              additionalRules.forEach(
+                function(rule) {
 
-              if (rule.type === "wifi") {
+                  if (
+                    rule.type === "wifi"
+                  ) {
 
-                rulesXml += `
+                    rulesXml += `
           <dict>
 
             <key>Action</key>
@@ -995,11 +1191,13 @@
 
           </dict>`;
 
-              }
+                  }
 
-            });
+                }
+              );
 
-            rulesXml += `
+
+              rulesXml += `
           <dict>
 
             <key>Action</key>
@@ -1009,6 +1207,7 @@
             <string>WiFi</string>
 
           </dict>
+
 
           <dict>
 
@@ -1020,6 +1219,7 @@
 
           </dict>
 
+
           <dict>
 
             <key>Action</key>
@@ -1027,9 +1227,10 @@
 
           </dict>`;
 
-          }
+            }
 
-          onDemandXml = `
+
+            onDemandXml = `
         <key>OnDemandEnabled</key>
         <integer>1</integer>
 
@@ -1039,9 +1240,10 @@
 ${rulesXml}
         </array>`;
 
-        }
+          }
 
-        const plist =
+
+          const plist =
 `<?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
@@ -1080,6 +1282,7 @@ ${rulesXml}
 
       <key>VPNType</key>
       <string>IKEv2</string>
+
 
       <key>IKEv2</key>
 
@@ -1137,6 +1340,7 @@ ${onDemandXml}
 
         </dict>
 
+
         <key>ChildSecurityAssociationParameters</key>
 
         <dict>
@@ -1160,6 +1364,7 @@ ${onDemandXml}
     </dict>
 
   </array>
+
 
   <key>PayloadDisplayName</key>
   <string>${xmlEscape(name)}</string>
@@ -1189,38 +1394,51 @@ ${onDemandXml}
 
 </plist>`;
 
-        const blob =
-          new Blob(
-            [plist],
-            {
-              type:
-                "application/x-apple-aspen-config"
-            }
+
+          const blob =
+            new Blob(
+              [plist],
+              {
+                type:
+                  "application/x-apple-aspen-config"
+              }
+            );
+
+
+          const url =
+            URL.createObjectURL(blob);
+
+
+          const link =
+            document.createElement("a");
+
+
+          link.href = url;
+
+
+          link.download =
+            safeFileName(name) +
+            ".mobileconfig";
+
+
+          document.body.appendChild(link);
+
+
+          link.click();
+
+
+          link.remove();
+
+
+          setTimeout(
+            function() {
+              URL.revokeObjectURL(url);
+            },
+            1000
           );
 
-        const url =
-          URL.createObjectURL(blob);
-
-        const link =
-          document.createElement("a");
-
-        link.href = url;
-
-        link.download =
-          safeFileName(name) +
-          ".mobileconfig";
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        link.remove();
-
-        setTimeout(function() {
-          URL.revokeObjectURL(url);
-        }, 1000);
-
-      });
+        }
+      );
 
   </script>
 
