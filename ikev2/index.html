@@ -1,3 +1,5 @@
+<!-- Tolf Configurator IKEv2 — Build 2026-08-29.2 -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,12 +44,26 @@
       text-decoration: none;
     }
 
-    h1 {
+    .title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
       margin: 0 0 10px;
+    }
+
+    h1 {
+      margin: 0;
       font-size: 36px;
       line-height: 1.1;
       font-weight: 650;
       letter-spacing: -0.02em;
+    }
+
+    .build-number {
+      color: #8e8e93;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
     }
 
     .subtitle {
@@ -55,13 +71,6 @@
       color: #5f5f63;
       font-size: 17px;
       line-height: 1.5;
-    }
-
-    .build {
-      margin: -14px 0 22px;
-      color: #8e8e93;
-      font-size: 12px;
-      line-height: 1.4;
     }
 
     .import-area {
@@ -268,20 +277,36 @@
     }
 
     .action {
+      display: flex;
+      gap: 12px;
       margin-top: 30px;
     }
 
-    .generate {
-      width: 100%;
+    .action-button {
+      flex: 1 1 0;
+      min-width: 0;
       min-height: 50px;
-      border: 0;
       border-radius: 12px;
-      background: #1d1d1f;
-      color: #ffffff;
       font: inherit;
       font-size: 17px;
       font-weight: 600;
       cursor: pointer;
+    }
+
+    .install-button {
+      border: 0;
+      background: #1d1d1f;
+      color: #ffffff;
+    }
+
+    .save-button {
+      border: 1px solid #cfcfd4;
+      background: #ffffff;
+      color: #1d1d1f;
+    }
+
+    .action-button:active {
+      opacity: 0.7;
     }
 
     .note {
@@ -350,6 +375,14 @@
       .rule-action {
         flex: 1 1 100%;
       }
+
+      .action {
+        gap: 8px;
+      }
+
+      .action-button {
+        font-size: 15px;
+      }
     }
 
     @media (prefers-color-scheme: dark) {
@@ -361,17 +394,19 @@
       .back,
       .subtitle,
       .section-title,
-      .build {
+      .build-number {
         color: #b8b8bd;
       }
 
       .group,
-      .import-button {
+      .import-button,
+      .save-button {
         background: #1c1c1e;
         border-color: #38383a;
       }
 
-      .import-button {
+      .import-button,
+      .save-button {
         color: #f5f5f7;
       }
 
@@ -386,7 +421,7 @@
         color: #7c7c80;
       }
 
-      .generate {
+      .install-button {
         background: #f5f5f7;
         color: #1d1d1f;
       }
@@ -412,14 +447,13 @@
 
     <a class="back" href="/tolf-configurator/">‹ Tolf Configurator</a>
 
-    <h1>IKEv2</h1>
+    <div class="title-row">
+      <h1>IKEv2</h1>
+      <span class="build-number">Build 2026-08-29.2</span>
+    </div>
 
     <p class="subtitle">
       Create an IKEv2 configuration profile for iPhone and iPad.
-    </p>
-
-    <p class="build">
-      Build 2026-08-29.1
     </p>
 
     <div class="import-area">
@@ -641,8 +675,20 @@
 
     <div class="action">
 
-      <button id="generate" class="generate" type="button">
-        Generate Profile
+      <button
+        id="install-profile"
+        class="action-button install-button"
+        type="button"
+      >
+        Install Profile
+      </button>
+
+      <button
+        id="save-xml"
+        class="action-button save-button"
+        type="button"
+      >
+        Save XML Copy
       </button>
 
     </div>
@@ -2210,6 +2256,256 @@ ${plistValueToXml(profile)}
     }
 
 
+    function collectValues() {
+
+      return {
+
+        name:
+          document
+            .getElementById(
+              "name"
+            )
+            .value
+            .trim(),
+
+        server:
+          document
+            .getElementById(
+              "server"
+            )
+            .value
+            .trim(),
+
+        remoteId:
+          document
+            .getElementById(
+              "remote-id"
+            )
+            .value
+            .trim(),
+
+        localId:
+          document
+            .getElementById(
+              "local-id"
+            )
+            .value
+            .trim(),
+
+        username:
+          document
+            .getElementById(
+              "username"
+            )
+            .value
+            .trim(),
+
+        password:
+          document
+            .getElementById(
+              "password"
+            )
+            .value,
+
+        encryption:
+          document
+            .getElementById(
+              "ike-encryption"
+            )
+            .value,
+
+        integrity:
+          document
+            .getElementById(
+              "ike-integrity"
+            )
+            .value,
+
+        dhGroup:
+          document
+            .getElementById(
+              "dh-group"
+            )
+            .value,
+
+        dpd:
+          document
+            .getElementById(
+              "dpd"
+            )
+            .value,
+
+        pfs:
+          document
+            .getElementById(
+              "pfs"
+            )
+            .checked,
+
+        mobike:
+          document
+            .getElementById(
+              "mobike"
+            )
+            .checked,
+
+        redirects:
+          document
+            .getElementById(
+              "redirects"
+            )
+            .checked,
+
+        internalSubnet:
+          document
+            .getElementById(
+              "internal-subnet"
+            )
+            .checked,
+
+        onDemand:
+          onDemandCheckbox
+            .checked,
+
+        onDemandRules:
+          buildOnDemandRules()
+      };
+    }
+
+
+    function createOutputProfile() {
+
+      const values =
+        collectValues();
+
+
+      if (
+        !values.name ||
+        !values.server ||
+        !values.remoteId ||
+        !values.username
+      ) {
+
+        error.textContent =
+          "Name, Server, Remote ID and Username are required.";
+
+        error.style.display =
+          "block";
+
+        return null;
+      }
+
+
+      error.style.display =
+        "none";
+
+
+      let outputProfile;
+
+
+      if (
+        importedProfile &&
+        importedVpnPayloadIndex >= 0
+      ) {
+
+        outputProfile =
+          updateImportedProfile(
+            importedProfile,
+            importedVpnPayloadIndex,
+            values
+          );
+
+
+        const outputVpnPayload =
+          outputProfile
+            .PayloadContent[
+              importedVpnPayloadIndex
+            ];
+
+
+        saveImportedIdentity(
+          values.name,
+          outputProfile,
+          outputVpnPayload
+        );
+
+      } else {
+
+        outputProfile =
+          buildNewProfile(
+            values
+          );
+      }
+
+
+      return {
+        profile: outputProfile,
+        values: values,
+        xml: profileToXml(
+          outputProfile
+        )
+      };
+    }
+
+
+    function downloadBlob(
+      content,
+      type,
+      fileName
+    ) {
+
+      const blob =
+        new Blob(
+          [content],
+          {
+            type: type
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      link.href =
+        url;
+
+      link.download =
+        fileName;
+
+
+      document.body
+        .appendChild(
+          link
+        );
+
+
+      link.click();
+
+      link.remove();
+
+
+      setTimeout(
+        function() {
+
+          URL.revokeObjectURL(
+            url
+          );
+
+        },
+        1000
+      );
+    }
+
+
     importButton.addEventListener(
       "click",
       function() {
@@ -2425,246 +2721,57 @@ ${plistValueToXml(profile)}
 
 
     document
-      .getElementById("generate")
+      .getElementById(
+        "install-profile"
+      )
       .addEventListener(
         "click",
         function() {
 
+          const output =
+            createOutputProfile();
 
-          const values = {
-
-            name:
-              document
-                .getElementById(
-                  "name"
-                )
-                .value
-                .trim(),
-
-            server:
-              document
-                .getElementById(
-                  "server"
-                )
-                .value
-                .trim(),
-
-            remoteId:
-              document
-                .getElementById(
-                  "remote-id"
-                )
-                .value
-                .trim(),
-
-            localId:
-              document
-                .getElementById(
-                  "local-id"
-                )
-                .value
-                .trim(),
-
-            username:
-              document
-                .getElementById(
-                  "username"
-                )
-                .value
-                .trim(),
-
-            password:
-              document
-                .getElementById(
-                  "password"
-                )
-                .value,
-
-            encryption:
-              document
-                .getElementById(
-                  "ike-encryption"
-                )
-                .value,
-
-            integrity:
-              document
-                .getElementById(
-                  "ike-integrity"
-                )
-                .value,
-
-            dhGroup:
-              document
-                .getElementById(
-                  "dh-group"
-                )
-                .value,
-
-            dpd:
-              document
-                .getElementById(
-                  "dpd"
-                )
-                .value,
-
-            pfs:
-              document
-                .getElementById(
-                  "pfs"
-                )
-                .checked,
-
-            mobike:
-              document
-                .getElementById(
-                  "mobike"
-                )
-                .checked,
-
-            redirects:
-              document
-                .getElementById(
-                  "redirects"
-                )
-                .checked,
-
-            internalSubnet:
-              document
-                .getElementById(
-                  "internal-subnet"
-                )
-                .checked,
-
-            onDemand:
-              onDemandCheckbox
-                .checked,
-
-            onDemandRules:
-              buildOnDemandRules()
-          };
-
-
-          if (
-            !values.name ||
-            !values.server ||
-            !values.remoteId ||
-            !values.username
-          ) {
-
-            error.textContent =
-              "Name, Server, Remote ID and Username are required.";
-
-            error.style.display =
-              "block";
-
+          if (!output) {
             return;
           }
 
 
-          error.style.display =
-            "none";
+          downloadBlob(
+            output.xml,
+            "application/x-apple-aspen-config",
+            safeFileName(
+              output.values.name
+            ) +
+            ".mobileconfig"
+          );
+        }
+      );
 
 
-          let outputProfile;
+    document
+      .getElementById(
+        "save-xml"
+      )
+      .addEventListener(
+        "click",
+        function() {
 
+          const output =
+            createOutputProfile();
 
-          if (
-            importedProfile &&
-            importedVpnPayloadIndex >= 0
-          ) {
-
-            outputProfile =
-              updateImportedProfile(
-                importedProfile,
-                importedVpnPayloadIndex,
-                values
-              );
-
-
-            const outputVpnPayload =
-              outputProfile
-                .PayloadContent[
-                  importedVpnPayloadIndex
-                ];
-
-
-            saveImportedIdentity(
-              values.name,
-              outputProfile,
-              outputVpnPayload
-            );
-
-          } else {
-
-            outputProfile =
-              buildNewProfile(
-                values
-              );
+          if (!output) {
+            return;
           }
 
 
-          const plist =
-            profileToXml(
-              outputProfile
-            );
-
-
-          const blob =
-            new Blob(
-              [plist],
-              {
-                type:
-                  "application/x-apple-aspen-config"
-              }
-            );
-
-
-          const url =
-            URL.createObjectURL(
-              blob
-            );
-
-
-          const link =
-            document.createElement(
-              "a"
-            );
-
-
-          link.href =
-            url;
-
-
-          link.download =
+          downloadBlob(
+            output.xml,
+            "application/xml;charset=utf-8",
             safeFileName(
-              values.name
+              output.values.name
             ) +
-            ".mobileconfig";
-
-
-          document.body
-            .appendChild(
-              link
-            );
-
-
-          link.click();
-
-          link.remove();
-
-
-          setTimeout(
-            function() {
-
-              URL.revokeObjectURL(
-                url
-              );
-
-            },
-            1000
+            ".mobileconfig.xml"
           );
-
         }
       );
 
