@@ -411,6 +411,7 @@
     </p>
 
     <div class="import-area">
+
       <button id="import-button" class="import-button" type="button">
         Import Existing Profile
       </button>
@@ -425,6 +426,7 @@
       <p class="import-hint">
         Import an existing .mobileconfig file to edit its IKEv2 settings.
       </p>
+
     </div>
 
 
@@ -482,7 +484,7 @@
     </div>
 
 
-    <details id="advanced-details">
+    <details>
 
       <summary>Advanced Settings</summary>
 
@@ -610,11 +612,7 @@
 
         <div id="rules-group" class="group">
 
-          <button
-            id="add-rule"
-            class="add-rule"
-            type="button"
-          >
+          <button id="add-rule" class="add-rule" type="button">
             + Add Rule
           </button>
 
@@ -631,19 +629,13 @@
 
     <div class="action">
 
-      <button
-        id="generate"
-        class="generate"
-        type="button"
-      >
+      <button id="generate" class="generate" type="button">
         Generate Profile
       </button>
 
     </div>
 
-
     <p id="error" class="error"></p>
-
 
     <p class="note">
       Profile data and imported files are processed locally in your browser.
@@ -656,14 +648,17 @@
   <script>
 
     const identityStorageKey =
-      "tolf.ikev2.profile-identities.v1";
+      "tolf.ikev2.profile-identities.v2";
 
     const memoryIdentities = {};
+
+    let importedProfile = null;
+    let importedVpnPayloadIndex = -1;
 
 
     function xmlEscape(value) {
 
-      return value
+      return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -715,12 +710,26 @@
     }
 
 
+    function deepClone(value) {
+
+      if (typeof structuredClone === "function") {
+        return structuredClone(value);
+      }
+
+      return JSON.parse(
+        JSON.stringify(value)
+      );
+    }
+
+
     function loadIdentities() {
 
       try {
 
         const stored =
-          localStorage.getItem(identityStorageKey);
+          localStorage.getItem(
+            identityStorageKey
+          );
 
         if (!stored) {
           return {};
@@ -766,7 +775,7 @@
       const key =
         normalizeProfileName(name);
 
-      let identities =
+      const identities =
         loadIdentities();
 
       if (identities[key]) {
@@ -777,9 +786,26 @@
         return memoryIdentities[key];
       }
 
+      const profileUUID =
+        uuid();
+
+      const vpnUUID =
+        uuid();
+
       const identity = {
-        profileUUID: uuid(),
-        vpnUUID: uuid()
+
+        profileUUID: profileUUID,
+
+        vpnUUID: vpnUUID,
+
+        profileIdentifier:
+          "is.tolf.configurator.profile." +
+          profileUUID.toLowerCase(),
+
+        vpnIdentifier:
+          "is.tolf.configurator.vpn." +
+          vpnUUID.toLowerCase()
+
       };
 
       identities[key] = identity;
@@ -794,28 +820,54 @@
 
     function saveImportedIdentity(
       name,
-      profileUUID,
-      vpnUUID
+      profile,
+      vpnPayload
     ) {
 
-      if (!name || !profileUUID || !vpnUUID) {
+      if (
+        !name ||
+        !profile.PayloadUUID ||
+        !vpnPayload.PayloadUUID
+      ) {
         return;
       }
 
       const key =
         normalizeProfileName(name);
 
-      let identities =
+      const identity = {
+
+        profileUUID:
+          profile.PayloadUUID,
+
+        vpnUUID:
+          vpnPayload.PayloadUUID,
+
+        profileIdentifier:
+          profile.PayloadIdentifier ||
+          (
+            "is.tolf.configurator.profile." +
+            profile.PayloadUUID.toLowerCase()
+          ),
+
+        vpnIdentifier:
+          vpnPayload.PayloadIdentifier ||
+          (
+            "is.tolf.configurator.vpn." +
+            vpnPayload.PayloadUUID.toLowerCase()
+          )
+
+      };
+
+      const identities =
         loadIdentities();
 
-      identities[key] = {
-        profileUUID: profileUUID,
-        vpnUUID: vpnUUID
-      };
+      identities[key] =
+        identity;
 
       if (!saveIdentities(identities)) {
         memoryIdentities[key] =
-          identities[key];
+          identity;
       }
     }
 
@@ -885,7 +937,6 @@
         return;
       }
 
-
       if (alwaysOnCheckbox.checked) {
 
         manualRules
@@ -917,13 +968,15 @@
       const row =
         document.createElement("div");
 
-      row.className = "rule-row";
+      row.className =
+        "rule-row";
 
 
       const type =
         document.createElement("select");
 
-      type.className = "rule-type";
+      type.className =
+        "rule-type";
 
       type.innerHTML = `
         <option value="wifi">
@@ -935,16 +988,24 @@
       const value =
         document.createElement("input");
 
-      value.type = "text";
-      value.className = "rule-value";
-      value.placeholder = "Network name";
-      value.value = initialValue;
+      value.type =
+        "text";
+
+      value.className =
+        "rule-value";
+
+      value.placeholder =
+        "Network name";
+
+      value.value =
+        initialValue;
 
 
       const action =
         document.createElement("select");
 
-      action.className = "rule-action";
+      action.className =
+        "rule-action";
 
       action.innerHTML = `
         <option value="Connect">Connect</option>
@@ -952,22 +1013,26 @@
         <option value="Ignore">Ignore</option>
       `;
 
-      action.value = initialAction;
+      action.value =
+        initialAction;
 
 
       const remove =
         document.createElement("button");
 
-      remove.type = "button";
-      remove.className = "remove-rule";
+      remove.type =
+        "button";
+
+      remove.className =
+        "remove-rule";
 
       remove.setAttribute(
         "aria-label",
         "Remove rule"
       );
 
-      remove.textContent = "×";
-
+      remove.textContent =
+        "×";
 
       remove.addEventListener(
         "click",
@@ -981,7 +1046,6 @@
       row.appendChild(value);
       row.appendChild(action);
       row.appendChild(remove);
-
 
       rulesGroup.insertBefore(
         row,
@@ -1008,7 +1072,6 @@
 
       const rules = [];
 
-
       rows.forEach(function(row) {
 
         const type =
@@ -1027,7 +1090,6 @@
             .querySelector(".rule-action")
             .value;
 
-
         if (value) {
 
           rules.push({
@@ -1037,7 +1099,6 @@
           });
         }
       });
-
 
       return rules;
     }
@@ -1070,10 +1131,7 @@
           continue;
         }
 
-        const key =
-          keyNode.textContent;
-
-        result[key] =
+        result[keyNode.textContent] =
           plistNodeToValue(valueNode);
       }
 
@@ -1108,33 +1166,256 @@
         case "dict":
           return plistDictToObject(node);
 
+        case "data":
+          return {
+            __plistType: "data",
+            value: node.textContent
+          };
+
+        case "date":
+          return {
+            __plistType: "date",
+            value: node.textContent
+          };
+
         default:
-          return null;
+          return {
+            __plistType: "raw",
+            xml: node.outerHTML
+          };
       }
     }
 
 
-    function findIkev2Payload(profile) {
+    function indentLines(text, indent) {
+
+      return text
+        .split("\n")
+        .map(function(line) {
+          return indent + line;
+        })
+        .join("\n");
+    }
+
+
+    function plistValueToXml(
+      value,
+      indent = ""
+    ) {
+
+      if (
+        value &&
+        typeof value === "object" &&
+        value.__plistType === "data"
+      ) {
+
+        return (
+          indent +
+          "<data>" +
+          value.value +
+          "</data>"
+        );
+      }
+
+
+      if (
+        value &&
+        typeof value === "object" &&
+        value.__plistType === "date"
+      ) {
+
+        return (
+          indent +
+          "<date>" +
+          xmlEscape(value.value) +
+          "</date>"
+        );
+      }
+
+
+      if (
+        value &&
+        typeof value === "object" &&
+        value.__plistType === "raw"
+      ) {
+
+        return indentLines(
+          value.xml,
+          indent
+        );
+      }
+
+
+      if (typeof value === "string") {
+
+        return (
+          indent +
+          "<string>" +
+          xmlEscape(value) +
+          "</string>"
+        );
+      }
+
+
+      if (typeof value === "number") {
+
+        if (Number.isInteger(value)) {
+
+          return (
+            indent +
+            "<integer>" +
+            value +
+            "</integer>"
+          );
+        }
+
+        return (
+          indent +
+          "<real>" +
+          value +
+          "</real>"
+        );
+      }
+
+
+      if (typeof value === "boolean") {
+
+        return (
+          indent +
+          (
+            value
+              ? "<true/>"
+              : "<false/>"
+          )
+        );
+      }
+
+
+      if (Array.isArray(value)) {
+
+        if (value.length === 0) {
+          return indent + "<array/>";
+        }
+
+        const items =
+          value
+            .map(function(item) {
+              return plistValueToXml(
+                item,
+                indent + "\t"
+              );
+            })
+            .join("\n");
+
+        return (
+          indent +
+          "<array>\n" +
+          items +
+          "\n" +
+          indent +
+          "</array>"
+        );
+      }
+
+
+      if (
+        value &&
+        typeof value === "object"
+      ) {
+
+        const entries =
+          Object.entries(value);
+
+        if (entries.length === 0) {
+          return indent + "<dict/>";
+        }
+
+        let xml =
+          indent + "<dict>\n";
+
+        entries.forEach(
+          function(entry, index) {
+
+            const key =
+              entry[0];
+
+            const item =
+              entry[1];
+
+            xml +=
+              indent +
+              "\t<key>" +
+              xmlEscape(key) +
+              "</key>\n";
+
+            xml +=
+              plistValueToXml(
+                item,
+                indent + "\t"
+              );
+
+            if (
+              index <
+              entries.length - 1
+            ) {
+              xml += "\n";
+            }
+          }
+        );
+
+        xml +=
+          "\n" +
+          indent +
+          "</dict>";
+
+        return xml;
+      }
+
+
+      return (
+        indent +
+        "<string></string>"
+      );
+    }
+
+
+    function profileToXml(profile) {
+
+      return (
+`<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+${plistValueToXml(profile)}
+</plist>`
+      );
+    }
+
+
+    function findIkev2PayloadIndex(profile) {
 
       if (
         !profile ||
-        !Array.isArray(profile.PayloadContent)
+        !Array.isArray(
+          profile.PayloadContent
+        )
       ) {
-        return null;
+        return -1;
       }
 
-      return profile.PayloadContent.find(
-        function(payload) {
+      return profile.PayloadContent
+        .findIndex(
+          function(payload) {
 
-          return (
-            payload &&
-            payload.PayloadType ===
-              "com.apple.vpn.managed" &&
-            payload.VPNType === "IKEv2" &&
-            payload.IKEv2
-          );
-        }
-      ) || null;
+            return (
+              payload &&
+              payload.PayloadType ===
+                "com.apple.vpn.managed" &&
+              payload.VPNType ===
+                "IKEv2" &&
+              payload.IKEv2
+            );
+          }
+        );
     }
 
 
@@ -1147,40 +1428,72 @@
         vpnPayload.IKEv2 || {};
 
       const ikeSecurity =
-        ikev2.IKESecurityAssociationParameters
+        ikev2
+          .IKESecurityAssociationParameters
         || {};
 
-      document.getElementById("name").value =
-        vpnPayload.UserDefinedName
-        || vpnPayload.PayloadDisplayName
-        || profile.PayloadDisplayName
-        || "IKEv2";
 
-      document.getElementById("server").value =
-        ikev2.RemoteAddress || "";
+      document
+        .getElementById("name")
+        .value =
+          vpnPayload.UserDefinedName ||
+          vpnPayload.PayloadDisplayName ||
+          profile.PayloadDisplayName ||
+          "IKEv2";
 
-      document.getElementById("remote-id").value =
-        ikev2.RemoteIdentifier || "";
 
-      document.getElementById("local-id").value =
-        ikev2.LocalIdentifier || "";
+      document
+        .getElementById("server")
+        .value =
+          ikev2.RemoteAddress ||
+          "";
 
-      document.getElementById("username").value =
-        ikev2.AuthName || "";
 
-      document.getElementById("password").value =
-        ikev2.AuthPassword || "";
+      document
+        .getElementById("remote-id")
+        .value =
+          ikev2.RemoteIdentifier ||
+          "";
+
+
+      document
+        .getElementById("local-id")
+        .value =
+          ikev2.LocalIdentifier ||
+          "";
+
+
+      document
+        .getElementById("username")
+        .value =
+          ikev2.AuthName ||
+          "";
+
+
+      document
+        .getElementById("password")
+        .value =
+          ikev2.AuthPassword ||
+          "";
 
 
       if (
-        ikeSecurity.EncryptionAlgorithm === "AES-128" ||
-        ikeSecurity.EncryptionAlgorithm === "AES-256"
+        [
+          "AES-128",
+          "AES-256"
+        ].includes(
+          ikeSecurity
+            .EncryptionAlgorithm
+        )
       ) {
 
         document
-          .getElementById("ike-encryption")
+          .getElementById(
+            "ike-encryption"
+          )
           .value =
-            ikeSecurity.EncryptionAlgorithm;
+            ikeSecurity
+              .EncryptionAlgorithm;
       }
 
 
@@ -1190,30 +1503,38 @@
           "SHA2-384",
           "SHA2-512"
         ].includes(
-          ikeSecurity.IntegrityAlgorithm
+          ikeSecurity
+            .IntegrityAlgorithm
         )
       ) {
 
         document
-          .getElementById("ike-integrity")
+          .getElementById(
+            "ike-integrity"
+          )
           .value =
-            ikeSecurity.IntegrityAlgorithm;
+            ikeSecurity
+              .IntegrityAlgorithm;
       }
 
 
       if (
         [14, 19, 20].includes(
           Number(
-            ikeSecurity.DiffieHellmanGroup
+            ikeSecurity
+              .DiffieHellmanGroup
           )
         )
       ) {
 
         document
-          .getElementById("dh-group")
+          .getElementById(
+            "dh-group"
+          )
           .value =
             String(
-              ikeSecurity.DiffieHellmanGroup
+              ikeSecurity
+                .DiffieHellmanGroup
             );
       }
 
@@ -1225,40 +1546,52 @@
           "Medium",
           "High"
         ].includes(
-          ikev2.DeadPeerDetectionRate
+          ikev2
+            .DeadPeerDetectionRate
         )
       ) {
 
         document
           .getElementById("dpd")
           .value =
-            ikev2.DeadPeerDetectionRate;
+            ikev2
+              .DeadPeerDetectionRate;
       }
 
 
-      document.getElementById("pfs").checked =
-        Number(ikev2.EnablePFS) === 1;
-
-
-      document.getElementById("mobike").checked =
-        Number(
-          ikev2.DisableMOBIKE || 0
-        ) !== 1;
-
-
-      document.getElementById("redirects").checked =
-        Number(
-          ikev2.DisableRedirect || 0
-        ) !== 1;
+      document
+        .getElementById("pfs")
+        .checked =
+          Number(
+            ikev2.EnablePFS || 0
+          ) === 1;
 
 
       document
-        .getElementById("internal-subnet")
+        .getElementById("mobike")
+        .checked =
+          Number(
+            ikev2.DisableMOBIKE || 0
+          ) !== 1;
+
+
+      document
+        .getElementById("redirects")
+        .checked =
+          Number(
+            ikev2.DisableRedirect || 0
+          ) !== 1;
+
+
+      document
+        .getElementById(
+          "internal-subnet"
+        )
         .checked =
           Number(
             ikev2
               .UseConfigurationAttributeInternalIPSubnet
-              || 0
+            || 0
           ) === 1;
 
 
@@ -1275,9 +1608,14 @@
         onDemandEnabled;
 
 
-      let alwaysOn = false;
-      let wifiDefault = "Connect";
-      let cellularDefault = "Connect";
+      let alwaysOn =
+        false;
+
+      let wifiDefault =
+        "Connect";
+
+      let cellularDefault =
+        "Connect";
 
 
       const rules =
@@ -1292,61 +1630,75 @@
         onDemandEnabled &&
         rules.length === 1 &&
         rules[0] &&
-        rules[0].Action === "Connect" &&
-        !rules[0].InterfaceTypeMatch &&
+        rules[0].Action ===
+          "Connect" &&
+        !rules[0]
+          .InterfaceTypeMatch &&
         !rules[0].SSIDMatch
       ) {
 
-        alwaysOn = true;
+        alwaysOn =
+          true;
 
       } else {
 
-        rules.forEach(function(rule) {
+        rules.forEach(
+          function(rule) {
 
-          if (!rule) {
-            return;
-          }
+            if (!rule) {
+              return;
+            }
 
 
-          if (
-            rule.InterfaceTypeMatch === "WiFi" &&
-            Array.isArray(rule.SSIDMatch)
-          ) {
+            if (
+              rule.InterfaceTypeMatch ===
+                "WiFi" &&
+              Array.isArray(
+                rule.SSIDMatch
+              )
+            ) {
 
-            rule.SSIDMatch.forEach(
-              function(ssid) {
+              rule.SSIDMatch
+                .forEach(
+                  function(ssid) {
 
-                createRuleRow(
-                  ssid,
-                  rule.Action || "Disconnect"
+                    createRuleRow(
+                      ssid,
+                      rule.Action ||
+                        "Disconnect"
+                    );
+                  }
                 );
-              }
-            );
 
-            return;
+              return;
+            }
+
+
+            if (
+              rule.InterfaceTypeMatch ===
+                "WiFi" &&
+              !rule.SSIDMatch
+            ) {
+
+              wifiDefault =
+                rule.Action ||
+                "Connect";
+
+              return;
+            }
+
+
+            if (
+              rule.InterfaceTypeMatch ===
+                "Cellular"
+            ) {
+
+              cellularDefault =
+                rule.Action ||
+                "Connect";
+            }
           }
-
-
-          if (
-            rule.InterfaceTypeMatch === "WiFi" &&
-            !rule.SSIDMatch
-          ) {
-
-            wifiDefault =
-              rule.Action || "Connect";
-
-            return;
-          }
-
-
-          if (
-            rule.InterfaceTypeMatch === "Cellular"
-          ) {
-
-            cellularDefault =
-              rule.Action || "Connect";
-          }
-        });
+        );
       }
 
 
@@ -1355,50 +1707,494 @@
 
 
       document
-        .getElementById("wifi-action")
+        .getElementById(
+          "wifi-action"
+        )
         .value =
           [
             "Connect",
             "Disconnect",
             "Ignore"
-          ].includes(wifiDefault)
+          ].includes(
+            wifiDefault
+          )
             ? wifiDefault
             : "Connect";
 
 
       document
-        .getElementById("cellular-action")
+        .getElementById(
+          "cellular-action"
+        )
         .value =
           [
             "Connect",
             "Disconnect",
             "Ignore"
-          ].includes(cellularDefault)
+          ].includes(
+            cellularDefault
+          )
             ? cellularDefault
             : "Connect";
 
 
       updateOnDemandVisibility();
+    }
 
 
-      const importedName =
-        document
-          .getElementById("name")
-          .value
-          .trim();
+    function buildOnDemandRules() {
+
+      if (!onDemandCheckbox.checked) {
+        return null;
+      }
+
+
+      if (alwaysOnCheckbox.checked) {
+
+        return [
+          {
+            Action: "Connect"
+          }
+        ];
+      }
+
+
+      const rules = [];
+
+      getAdditionalRules()
+        .forEach(
+          function(rule) {
+
+            if (
+              rule.type === "wifi"
+            ) {
+
+              rules.push({
+                Action:
+                  rule.action,
+
+                InterfaceTypeMatch:
+                  "WiFi",
+
+                SSIDMatch:
+                  [rule.value]
+              });
+            }
+          }
+        );
+
+
+      rules.push({
+        Action:
+          document
+            .getElementById(
+              "wifi-action"
+            )
+            .value,
+
+        InterfaceTypeMatch:
+          "WiFi"
+      });
+
+
+      rules.push({
+        Action:
+          document
+            .getElementById(
+              "cellular-action"
+            )
+            .value,
+
+        InterfaceTypeMatch:
+          "Cellular"
+      });
+
+
+      rules.push({
+        Action: "Ignore"
+      });
+
+
+      return rules;
+    }
+
+
+    function updateImportedProfile(
+      profile,
+      vpnPayloadIndex,
+      values
+    ) {
+
+      const output =
+        deepClone(profile);
+
+      const vpnPayload =
+        output
+          .PayloadContent[
+            vpnPayloadIndex
+          ];
+
+      const ikev2 =
+        vpnPayload.IKEv2;
+
+
+      output.PayloadDisplayName =
+        values.name;
+
+
+      vpnPayload.PayloadDisplayName =
+        values.name;
+
+      vpnPayload.UserDefinedName =
+        values.name;
+
+
+      ikev2.RemoteAddress =
+        values.server;
+
+      ikev2.RemoteIdentifier =
+        values.remoteId;
+
+
+      if (values.localId) {
+
+        ikev2.LocalIdentifier =
+          values.localId;
+
+      } else {
+
+        delete ikev2.LocalIdentifier;
+      }
+
+
+      ikev2.AuthName =
+        values.username;
+
+
+      if (values.password) {
+
+        ikev2.AuthPassword =
+          values.password;
+
+      } else {
+
+        delete ikev2.AuthPassword;
+      }
+
+
+      ikev2.DeadPeerDetectionRate =
+        values.dpd;
+
+      ikev2.EnablePFS =
+        values.pfs ? 1 : 0;
+
+      ikev2.DisableMOBIKE =
+        values.mobike ? 0 : 1;
+
+      ikev2.DisableRedirect =
+        values.redirects ? 0 : 1;
 
 
       if (
-        profile.PayloadUUID &&
-        vpnPayload.PayloadUUID
+        Object.prototype
+          .hasOwnProperty
+          .call(
+            ikev2,
+            "UseConfigurationAttributeInternalIPSubnet"
+          ) ||
+        values.internalSubnet
       ) {
 
-        saveImportedIdentity(
-          importedName,
-          profile.PayloadUUID,
-          vpnPayload.PayloadUUID
-        );
+        ikev2
+          .UseConfigurationAttributeInternalIPSubnet =
+            values.internalSubnet
+              ? 1
+              : 0;
       }
+
+
+      if (
+        !ikev2
+          .IKESecurityAssociationParameters
+      ) {
+
+        ikev2
+          .IKESecurityAssociationParameters =
+            {};
+      }
+
+
+      const ikeSecurity =
+        ikev2
+          .IKESecurityAssociationParameters;
+
+
+      ikeSecurity.EncryptionAlgorithm =
+        values.encryption;
+
+      ikeSecurity.IntegrityAlgorithm =
+        values.integrity;
+
+      ikeSecurity.DiffieHellmanGroup =
+        Number(values.dhGroup);
+
+
+      if (
+        ikev2
+          .ChildSecurityAssociationParameters
+      ) {
+
+        const child =
+          ikev2
+            .ChildSecurityAssociationParameters;
+
+
+        child.EncryptionAlgorithm =
+          values.encryption;
+
+        child.IntegrityAlgorithm =
+          values.integrity;
+
+
+        if (
+          Object.prototype
+            .hasOwnProperty
+            .call(
+              child,
+              "DiffieHellmanGroup"
+            )
+        ) {
+
+          child.DiffieHellmanGroup =
+            Number(
+              values.dhGroup
+            );
+        }
+
+      } else {
+
+        ikev2
+          .ChildSecurityAssociationParameters =
+            {
+              EncryptionAlgorithm:
+                values.encryption,
+
+              IntegrityAlgorithm:
+                values.integrity
+            };
+      }
+
+
+      if (values.onDemand) {
+
+        ikev2.OnDemandEnabled =
+          1;
+
+        ikev2.OnDemandRules =
+          values.onDemandRules;
+
+      } else {
+
+        if (
+          Object.prototype
+            .hasOwnProperty
+            .call(
+              ikev2,
+              "OnDemandEnabled"
+            )
+        ) {
+
+          ikev2.OnDemandEnabled =
+            0;
+        }
+
+        delete ikev2.OnDemandRules;
+      }
+
+
+      return output;
+    }
+
+
+    function buildNewProfile(
+      values
+    ) {
+
+      const identity =
+        getProfileIdentity(
+          values.name
+        );
+
+
+      const ikev2 = {
+
+        RemoteAddress:
+          values.server,
+
+        RemoteIdentifier:
+          values.remoteId,
+
+        AuthenticationMethod:
+          "None",
+
+        ExtendedAuthEnabled:
+          1,
+
+        AuthName:
+          values.username,
+
+        DeadPeerDetectionRate:
+          values.dpd,
+
+        EnablePFS:
+          values.pfs ? 1 : 0,
+
+        DisableMOBIKE:
+          values.mobike ? 0 : 1,
+
+        DisableRedirect:
+          values.redirects ? 0 : 1,
+
+        UseConfigurationAttributeInternalIPSubnet:
+          values.internalSubnet
+            ? 1
+            : 0
+      };
+
+
+      if (values.localId) {
+
+        ikev2.LocalIdentifier =
+          values.localId;
+      }
+
+
+      if (values.password) {
+
+        ikev2.AuthPassword =
+          values.password;
+      }
+
+
+      if (values.onDemand) {
+
+        ikev2.OnDemandEnabled =
+          1;
+
+        ikev2.OnDemandRules =
+          values.onDemandRules;
+
+      } else {
+
+        ikev2.OnDemandEnabled =
+          0;
+      }
+
+
+      ikev2
+        .IKESecurityAssociationParameters =
+          {
+
+            EncryptionAlgorithm:
+              values.encryption,
+
+            IntegrityAlgorithm:
+              values.integrity,
+
+            DiffieHellmanGroup:
+              Number(
+                values.dhGroup
+              ),
+
+            LifeTimeInMinutes:
+              1440
+
+          };
+
+
+      ikev2
+        .ChildSecurityAssociationParameters =
+          {
+
+            EncryptionAlgorithm:
+              values.encryption,
+
+            IntegrityAlgorithm:
+              values.integrity,
+
+            DiffieHellmanGroup:
+              Number(
+                values.dhGroup
+              ),
+
+            LifeTimeInMinutes:
+              1440
+
+          };
+
+
+      return {
+
+        PayloadContent: [
+          {
+
+            PayloadDescription:
+              "Configures an IKEv2 VPN connection.",
+
+            PayloadDisplayName:
+              values.name,
+
+            PayloadIdentifier:
+              identity
+                .vpnIdentifier,
+
+            PayloadType:
+              "com.apple.vpn.managed",
+
+            PayloadUUID:
+              identity
+                .vpnUUID,
+
+            PayloadVersion:
+              1,
+
+            UserDefinedName:
+              values.name,
+
+            VPNType:
+              "IKEv2",
+
+            IKEv2:
+              ikev2
+          }
+        ],
+
+        PayloadDisplayName:
+          values.name,
+
+        PayloadDescription:
+          "IKEv2 configuration profile generated by Tolf Configurator.",
+
+        PayloadIdentifier:
+          identity
+            .profileIdentifier,
+
+        PayloadOrganization:
+          "Tolf Configurator",
+
+        PayloadRemovalDisallowed:
+          false,
+
+        PayloadType:
+          "Configuration",
+
+        PayloadUUID:
+          identity
+            .profileUUID,
+
+        PayloadVersion:
+          1
+      };
     }
 
 
@@ -1406,7 +2202,9 @@
       "click",
       function() {
 
-        importFile.value = "";
+        importFile.value =
+          "";
+
         importFile.click();
       }
     );
@@ -1442,7 +2240,9 @@
 
 
           if (
-            xml.querySelector("parsererror")
+            xml.querySelector(
+              "parsererror"
+            )
           ) {
 
             throw new Error(
@@ -1452,7 +2252,9 @@
 
 
           const plist =
-            xml.querySelector("plist");
+            xml.querySelector(
+              "plist"
+            );
 
 
           if (!plist) {
@@ -1465,10 +2267,17 @@
 
           const topDict =
             Array
-              .from(plist.children)
-              .find(function(node) {
-                return node.tagName === "dict";
-              });
+              .from(
+                plist.children
+              )
+              .find(
+                function(node) {
+                  return (
+                    node.tagName ===
+                    "dict"
+                  );
+                }
+              );
 
 
           if (!topDict) {
@@ -1480,19 +2289,37 @@
 
 
           const profile =
-            plistDictToObject(topDict);
+            plistDictToObject(
+              topDict
+            );
 
 
-          const vpnPayload =
-            findIkev2Payload(profile);
+          const vpnIndex =
+            findIkev2PayloadIndex(
+              profile
+            );
 
 
-          if (!vpnPayload) {
+          if (vpnIndex < 0) {
 
             throw new Error(
               "No IKEv2 VPN configuration was found in this profile."
             );
           }
+
+
+          const vpnPayload =
+            profile
+              .PayloadContent[
+                vpnIndex
+              ];
+
+
+          importedProfile =
+            deepClone(profile);
+
+          importedVpnPayloadIndex =
+            vpnIndex;
 
 
           applyImportedProfile(
@@ -1501,11 +2328,29 @@
           );
 
 
-          error.style.display = "none";
+          const importedName =
+            document
+              .getElementById(
+                "name"
+              )
+              .value
+              .trim();
+
+
+          saveImportedIdentity(
+            importedName,
+            profile,
+            vpnPayload
+          );
+
+
+          error.style.display =
+            "none";
 
 
           const originalText =
-            importButton.textContent;
+            importButton
+              .textContent;
 
 
           importButton.textContent =
@@ -1525,9 +2370,17 @@
 
         } catch (importError) {
 
+          importedProfile =
+            null;
+
+          importedVpnPayloadIndex =
+            -1;
+
+
           error.textContent =
             importError.message ||
             "The profile could not be imported.";
+
 
           error.style.display =
             "block";
@@ -1566,124 +2419,125 @@
         function() {
 
 
-          const name =
-            document
-              .getElementById("name")
-              .value
-              .trim();
+          const values = {
 
+            name:
+              document
+                .getElementById(
+                  "name"
+                )
+                .value
+                .trim(),
 
-          const server =
-            document
-              .getElementById("server")
-              .value
-              .trim();
+            server:
+              document
+                .getElementById(
+                  "server"
+                )
+                .value
+                .trim(),
 
+            remoteId:
+              document
+                .getElementById(
+                  "remote-id"
+                )
+                .value
+                .trim(),
 
-          const remoteId =
-            document
-              .getElementById("remote-id")
-              .value
-              .trim();
+            localId:
+              document
+                .getElementById(
+                  "local-id"
+                )
+                .value
+                .trim(),
 
+            username:
+              document
+                .getElementById(
+                  "username"
+                )
+                .value
+                .trim(),
 
-          const localId =
-            document
-              .getElementById("local-id")
-              .value
-              .trim();
+            password:
+              document
+                .getElementById(
+                  "password"
+                )
+                .value,
 
+            encryption:
+              document
+                .getElementById(
+                  "ike-encryption"
+                )
+                .value,
 
-          const username =
-            document
-              .getElementById("username")
-              .value
-              .trim();
+            integrity:
+              document
+                .getElementById(
+                  "ike-integrity"
+                )
+                .value,
 
+            dhGroup:
+              document
+                .getElementById(
+                  "dh-group"
+                )
+                .value,
 
-          const password =
-            document
-              .getElementById("password")
-              .value;
+            dpd:
+              document
+                .getElementById(
+                  "dpd"
+                )
+                .value,
 
+            pfs:
+              document
+                .getElementById(
+                  "pfs"
+                )
+                .checked,
 
-          const encryption =
-            document
-              .getElementById("ike-encryption")
-              .value;
+            mobike:
+              document
+                .getElementById(
+                  "mobike"
+                )
+                .checked,
 
+            redirects:
+              document
+                .getElementById(
+                  "redirects"
+                )
+                .checked,
 
-          const integrity =
-            document
-              .getElementById("ike-integrity")
-              .value;
+            internalSubnet:
+              document
+                .getElementById(
+                  "internal-subnet"
+                )
+                .checked,
 
+            onDemand:
+              onDemandCheckbox
+                .checked,
 
-          const dhGroup =
-            document
-              .getElementById("dh-group")
-              .value;
-
-
-          const dpd =
-            document
-              .getElementById("dpd")
-              .value;
-
-
-          const pfs =
-            document
-              .getElementById("pfs")
-              .checked;
-
-
-          const mobike =
-            document
-              .getElementById("mobike")
-              .checked;
-
-
-          const redirects =
-            document
-              .getElementById("redirects")
-              .checked;
-
-
-          const internalSubnet =
-            document
-              .getElementById("internal-subnet")
-              .checked;
-
-
-          const onDemand =
-            onDemandCheckbox.checked;
-
-
-          const alwaysOn =
-            alwaysOnCheckbox.checked;
-
-
-          const wifiAction =
-            document
-              .getElementById("wifi-action")
-              .value;
-
-
-          const cellularAction =
-            document
-              .getElementById("cellular-action")
-              .value;
-
-
-          const additionalRules =
-            getAdditionalRules();
+            onDemandRules:
+              buildOnDemandRules()
+          };
 
 
           if (
-            !name ||
-            !server ||
-            !remoteId ||
-            !username
+            !values.name ||
+            !values.server ||
+            !values.remoteId ||
+            !values.username
           ) {
 
             error.textContent =
@@ -1700,277 +2554,48 @@
             "none";
 
 
-          const identity =
-            getProfileIdentity(name);
+          let outputProfile;
 
 
-          const profileUUID =
-            identity.profileUUID;
+          if (
+            importedProfile &&
+            importedVpnPayloadIndex >= 0
+          ) {
 
-
-          const vpnUUID =
-            identity.vpnUUID;
-
-
-          const localIdentifierXml =
-            localId
-              ? `
-        <key>LocalIdentifier</key>
-        <string>${xmlEscape(localId)}</string>`
-              : "";
-
-
-          const passwordXml =
-            password
-              ? `
-        <key>AuthPassword</key>
-        <string>${xmlEscape(password)}</string>`
-              : "";
-
-
-          let onDemandXml = `
-        <key>OnDemandEnabled</key>
-        <integer>0</integer>`;
-
-
-          if (onDemand) {
-
-            let rulesXml = "";
-
-
-            if (alwaysOn) {
-
-              rulesXml = `
-          <dict>
-
-            <key>Action</key>
-            <string>Connect</string>
-
-          </dict>`;
-
-            } else {
-
-              additionalRules.forEach(
-                function(rule) {
-
-                  if (
-                    rule.type === "wifi"
-                  ) {
-
-                    rulesXml += `
-          <dict>
-
-            <key>Action</key>
-            <string>${rule.action}</string>
-
-            <key>InterfaceTypeMatch</key>
-            <string>WiFi</string>
-
-            <key>SSIDMatch</key>
-            <array>
-              <string>${xmlEscape(rule.value)}</string>
-            </array>
-
-          </dict>`;
-
-                  }
-                }
+            outputProfile =
+              updateImportedProfile(
+                importedProfile,
+                importedVpnPayloadIndex,
+                values
               );
 
 
-              rulesXml += `
-          <dict>
-
-            <key>Action</key>
-            <string>${wifiAction}</string>
-
-            <key>InterfaceTypeMatch</key>
-            <string>WiFi</string>
-
-          </dict>
+            const outputVpnPayload =
+              outputProfile
+                .PayloadContent[
+                  importedVpnPayloadIndex
+                ];
 
 
-          <dict>
+            saveImportedIdentity(
+              values.name,
+              outputProfile,
+              outputVpnPayload
+            );
 
-            <key>Action</key>
-            <string>${cellularAction}</string>
+          } else {
 
-            <key>InterfaceTypeMatch</key>
-            <string>Cellular</string>
-
-          </dict>
-
-
-          <dict>
-
-            <key>Action</key>
-            <string>Ignore</string>
-
-          </dict>`;
-
-            }
-
-
-            onDemandXml = `
-        <key>OnDemandEnabled</key>
-        <integer>1</integer>
-
-        <key>OnDemandRules</key>
-
-        <array>
-${rulesXml}
-        </array>`;
-
+            outputProfile =
+              buildNewProfile(
+                values
+              );
           }
 
 
           const plist =
-`<?xml version="1.0" encoding="UTF-8"?>
-
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-
-<plist version="1.0">
-
-<dict>
-
-  <key>PayloadContent</key>
-
-  <array>
-
-    <dict>
-
-      <key>PayloadDescription</key>
-      <string>Configures an IKEv2 VPN connection.</string>
-
-      <key>PayloadDisplayName</key>
-      <string>${xmlEscape(name)}</string>
-
-      <key>PayloadIdentifier</key>
-      <string>is.tolf.configurator.vpn.${vpnUUID.toLowerCase()}</string>
-
-      <key>PayloadType</key>
-      <string>com.apple.vpn.managed</string>
-
-      <key>PayloadUUID</key>
-      <string>${vpnUUID}</string>
-
-      <key>PayloadVersion</key>
-      <integer>1</integer>
-
-      <key>UserDefinedName</key>
-      <string>${xmlEscape(name)}</string>
-
-      <key>VPNType</key>
-      <string>IKEv2</string>
-
-      <key>IKEv2</key>
-
-      <dict>
-
-        <key>RemoteAddress</key>
-        <string>${xmlEscape(server)}</string>
-
-        <key>RemoteIdentifier</key>
-        <string>${xmlEscape(remoteId)}</string>
-${localIdentifierXml}
-
-        <key>AuthenticationMethod</key>
-        <string>None</string>
-
-        <key>ExtendedAuthEnabled</key>
-        <integer>1</integer>
-
-        <key>AuthName</key>
-        <string>${xmlEscape(username)}</string>
-${passwordXml}
-
-        <key>DeadPeerDetectionRate</key>
-        <string>${dpd}</string>
-
-        <key>EnablePFS</key>
-        <integer>${pfs ? 1 : 0}</integer>
-
-        <key>DisableMOBIKE</key>
-        <integer>${mobike ? 0 : 1}</integer>
-
-        <key>DisableRedirect</key>
-        <integer>${redirects ? 0 : 1}</integer>
-
-        <key>UseConfigurationAttributeInternalIPSubnet</key>
-        <integer>${internalSubnet ? 1 : 0}</integer>
-
-${onDemandXml}
-
-        <key>IKESecurityAssociationParameters</key>
-
-        <dict>
-
-          <key>EncryptionAlgorithm</key>
-          <string>${encryption}</string>
-
-          <key>IntegrityAlgorithm</key>
-          <string>${integrity}</string>
-
-          <key>DiffieHellmanGroup</key>
-          <integer>${dhGroup}</integer>
-
-          <key>LifeTimeInMinutes</key>
-          <integer>1440</integer>
-
-        </dict>
-
-        <key>ChildSecurityAssociationParameters</key>
-
-        <dict>
-
-          <key>EncryptionAlgorithm</key>
-          <string>${encryption}</string>
-
-          <key>IntegrityAlgorithm</key>
-          <string>${integrity}</string>
-
-          <key>DiffieHellmanGroup</key>
-          <integer>${dhGroup}</integer>
-
-          <key>LifeTimeInMinutes</key>
-          <integer>1440</integer>
-
-        </dict>
-
-      </dict>
-
-    </dict>
-
-  </array>
-
-  <key>PayloadDisplayName</key>
-  <string>${xmlEscape(name)}</string>
-
-  <key>PayloadDescription</key>
-  <string>IKEv2 configuration profile generated by Tolf Configurator.</string>
-
-  <key>PayloadIdentifier</key>
-  <string>is.tolf.configurator.profile.${profileUUID.toLowerCase()}</string>
-
-  <key>PayloadOrganization</key>
-  <string>Tolf Configurator</string>
-
-  <key>PayloadRemovalDisallowed</key>
-  <false/>
-
-  <key>PayloadType</key>
-  <string>Configuration</string>
-
-  <key>PayloadUUID</key>
-  <string>${profileUUID}</string>
-
-  <key>PayloadVersion</key>
-  <integer>1</integer>
-
-</dict>
-
-</plist>`;
+            profileToXml(
+              outputProfile
+            );
 
 
           const blob =
@@ -1984,33 +2609,46 @@ ${onDemandXml}
 
 
           const url =
-            URL.createObjectURL(blob);
+            URL.createObjectURL(
+              blob
+            );
 
 
           const link =
-            document.createElement("a");
+            document.createElement(
+              "a"
+            );
 
 
-          link.href = url;
+          link.href =
+            url;
 
 
           link.download =
-            safeFileName(name) +
+            safeFileName(
+              values.name
+            ) +
             ".mobileconfig";
 
 
-          document.body.appendChild(link);
+          document.body
+            .appendChild(
+              link
+            );
 
 
           link.click();
-
 
           link.remove();
 
 
           setTimeout(
             function() {
-              URL.revokeObjectURL(url);
+
+              URL.revokeObjectURL(
+                url
+              );
+
             },
             1000
           );
@@ -2019,6 +2657,5 @@ ${onDemandXml}
       );
 
   </script>
-
 </body>
 </html>
