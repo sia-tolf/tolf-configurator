@@ -51,10 +51,38 @@
     }
 
     .subtitle {
-      margin: 0 0 38px;
+      margin: 0 0 24px;
       color: #5f5f63;
       font-size: 17px;
       line-height: 1.5;
+    }
+
+    .import-area {
+      margin-bottom: 34px;
+    }
+
+    .import-button {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #cfcfd4;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #1d1d1f;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .import-button:active {
+      opacity: 0.7;
+    }
+
+    .import-hint {
+      margin: 8px 4px 0;
+      color: #77777c;
+      font-size: 13px;
+      line-height: 1.45;
     }
 
     .section-title {
@@ -209,7 +237,6 @@
       background: transparent;
       color: #77777c;
       font-size: 22px;
-      font-weight: 400;
       line-height: 1;
       cursor: pointer;
     }
@@ -330,9 +357,14 @@
         color: #b8b8bd;
       }
 
-      .group {
+      .group,
+      .import-button {
         background: #1c1c1e;
         border-color: #38383a;
+      }
+
+      .import-button {
+        color: #f5f5f7;
       }
 
       .field,
@@ -355,7 +387,8 @@
       .hint,
       .subsection-title,
       .always-on-hint,
-      .remove-rule {
+      .remove-rule,
+      .import-hint {
         color: #9a9aa0;
       }
 
@@ -376,6 +409,23 @@
     <p class="subtitle">
       Create an IKEv2 configuration profile for iPhone and iPad.
     </p>
+
+    <div class="import-area">
+      <button id="import-button" class="import-button" type="button">
+        Import Existing Profile
+      </button>
+
+      <input
+        id="import-file"
+        type="file"
+        accept=".mobileconfig,application/x-apple-aspen-config,application/xml,text/xml"
+        hidden
+      >
+
+      <p class="import-hint">
+        Import an existing .mobileconfig file to edit its IKEv2 settings.
+      </p>
+    </div>
 
 
     <div class="section-title">Connection</div>
@@ -432,7 +482,7 @@
     </div>
 
 
-    <details>
+    <details id="advanced-details">
 
       <summary>Advanced Settings</summary>
 
@@ -580,6 +630,7 @@
 
 
     <div class="action">
+
       <button
         id="generate"
         class="generate"
@@ -587,6 +638,7 @@
       >
         Generate Profile
       </button>
+
     </div>
 
 
@@ -594,8 +646,8 @@
 
 
     <p class="note">
-      Profile data is processed locally in your browser.
-      Nothing entered on this page is sent to the server.
+      Profile data and imported files are processed locally in your browser.
+      Nothing is sent to the server.
     </p>
 
   </main>
@@ -668,9 +720,7 @@
       try {
 
         const stored =
-          localStorage.getItem(
-            identityStorageKey
-          );
+          localStorage.getItem(identityStorageKey);
 
         if (!stored) {
           return {};
@@ -728,11 +778,8 @@
       }
 
       const identity = {
-
         profileUUID: uuid(),
-
         vpnUUID: uuid()
-
       };
 
       identities[key] = identity;
@@ -742,6 +789,34 @@
       }
 
       return identity;
+    }
+
+
+    function saveImportedIdentity(
+      name,
+      profileUUID,
+      vpnUUID
+    ) {
+
+      if (!name || !profileUUID || !vpnUUID) {
+        return;
+      }
+
+      const key =
+        normalizeProfileName(name);
+
+      let identities =
+        loadIdentities();
+
+      identities[key] = {
+        profileUUID: profileUUID,
+        vpnUUID: vpnUUID
+      };
+
+      if (!saveIdentities(identities)) {
+        memoryIdentities[key] =
+          identities[key];
+      }
     }
 
 
@@ -766,6 +841,15 @@
     const addRuleButton =
       document.getElementById("add-rule");
 
+    const importButton =
+      document.getElementById("import-button");
+
+    const importFile =
+      document.getElementById("import-file");
+
+    const error =
+      document.getElementById("error");
+
 
     function updateOnDemandVisibility() {
 
@@ -780,7 +864,6 @@
         onDemandOptions
           .classList
           .remove("visible");
-
       }
 
       updateAlwaysOnVisibility();
@@ -802,6 +885,7 @@
         return;
       }
 
+
       if (alwaysOnCheckbox.checked) {
 
         manualRules
@@ -821,12 +905,14 @@
         alwaysOnHint
           .classList
           .remove("visible");
-
       }
     }
 
 
-    function createRuleRow() {
+    function createRuleRow(
+      initialValue = "",
+      initialAction = "Disconnect"
+    ) {
 
       const row =
         document.createElement("div");
@@ -852,6 +938,7 @@
       value.type = "text";
       value.className = "rule-value";
       value.placeholder = "Network name";
+      value.value = initialValue;
 
 
       const action =
@@ -860,18 +947,12 @@
       action.className = "rule-action";
 
       action.innerHTML = `
-        <option value="Connect">
-          Connect
-        </option>
-
-        <option value="Disconnect" selected>
-          Disconnect
-        </option>
-
-        <option value="Ignore">
-          Ignore
-        </option>
+        <option value="Connect">Connect</option>
+        <option value="Disconnect">Disconnect</option>
+        <option value="Ignore">Ignore</option>
       `;
+
+      action.value = initialAction;
 
 
       const remove =
@@ -906,6 +987,16 @@
         row,
         addRuleButton
       );
+    }
+
+
+    function clearRuleRows() {
+
+      rulesGroup
+        .querySelectorAll(".rule-row")
+        .forEach(function(row) {
+          row.remove();
+        });
     }
 
 
@@ -944,14 +1035,505 @@
             value: value,
             action: action
           });
-
         }
-
       });
 
 
       return rules;
     }
+
+
+    function plistDictToObject(dictNode) {
+
+      const result = {};
+
+      const children =
+        Array.from(dictNode.children);
+
+      for (
+        let i = 0;
+        i < children.length;
+        i += 2
+      ) {
+
+        const keyNode =
+          children[i];
+
+        const valueNode =
+          children[i + 1];
+
+        if (
+          !keyNode ||
+          keyNode.tagName !== "key" ||
+          !valueNode
+        ) {
+          continue;
+        }
+
+        const key =
+          keyNode.textContent;
+
+        result[key] =
+          plistNodeToValue(valueNode);
+      }
+
+      return result;
+    }
+
+
+    function plistNodeToValue(node) {
+
+      switch (node.tagName) {
+
+        case "string":
+          return node.textContent;
+
+        case "integer":
+          return Number(node.textContent);
+
+        case "real":
+          return Number(node.textContent);
+
+        case "true":
+          return true;
+
+        case "false":
+          return false;
+
+        case "array":
+          return Array
+            .from(node.children)
+            .map(plistNodeToValue);
+
+        case "dict":
+          return plistDictToObject(node);
+
+        default:
+          return null;
+      }
+    }
+
+
+    function findIkev2Payload(profile) {
+
+      if (
+        !profile ||
+        !Array.isArray(profile.PayloadContent)
+      ) {
+        return null;
+      }
+
+      return profile.PayloadContent.find(
+        function(payload) {
+
+          return (
+            payload &&
+            payload.PayloadType ===
+              "com.apple.vpn.managed" &&
+            payload.VPNType === "IKEv2" &&
+            payload.IKEv2
+          );
+        }
+      ) || null;
+    }
+
+
+    function applyImportedProfile(
+      profile,
+      vpnPayload
+    ) {
+
+      const ikev2 =
+        vpnPayload.IKEv2 || {};
+
+      const ikeSecurity =
+        ikev2.IKESecurityAssociationParameters
+        || {};
+
+      document.getElementById("name").value =
+        vpnPayload.UserDefinedName
+        || vpnPayload.PayloadDisplayName
+        || profile.PayloadDisplayName
+        || "IKEv2";
+
+      document.getElementById("server").value =
+        ikev2.RemoteAddress || "";
+
+      document.getElementById("remote-id").value =
+        ikev2.RemoteIdentifier || "";
+
+      document.getElementById("local-id").value =
+        ikev2.LocalIdentifier || "";
+
+      document.getElementById("username").value =
+        ikev2.AuthName || "";
+
+      document.getElementById("password").value =
+        ikev2.AuthPassword || "";
+
+
+      if (
+        ikeSecurity.EncryptionAlgorithm === "AES-128" ||
+        ikeSecurity.EncryptionAlgorithm === "AES-256"
+      ) {
+
+        document
+          .getElementById("ike-encryption")
+          .value =
+            ikeSecurity.EncryptionAlgorithm;
+      }
+
+
+      if (
+        [
+          "SHA2-256",
+          "SHA2-384",
+          "SHA2-512"
+        ].includes(
+          ikeSecurity.IntegrityAlgorithm
+        )
+      ) {
+
+        document
+          .getElementById("ike-integrity")
+          .value =
+            ikeSecurity.IntegrityAlgorithm;
+      }
+
+
+      if (
+        [14, 19, 20].includes(
+          Number(
+            ikeSecurity.DiffieHellmanGroup
+          )
+        )
+      ) {
+
+        document
+          .getElementById("dh-group")
+          .value =
+            String(
+              ikeSecurity.DiffieHellmanGroup
+            );
+      }
+
+
+      if (
+        [
+          "None",
+          "Low",
+          "Medium",
+          "High"
+        ].includes(
+          ikev2.DeadPeerDetectionRate
+        )
+      ) {
+
+        document
+          .getElementById("dpd")
+          .value =
+            ikev2.DeadPeerDetectionRate;
+      }
+
+
+      document.getElementById("pfs").checked =
+        Number(ikev2.EnablePFS) === 1;
+
+
+      document.getElementById("mobike").checked =
+        Number(
+          ikev2.DisableMOBIKE || 0
+        ) !== 1;
+
+
+      document.getElementById("redirects").checked =
+        Number(
+          ikev2.DisableRedirect || 0
+        ) !== 1;
+
+
+      document
+        .getElementById("internal-subnet")
+        .checked =
+          Number(
+            ikev2
+              .UseConfigurationAttributeInternalIPSubnet
+              || 0
+          ) === 1;
+
+
+      clearRuleRows();
+
+
+      const onDemandEnabled =
+        Number(
+          ikev2.OnDemandEnabled || 0
+        ) === 1;
+
+
+      onDemandCheckbox.checked =
+        onDemandEnabled;
+
+
+      let alwaysOn = false;
+      let wifiDefault = "Connect";
+      let cellularDefault = "Connect";
+
+
+      const rules =
+        Array.isArray(
+          ikev2.OnDemandRules
+        )
+          ? ikev2.OnDemandRules
+          : [];
+
+
+      if (
+        onDemandEnabled &&
+        rules.length === 1 &&
+        rules[0] &&
+        rules[0].Action === "Connect" &&
+        !rules[0].InterfaceTypeMatch &&
+        !rules[0].SSIDMatch
+      ) {
+
+        alwaysOn = true;
+
+      } else {
+
+        rules.forEach(function(rule) {
+
+          if (!rule) {
+            return;
+          }
+
+
+          if (
+            rule.InterfaceTypeMatch === "WiFi" &&
+            Array.isArray(rule.SSIDMatch)
+          ) {
+
+            rule.SSIDMatch.forEach(
+              function(ssid) {
+
+                createRuleRow(
+                  ssid,
+                  rule.Action || "Disconnect"
+                );
+              }
+            );
+
+            return;
+          }
+
+
+          if (
+            rule.InterfaceTypeMatch === "WiFi" &&
+            !rule.SSIDMatch
+          ) {
+
+            wifiDefault =
+              rule.Action || "Connect";
+
+            return;
+          }
+
+
+          if (
+            rule.InterfaceTypeMatch === "Cellular"
+          ) {
+
+            cellularDefault =
+              rule.Action || "Connect";
+          }
+        });
+      }
+
+
+      alwaysOnCheckbox.checked =
+        alwaysOn;
+
+
+      document
+        .getElementById("wifi-action")
+        .value =
+          [
+            "Connect",
+            "Disconnect",
+            "Ignore"
+          ].includes(wifiDefault)
+            ? wifiDefault
+            : "Connect";
+
+
+      document
+        .getElementById("cellular-action")
+        .value =
+          [
+            "Connect",
+            "Disconnect",
+            "Ignore"
+          ].includes(cellularDefault)
+            ? cellularDefault
+            : "Connect";
+
+
+      updateOnDemandVisibility();
+
+
+      const importedName =
+        document
+          .getElementById("name")
+          .value
+          .trim();
+
+
+      if (
+        profile.PayloadUUID &&
+        vpnPayload.PayloadUUID
+      ) {
+
+        saveImportedIdentity(
+          importedName,
+          profile.PayloadUUID,
+          vpnPayload.PayloadUUID
+        );
+      }
+    }
+
+
+    importButton.addEventListener(
+      "click",
+      function() {
+
+        importFile.value = "";
+        importFile.click();
+      }
+    );
+
+
+    importFile.addEventListener(
+      "change",
+      async function() {
+
+        const file =
+          importFile.files[0];
+
+        if (!file) {
+          return;
+        }
+
+
+        try {
+
+          const text =
+            await file.text();
+
+
+          const parser =
+            new DOMParser();
+
+
+          const xml =
+            parser.parseFromString(
+              text,
+              "application/xml"
+            );
+
+
+          if (
+            xml.querySelector("parsererror")
+          ) {
+
+            throw new Error(
+              "The selected file is not a valid XML configuration profile."
+            );
+          }
+
+
+          const plist =
+            xml.querySelector("plist");
+
+
+          if (!plist) {
+
+            throw new Error(
+              "The selected file is not a valid Apple configuration profile."
+            );
+          }
+
+
+          const topDict =
+            Array
+              .from(plist.children)
+              .find(function(node) {
+                return node.tagName === "dict";
+              });
+
+
+          if (!topDict) {
+
+            throw new Error(
+              "The configuration profile does not contain a valid payload."
+            );
+          }
+
+
+          const profile =
+            plistDictToObject(topDict);
+
+
+          const vpnPayload =
+            findIkev2Payload(profile);
+
+
+          if (!vpnPayload) {
+
+            throw new Error(
+              "No IKEv2 VPN configuration was found in this profile."
+            );
+          }
+
+
+          applyImportedProfile(
+            profile,
+            vpnPayload
+          );
+
+
+          error.style.display = "none";
+
+
+          const originalText =
+            importButton.textContent;
+
+
+          importButton.textContent =
+            "Profile Imported";
+
+
+          setTimeout(
+            function() {
+
+              importButton.textContent =
+                originalText;
+
+            },
+            1600
+          );
+
+
+        } catch (importError) {
+
+          error.textContent =
+            importError.message ||
+            "The profile could not be imported.";
+
+          error.style.display =
+            "block";
+        }
+      }
+    );
 
 
     onDemandCheckbox.addEventListener(
@@ -968,7 +1550,9 @@
 
     addRuleButton.addEventListener(
       "click",
-      createRuleRow
+      function() {
+        createRuleRow();
+      }
     );
 
 
@@ -1095,10 +1679,6 @@
             getAdditionalRules();
 
 
-          const error =
-            document.getElementById("error");
-
-
           if (
             !name ||
             !server ||
@@ -1109,13 +1689,15 @@
             error.textContent =
               "Name, Server, Remote ID and Username are required.";
 
-            error.style.display = "block";
+            error.style.display =
+              "block";
 
             return;
           }
 
 
-          error.style.display = "none";
+          error.style.display =
+            "none";
 
 
           const identity =
@@ -1192,7 +1774,6 @@
           </dict>`;
 
                   }
-
                 }
               );
 
@@ -1283,7 +1864,6 @@ ${rulesXml}
       <key>VPNType</key>
       <string>IKEv2</string>
 
-
       <key>IKEv2</key>
 
       <dict>
@@ -1340,7 +1920,6 @@ ${onDemandXml}
 
         </dict>
 
-
         <key>ChildSecurityAssociationParameters</key>
 
         <dict>
@@ -1364,7 +1943,6 @@ ${onDemandXml}
     </dict>
 
   </array>
-
 
   <key>PayloadDisplayName</key>
   <string>${xmlEscape(name)}</string>
