@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IKEv2 — Tolf Configurator</title>
+  <title>Tolf Configurator</title>
 
   <style>
     :root {
@@ -31,15 +31,7 @@
     main {
       width: min(720px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 42px 0 60px;
-    }
-
-    .back {
-      display: inline-block;
-      margin-bottom: 30px;
-      color: #5f5f63;
-      font-size: 16px;
-      text-decoration: none;
+      padding: 72px 0 48px;
     }
 
     h1 {
@@ -51,146 +43,59 @@
     }
 
     .subtitle {
-      margin: 0 0 38px;
+      margin: 0 0 42px;
       color: #5f5f63;
       font-size: 17px;
       line-height: 1.5;
     }
 
-    .section-title {
-      margin: 30px 4px 10px;
-      color: #5f5f63;
-      font-size: 14px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-
-    .group {
+    .list {
       background: #ffffff;
       border: 1px solid #d8d8dc;
       border-radius: 14px;
       overflow: hidden;
     }
 
-    .field {
-      display: flex;
-      align-items: center;
-      min-height: 58px;
-      padding: 10px 16px;
-      border-bottom: 1px solid #e5e5e7;
-    }
-
-    .field:last-child {
-      border-bottom: 0;
-    }
-
-    .field label {
-      width: 180px;
-      flex: 0 0 180px;
-      font-size: 17px;
-      font-weight: 500;
-    }
-
-    .field input,
-    .field select {
-      width: 100%;
-      min-width: 0;
-      border: 0;
-      outline: 0;
-      background: transparent;
+    .item {
+      display: block;
+      padding: 18px 20px;
       color: inherit;
-      font: inherit;
-      font-size: 17px;
-      text-align: right;
-    }
-
-    .field input::placeholder {
-      color: #a1a1a6;
-    }
-
-    details {
-      margin-top: 30px;
-    }
-
-    summary {
-      cursor: pointer;
-      font-size: 17px;
-      font-weight: 600;
-      list-style-position: inside;
-    }
-
-    .advanced {
-      margin-top: 12px;
-    }
-
-    .switch-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 58px;
-      padding: 10px 16px;
+      text-decoration: none;
       border-bottom: 1px solid #e5e5e7;
-      font-size: 17px;
-      font-weight: 500;
     }
 
-    .switch-row:last-child {
+    .item:last-child {
       border-bottom: 0;
     }
 
-    .switch-row input {
-      width: 22px;
-      height: 22px;
-    }
-
-    .action {
-      margin-top: 34px;
-    }
-
-    button {
-      width: 100%;
-      min-height: 52px;
-      border: 0;
-      border-radius: 12px;
-      background: #1d1d1f;
-      color: #ffffff;
-      font: inherit;
-      font-size: 17px;
+    .item-title {
+      display: block;
+      font-size: 18px;
       font-weight: 600;
-      cursor: pointer;
     }
 
-    .note {
-      margin: 16px 4px 0;
-      color: #77777c;
+    .item-description {
+      display: block;
+      margin-top: 4px;
+      color: #5f5f63;
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    footer {
+      margin-top: 34px;
       font-size: 14px;
-      line-height: 1.5;
+      color: #77777c;
     }
 
-    @media (max-width: 560px) {
-      main {
-        padding-top: 28px;
-      }
+    footer a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-      h1 {
-        font-size: 32px;
-      }
-
-      .field {
-        display: block;
-        padding: 13px 16px;
-      }
-
-      .field label {
-        display: block;
-        width: auto;
-        margin-bottom: 6px;
-      }
-
-      .field input,
-      .field select {
-        text-align: left;
+    @media (hover: hover) {
+      .item:hover {
+        background: #f7f7f8;
       }
     }
 
@@ -200,33 +105,26 @@
         color: #f5f5f7;
       }
 
-      .back,
       .subtitle,
-      .section-title {
+      .item-description {
         color: #b8b8bd;
       }
 
-      .group {
+      footer {
+        color: #9a9aa0;
+      }
+
+      .list {
         background: #1c1c1e;
         border-color: #38383a;
       }
 
-      .field,
-      .switch-row {
+      .item {
         border-color: #38383a;
       }
 
-      .field input::placeholder {
-        color: #7c7c80;
-      }
-
-      button {
-        background: #f5f5f7;
-        color: #1d1d1f;
-      }
-
-      .note {
-        color: #9a9aa0;
+      .item:hover {
+        background: #2c2c2e;
       }
     }
   </style>
@@ -234,109 +132,38 @@
 
 <body>
   <main>
-
-    <a class="back" href="../">‹ Tolf Configurator</a>
-
-    <h1>IKEv2</h1>
+    <h1>Tolf Configurator</h1>
 
     <p class="subtitle">
-      Create an IKEv2 configuration profile for iPhone and iPad.
+      Generate network configuration profiles directly in your browser.
     </p>
 
-    <div class="section-title">Connection</div>
+    <div class="list">
+      <a class="item" href="ikev2/">
+        <span class="item-title">IKEv2</span>
+        <span class="item-description">
+          Create an IKEv2 configuration profile for iPhone and iPad.
+        </span>
+      </a>
 
-    <div class="group">
-      <div class="field">
-        <label for="name">Name</label>
-        <input id="name" type="text" placeholder="My VPN">
-      </div>
+      <a class="item" href="#">
+        <span class="item-title">DNS</span>
+        <span class="item-description">
+          Create a system DNS configuration profile.
+        </span>
+      </a>
 
-      <div class="field">
-        <label for="server">Server</label>
-        <input id="server" type="text" placeholder="vpn.example.com">
-      </div>
-
-      <div class="field">
-        <label for="remote-id">Remote ID</label>
-        <input id="remote-id" type="text" placeholder="vpn.example.com">
-      </div>
-
-      <div class="field">
-        <label for="local-id">Local ID</label>
-        <input id="local-id" type="text" placeholder="Optional">
-      </div>
+      <a class="item" href="#">
+        <span class="item-title">Wi-Fi</span>
+        <span class="item-description">
+          Create a Wi-Fi configuration profile.
+        </span>
+      </a>
     </div>
 
-    <div class="section-title">Authentication</div>
-
-    <div class="group">
-      <div class="field">
-        <label for="username">Username</label>
-        <input id="username" type="text" autocomplete="username" placeholder="Username">
-      </div>
-
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" placeholder="Password">
-      </div>
-    </div>
-
-    <details>
-      <summary>Advanced Settings</summary>
-
-      <div class="group advanced">
-        <div class="field">
-          <label for="ike-encryption">IKE Encryption</label>
-          <select id="ike-encryption">
-            <option>AES-256</option>
-            <option>AES-128</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="ike-integrity">IKE Integrity</label>
-          <select id="ike-integrity">
-            <option>SHA-256</option>
-            <option>SHA-384</option>
-            <option>SHA-512</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="dh-group">Diffie-Hellman</label>
-          <select id="dh-group">
-            <option>Group 14</option>
-            <option>Group 19</option>
-            <option>Group 20</option>
-          </select>
-        </div>
-
-        <div class="switch-row">
-          <span>Perfect Forward Secrecy</span>
-          <input type="checkbox" checked>
-        </div>
-
-        <div class="switch-row">
-          <span>MOBIKE</span>
-          <input type="checkbox" checked>
-        </div>
-
-        <div class="switch-row">
-          <span>On Demand</span>
-          <input type="checkbox">
-        </div>
-      </div>
-    </details>
-
-    <div class="action">
-      <button type="button">Generate Profile</button>
-    </div>
-
-    <p class="note">
-      Profile data is processed locally in your browser.
-      Nothing entered on this page is sent to the server.
-    </p>
-
+    <footer>
+      <a href="#">Privacy &amp; Verification</a>
+    </footer>
   </main>
 </body>
 </html>
