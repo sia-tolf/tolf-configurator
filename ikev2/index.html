@@ -1,4 +1,4 @@
-<!-- Tolf Configurator IKEv2 — Build 2026-08-29.4 -->
+<!-- Tolf Configurator IKEv2 — Build 2026-08-29.5 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -387,7 +387,7 @@
 
       .rule-action {
         flex: 1 1 calc(100% - 40px);
-        text-align: left;
+        text-align: right;
       }
     }
 
@@ -499,7 +499,7 @@
 
     <div class="title-row">
       <h1>IKEv2</h1>
-      <span class="build-number">Build 2026-08-29.4</span>
+      <span class="build-number">Build 2026-08-29.5</span>
     </div>
 
     <p class="subtitle">
@@ -585,9 +585,9 @@
         <div class="field">
           <label for="dh-group">Diffie-Hellman</label>
           <select id="dh-group">
-            <option value="14">Group 14</option>
-            <option value="19">Group 19</option>
-            <option value="20">Group 20</option>
+            <option value="14">Group 14 (2048-bit MODP)</option>
+            <option value="19">Group 19 (256-bit ECP)</option>
+            <option value="20">Group 20 (384-bit ECP)</option>
           </select>
         </div>
 
@@ -764,6 +764,7 @@
       if (typeof structuredClone === "function") {
         return structuredClone(value);
       }
+
       return JSON.parse(JSON.stringify(value));
     }
 
