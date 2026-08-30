@@ -1,3 +1,4 @@
+alert("app.js loaded");
 const identityStorageKey = "tolf.ikev2.profile-identities.v2";
 const memoryIdentities = {};
 
