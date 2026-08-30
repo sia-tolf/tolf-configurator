@@ -1,4 +1,3 @@
-alert("app.js loaded");
 const identityStorageKey = "tolf.ikev2.profile-identities.v2";
 const memoryIdentities = {};
 
@@ -384,4 +383,806 @@ function findIkev2PayloadIndex(profile) {
   );
 }
 
-function applyImported |oai:code-citation|
+function applyImportedProfile(profile, vpnPayload) {
+  const ikev2 = vpnPayload.IKEv2 || {};
+  const ikeSecurity = ikev2.IKESecurityAssociationParameters || {};
+
+  document.getElementById("name").value =
+    vpnPayload.UserDefinedName ||
+    vpnPayload.PayloadDisplayName ||
+    profile.PayloadDisplayName ||
+    "IKEv2";
+
+  document.getElementById("server").value =
+    ikev2.RemoteAddress || "";
+
+  document.getElementById("remote-id").value =
+    ikev2.RemoteIdentifier || "";
+
+  document.getElementById("local-id").value =
+    ikev2.LocalIdentifier || "";
+
+  document.getElementById("username").value =
+    ikev2.AuthName || "";
+
+  document.getElementById("password").value =
+    ikev2.AuthPassword || "";
+
+  if (["AES-128", "AES-256"].includes(ikeSecurity.EncryptionAlgorithm)) {
+    document.getElementById("ike-encryption").value =
+      ikeSecurity.EncryptionAlgorithm;
+  }
+
+  if (["SHA2-256", "SHA2-384", "SHA2-512"].includes(ikeSecurity.IntegrityAlgorithm)) {
+    document.getElementById("ike-integrity").value =
+      ikeSecurity.IntegrityAlgorithm;
+  }
+
+  if ([14, 19, 20].includes(Number(ikeSecurity.DiffieHellmanGroup))) {
+    document.getElementById("dh-group").value =
+      String(ikeSecurity.DiffieHellmanGroup);
+  }
+
+  if (["None", "Low", "Medium", "High"].includes(ikev2.DeadPeerDetectionRate)) {
+    document.getElementById("dpd").value =
+      ikev2.DeadPeerDetectionRate;
+  }
+
+  document.getElementById("pfs").checked =
+    Number(ikev2.EnablePFS || 0) === 1;
+
+  document.getElementById("mobike").checked =
+    Number(ikev2.DisableMOBIKE || 0) !== 1;
+
+  document.getElementById("redirects").checked =
+    Number(ikev2.DisableRedirect || 0) !== 1;
+
+  document.getElementById("internal-subnet").checked =
+    Number(ikev2.UseConfigurationAttributeInternalIPSubnet || 0) === 1;
+
+  clearRuleRows();
+
+  const onDemandEnabled =
+    Number(ikev2.OnDemandEnabled || 0) === 1;
+
+  onDemandCheckbox.checked = onDemandEnabled;
+
+  let alwaysOn = false;
+  let wifiDefault = "Connect";
+  let cellularDefault = "Connect";
+
+  const rules =
+    Array.isArray(ikev2.OnDemandRules)
+      ? ikev2.OnDemandRules
+      : [];
+
+  if (
+    onDemandEnabled &&
+    rules.length === 1 &&
+    rules[0] &&
+    rules[0].Action === "Connect" &&
+    !rules[0].InterfaceTypeMatch &&
+    !rules[0].SSIDMatch
+  ) {
+    alwaysOn = true;
+  } else {
+    rules.forEach(rule => {
+      if (!rule) return;
+
+      if (
+        rule.InterfaceTypeMatch === "WiFi" &&
+        Array.isArray(rule.SSIDMatch)
+      ) {
+        rule.SSIDMatch.forEach(ssid => {
+          createRuleRow(ssid, rule.Action || "Disconnect");
+        });
+        return;
+      }
+
+      if (
+        rule.InterfaceTypeMatch === "WiFi" &&
+        !rule.SSIDMatch
+      ) {
+        wifiDefault = rule.Action || "Connect";
+        return;
+      }
+
+      if (rule.InterfaceTypeMatch === "Cellular") {
+        cellularDefault = rule.Action || "Connect";
+      }
+    });
+  }
+
+  alwaysOnCheckbox.checked = alwaysOn;
+
+  document.getElementById("wifi-action").value =
+    ["Connect", "Disconnect", "Ignore"].includes(wifiDefault)
+      ? wifiDefault
+      : "Connect";
+
+  document.getElementById("cellular-action").value =
+    ["Connect", "Disconnect", "Ignore"].includes(cellularDefault)
+      ? cellularDefault
+      : "Connect";
+
+  updateOnDemandVisibility();
+}
+
+function buildOnDemandRules() {
+  if (!onDemandCheckbox.checked) return null;
+
+  if (alwaysOnCheckbox.checked) {
+    return [
+      {
+        Action: "Connect"
+      }
+    ];
+  }
+
+  const rules = [];
+
+  getAdditionalRules().forEach(rule => {
+    if (rule.type === "wifi") {
+      rules.push({
+        Action: rule.action,
+        InterfaceTypeMatch: "WiFi",
+        SSIDMatch: [rule.value]
+      });
+    }
+  });
+
+  rules.push({
+    Action: document.getElementById("wifi-action").value,
+    InterfaceTypeMatch: "WiFi"
+  });
+
+  rules.push({
+    Action: document.getElementById("cellular-action").value,
+    InterfaceTypeMatch: "Cellular"
+  });
+
+  rules.push({
+    Action: "Ignore"
+  });
+
+  return rules;
+}
+
+function updateImportedProfile(profile, vpnPayloadIndex, values) {
+  const output = deepClone(profile);
+  const vpnPayload = output.PayloadContent[vpnPayloadIndex];
+  const ikev2 = vpnPayload.IKEv2;
+
+  output.PayloadDisplayName = values.name;
+
+  vpnPayload.PayloadDisplayName = values.name;
+  vpnPayload.UserDefinedName = values.name;
+
+  ikev2.RemoteAddress = values.server;
+  ikev2.RemoteIdentifier = values.remoteId;
+
+  if (values.localId) {
+    ikev2.LocalIdentifier = values.localId;
+  } else {
+    delete ikev2.LocalIdentifier;
+  }
+
+  ikev2.AuthName = values.username;
+
+  if (values.password) {
+    ikev2.AuthPassword = values.password;
+  } else {
+    delete ikev2.AuthPassword;
+  }
+
+  ikev2.DeadPeerDetectionRate = values.dpd;
+  ikev2.EnablePFS = values.pfs ? 1 : 0;
+  ikev2.DisableMOBIKE = values.mobike ? 0 : 1;
+  ikev2.DisableRedirect = values.redirects ? 0 : 1;
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      ikev2,
+      "UseConfigurationAttributeInternalIPSubnet"
+    ) ||
+    values.internalSubnet
+  ) {
+    ikev2.UseConfigurationAttributeInternalIPSubnet =
+      values.internalSubnet ? 1 : 0;
+  }
+
+  if (!ikev2.IKESecurityAssociationParameters) {
+    ikev2.IKESecurityAssociationParameters = {};
+  }
+
+  const ikeSecurity = ikev2.IKESecurityAssociationParameters;
+
+  ikeSecurity.EncryptionAlgorithm = values.encryption;
+  ikeSecurity.IntegrityAlgorithm = values.integrity;
+  ikeSecurity.DiffieHellmanGroup = Number(values.dhGroup);
+
+  if (ikev2.ChildSecurityAssociationParameters) {
+    const child = ikev2.ChildSecurityAssociationParameters;
+
+    child.EncryptionAlgorithm = values.encryption;
+    child.IntegrityAlgorithm = values.integrity;
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        child,
+        "DiffieHellmanGroup"
+      )
+    ) {
+      child.DiffieHellmanGroup = Number(values.dhGroup);
+    }
+  } else {
+    ikev2.ChildSecurityAssociationParameters = {
+      EncryptionAlgorithm: values.encryption,
+      IntegrityAlgorithm: values.integrity
+    };
+  }
+
+  if (values.onDemand) {
+    ikev2.OnDemandEnabled = 1;
+    ikev2.OnDemandRules = values.onDemandRules;
+  } else {
+    if (
+      Object.prototype.hasOwnProperty.call(
+        ikev2,
+        "OnDemandEnabled"
+      )
+    ) {
+      ikev2.OnDemandEnabled = 0;
+    }
+
+    delete ikev2.OnDemandRules;
+  }
+
+  return output;
+}
+
+function buildNewProfile(values) {
+  const identity = getProfileIdentity(values.name);
+
+  const ikev2 = {
+    RemoteAddress: values.server,
+    RemoteIdentifier: values.remoteId,
+    AuthenticationMethod: "None",
+    ExtendedAuthEnabled: 1,
+    AuthName: values.username,
+    DeadPeerDetectionRate: values.dpd,
+    EnablePFS: values.pfs ? 1 : 0,
+    DisableMOBIKE: values.mobike ? 0 : 1,
+    DisableRedirect: values.redirects ? 0 : 1,
+    UseConfigurationAttributeInternalIPSubnet:
+      values.internalSubnet ? 1 : 0
+  };
+
+  if (values.localId) {
+    ikev2.LocalIdentifier = values.localId;
+  }
+
+  if (values.password) {
+    ikev2.AuthPassword = values.password;
+  }
+
+  if (values.onDemand) {
+    ikev2.OnDemandEnabled = 1;
+    ikev2.OnDemandRules = values.onDemandRules;
+  } else {
+    ikev2.OnDemandEnabled = 0;
+  }
+
+  ikev2.IKESecurityAssociationParameters = {
+    EncryptionAlgorithm: values.encryption,
+    IntegrityAlgorithm: values.integrity,
+    DiffieHellmanGroup: Number(values.dhGroup),
+    LifeTimeInMinutes: 1440
+  };
+
+  ikev2.ChildSecurityAssociationParameters = {
+    EncryptionAlgorithm: values.encryption,
+    IntegrityAlgorithm: values.integrity,
+    DiffieHellmanGroup: Number(values.dhGroup),
+    LifeTimeInMinutes: 1440
+  };
+
+  return {
+    PayloadContent: [
+      {
+        PayloadDescription:
+          "Configures an IKEv2 VPN connection.",
+        PayloadDisplayName:
+          values.name,
+        PayloadIdentifier:
+          identity.vpnIdentifier,
+        PayloadType:
+          "com.apple.vpn.managed",
+        PayloadUUID:
+          identity.vpnUUID,
+        PayloadVersion:
+          1,
+        UserDefinedName:
+          values.name,
+        VPNType:
+          "IKEv2",
+        IKEv2:
+          ikev2
+      }
+    ],
+
+    PayloadDisplayName:
+      values.name,
+
+    PayloadDescription:
+      "IKEv2 configuration profile generated by Tolf Configurator.",
+
+    PayloadIdentifier:
+      identity.profileIdentifier,
+
+    PayloadOrganization:
+      "Tolf Configurator",
+
+    PayloadRemovalDisallowed:
+      false,
+
+    PayloadType:
+      "Configuration",
+
+    PayloadUUID:
+      identity.profileUUID,
+
+    PayloadVersion:
+      1
+  };
+}
+
+function collectValues() {
+  return {
+    name:
+      document.getElementById("name").value.trim(),
+
+    server:
+      document.getElementById("server").value.trim(),
+
+    remoteId:
+      document.getElementById("remote-id").value.trim(),
+
+    localId:
+      document.getElementById("local-id").value.trim(),
+
+    username:
+      document.getElementById("username").value.trim(),
+
+    password:
+      document.getElementById("password").value,
+
+    encryption:
+      document.getElementById("ike-encryption").value,
+
+    integrity:
+      document.getElementById("ike-integrity").value,
+
+    dhGroup:
+      document.getElementById("dh-group").value,
+
+    dpd:
+      document.getElementById("dpd").value,
+
+    pfs:
+      document.getElementById("pfs").checked,
+
+    mobike:
+      document.getElementById("mobike").checked,
+
+    redirects:
+      document.getElementById("redirects").checked,
+
+    internalSubnet:
+      document.getElementById("internal-subnet").checked,
+
+    onDemand:
+      onDemandCheckbox.checked,
+
+    onDemandRules:
+      buildOnDemandRules()
+  };
+}
+
+function validateValues(values) {
+  if (
+    !values.name ||
+    !values.server ||
+    !values.remoteId ||
+    !values.username
+  ) {
+    error.textContent =
+      "Name, Server, Remote ID and Username are required.";
+    error.style.display = "block";
+    return false;
+  }
+
+  error.style.display = "none";
+  return true;
+}
+
+function createOutputProfile() {
+  const values = collectValues();
+
+  if (!validateValues(values)) {
+    return null;
+  }
+
+  let outputProfile;
+
+  if (
+    importedProfile &&
+    importedVpnPayloadIndex >= 0
+  ) {
+    outputProfile = updateImportedProfile(
+      importedProfile,
+      importedVpnPayloadIndex,
+      values
+    );
+
+    const outputVpnPayload =
+      outputProfile.PayloadContent[importedVpnPayloadIndex];
+
+    saveImportedIdentity(
+      values.name,
+      outputProfile,
+      outputVpnPayload
+    );
+  } else {
+    outputProfile = buildNewProfile(values);
+  }
+
+  return {
+    profile: outputProfile,
+    values,
+    xml: profileToXml(outputProfile)
+  };
+}
+
+function strongSwanEncryption(value) {
+  const map = {
+    "AES-128": "aes128",
+    "AES-256": "aes256"
+  };
+
+  return map[value] || "aes256";
+}
+
+function strongSwanIntegrity(value) {
+  const map = {
+    "SHA2-256": "sha256",
+    "SHA2-384": "sha384",
+    "SHA2-512": "sha512"
+  };
+
+  return map[value] || "sha256";
+}
+
+function strongSwanDhGroup(value) {
+  const map = {
+    "14": "modp2048",
+    "19": "ecp256",
+    "20": "ecp384"
+  };
+
+  return map[String(value)] || "modp2048";
+}
+
+function buildStrongSwanProfile(values) {
+  const encryption =
+    strongSwanEncryption(values.encryption);
+
+  const integrity =
+    strongSwanIntegrity(values.integrity);
+
+  const dh =
+    strongSwanDhGroup(values.dhGroup);
+
+  const identity =
+    getProfileIdentity(values.name);
+
+  const profile = {
+    uuid:
+      identity.vpnUUID.toLowerCase(),
+
+    name:
+      values.name,
+
+    type:
+      "ikev2-eap",
+
+    remote: {
+      addr:
+        values.server,
+
+      id:
+        values.remoteId
+    },
+
+    local: {
+      eap_id:
+        values.username
+    },
+
+    "ike-proposal":
+      encryption +
+      "-" +
+      integrity +
+      "-" +
+      dh,
+
+    "esp-proposal":
+      encryption +
+      "-" +
+      integrity +
+      (values.pfs ? "-" + dh : "")
+  };
+
+  if (values.localId) {
+    profile.local.id =
+      values.localId;
+  }
+
+  if (values.password) {
+    profile.local.shared_secret =
+      values.password;
+  }
+
+  return profile;
+}
+
+function createStrongSwanOutput() {
+  const values = collectValues();
+
+  if (!validateValues(values)) {
+    return null;
+  }
+
+  const profile =
+    buildStrongSwanProfile(values);
+
+  return {
+    profile,
+    values,
+    json:
+      JSON.stringify(profile, null, 2) + "\n"
+  };
+}
+
+function downloadBlob(content, type, fileName) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1000);
+}
+
+async function saveFileThroughShare(content, fileName, type) {
+  const file = new File(
+    [content],
+    fileName,
+    { type }
+  );
+
+  if (
+    navigator.share &&
+    navigator.canShare &&
+    navigator.canShare({
+      files: [file]
+    })
+  ) {
+    try {
+      await navigator.share({
+        files: [file]
+      });
+
+      return;
+    } catch (shareError) {
+      if (shareError.name === "AbortError") {
+        return;
+      }
+    }
+  }
+
+  downloadBlob(
+    content,
+    type,
+    fileName
+  );
+}
+
+async function saveProfileThroughShare(output) {
+  await saveFileThroughShare(
+    output.xml,
+    outputBaseName(output.values.name) +
+      ".mobileconfig",
+    "application/x-apple-aspen-config"
+  );
+}
+
+async function saveStrongSwanThroughShare(output) {
+  await saveFileThroughShare(
+    output.json,
+    outputBaseName(output.values.name) +
+      ".sswan",
+    "application/vnd.strongswan.profile"
+  );
+}
+
+importButton.addEventListener("click", function() {
+  importFile.value = "";
+  importFile.click();
+});
+
+importFile.addEventListener("change", async function() {
+  const file = importFile.files[0];
+  if (!file) return;
+
+  importedFileBaseName =
+    baseNameFromImportedFile(file.name);
+
+  try {
+    const text = await file.text();
+
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(
+      text,
+      "application/xml"
+    );
+
+    if (xml.querySelector("parsererror")) {
+      throw new Error(
+        "The selected file is not a valid XML configuration profile."
+      );
+    }
+
+    const plist = xml.querySelector("plist");
+
+    if (!plist) {
+      throw new Error(
+        "The selected file is not a valid Apple configuration profile."
+      );
+    }
+
+    const topDict =
+      Array.from(plist.children)
+        .find(node => node.tagName === "dict");
+
+    if (!topDict) {
+      throw new Error(
+        "The configuration profile does not contain a valid payload."
+      );
+    }
+
+    const profile = plistDictToObject(topDict);
+    const vpnIndex = findIkev2PayloadIndex(profile);
+
+    if (vpnIndex < 0) {
+      throw new Error(
+        "No IKEv2 VPN configuration was found in this profile."
+      );
+    }
+
+    const vpnPayload =
+      profile.PayloadContent[vpnIndex];
+
+    importedProfile = deepClone(profile);
+    importedVpnPayloadIndex = vpnIndex;
+
+    applyImportedProfile(profile, vpnPayload);
+
+    const importedName =
+      document.getElementById("name").value.trim();
+
+    saveImportedIdentity(
+      importedName,
+      profile,
+      vpnPayload
+    );
+
+    error.style.display = "none";
+
+    const originalText =
+      importButton.textContent;
+
+    importButton.textContent =
+      "Profile Imported";
+
+    setTimeout(() => {
+      importButton.textContent =
+        originalText;
+    }, 1600);
+
+  } catch (importError) {
+    importedProfile = null;
+    importedVpnPayloadIndex = -1;
+    importedFileBaseName = null;
+
+    error.textContent =
+      importError.message ||
+      "The profile could not be imported.";
+
+    error.style.display =
+      "block";
+  }
+});
+
+onDemandCheckbox.addEventListener(
+  "change",
+  updateOnDemandVisibility
+);
+
+alwaysOnCheckbox.addEventListener(
+  "change",
+  updateAlwaysOnVisibility
+);
+
+addRuleButton.addEventListener(
+  "click",
+  function() {
+    createRuleRow();
+  }
+);
+
+updateOnDemandVisibility();
+
+document
+  .getElementById("install-profile")
+  .addEventListener(
+    "click",
+    function() {
+      const output =
+        createOutputProfile();
+
+      if (!output) return;
+
+      downloadBlob(
+        output.xml,
+        "application/x-apple-aspen-config",
+        outputBaseName(output.values.name) +
+        ".mobileconfig"
+      );
+    }
+  );
+
+document
+  .getElementById("save-profile")
+  .addEventListener(
+    "click",
+    async function() {
+      const output =
+        createOutputProfile();
+
+      if (!output) return;
+
+      await saveProfileThroughShare(output);
+    }
+  );
+
+document
+  .getElementById("save-strongswan")
+  .addEventListener(
+    "click",
+    async function() {
+      const output =
+        createStrongSwanOutput();
+
+      if (!output) return;
+
+      await saveStrongSwanThroughShare(output);
+    }
+  );
