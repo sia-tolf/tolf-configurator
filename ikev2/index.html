@@ -1,4 +1,4 @@
-<!-- Tolf Configurator IKEv2 — Build 2026-08-29.7 -->
+<!-- Tolf Configurator IKEv2 — Build 2026-08-30.1 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -201,6 +201,21 @@
       font-weight: 500;
     }
 
+    .switch-label {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .platform-note {
+      color: #8e8e93;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
     .ios-switch {
       position: relative;
       flex: 0 0 auto;
@@ -331,7 +346,7 @@
 
     .action {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
       margin-top: 30px;
     }
@@ -342,7 +357,7 @@
       height: 48px;
       border-radius: 12px;
       font: inherit;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
     }
@@ -432,11 +447,12 @@
       }
 
       .action {
+        grid-template-columns: 1fr;
         gap: 8px;
       }
 
       .action-button {
-        font-size: 15px;
+        font-size: 16px;
       }
     }
 
@@ -489,7 +505,8 @@
       .subsection-title,
       .always-on-hint,
       .remove-rule,
-      .import-hint {
+      .import-hint,
+      .platform-note {
         color: #9a9aa0;
       }
 
@@ -507,11 +524,11 @@
 
     <div class="title-row">
       <h1>IKEv2</h1>
-      <span class="build-number">Build 2026-08-29.7</span>
+      <span class="build-number">Build 2026-08-30.1</span>
     </div>
 
     <p class="subtitle">
-      Create an IKEv2 configuration profile for iPhone and iPad.
+      Create IKEv2 configuration profiles for iPhone, iPad and strongSwan VPN Client for Android.
     </p>
 
     <div class="import-area">
@@ -600,7 +617,10 @@
         </div>
 
         <div class="field">
-          <label for="dpd">Dead Peer Detection</label>
+          <label for="dpd">
+            Dead Peer Detection
+            <span class="platform-note">iOS only</span>
+          </label>
           <select id="dpd">
             <option value="None">None</option>
             <option value="Low">Low</option>
@@ -615,17 +635,26 @@
         </div>
 
         <div class="switch-row">
-          <span>MOBIKE</span>
+          <span class="switch-label">
+            MOBIKE
+            <span class="platform-note">iOS only</span>
+          </span>
           <input id="mobike" class="ios-switch" type="checkbox" checked>
         </div>
 
         <div class="switch-row">
-          <span>Redirects</span>
+          <span class="switch-label">
+            Redirects
+            <span class="platform-note">iOS only</span>
+          </span>
           <input id="redirects" class="ios-switch" type="checkbox">
         </div>
 
         <div class="switch-row">
-          <span>IPv4/IPv6 Internal Subnet Attributes</span>
+          <span class="switch-label">
+            IPv4/IPv6 Internal Subnet Attributes
+            <span class="platform-note">iOS only</span>
+          </span>
           <input id="internal-subnet" class="ios-switch" type="checkbox">
         </div>
       </div>
@@ -635,7 +664,10 @@
 
     <div class="group">
       <div class="switch-row">
-        <span>Enable On Demand</span>
+        <span class="switch-label">
+          Enable On Demand
+          <span class="platform-note">iOS only</span>
+        </span>
         <input id="on-demand" class="ios-switch" type="checkbox">
       </div>
     </div>
@@ -644,22 +676,28 @@
 
       <div class="group">
         <div class="switch-row">
-          <span>Always On</span>
+          <span class="switch-label">
+            Always On
+            <span class="platform-note">iOS only</span>
+          </span>
           <input id="always-on" class="ios-switch" type="checkbox">
         </div>
       </div>
 
       <p id="always-on-hint" class="always-on-hint">
-        Connect automatically on all networks.
+        Connect automatically on all networks. On Android, Always-on VPN is enabled separately in system settings.
       </p>
 
       <div id="manual-rules" class="manual-rules">
 
-        <div class="subsection-title">Default Actions</div>
+        <div class="subsection-title">Default Actions · iOS only</div>
 
         <div class="group">
           <div class="field">
-            <label for="wifi-action">Wi-Fi</label>
+            <label for="wifi-action">
+              Wi-Fi
+              <span class="platform-note">iOS only</span>
+            </label>
             <select id="wifi-action">
               <option value="Connect" selected>Connect</option>
               <option value="Disconnect">Disconnect</option>
@@ -668,7 +706,10 @@
           </div>
 
           <div class="field">
-            <label for="cellular-action">Cellular</label>
+            <label for="cellular-action">
+              Cellular
+              <span class="platform-note">iOS only</span>
+            </label>
             <select id="cellular-action">
               <option value="Connect" selected>Connect</option>
               <option value="Disconnect">Disconnect</option>
@@ -677,7 +718,7 @@
           </div>
         </div>
 
-        <div class="subsection-title">Additional Rules</div>
+        <div class="subsection-title">Additional Rules · iOS only</div>
 
         <div id="rules-group" class="group">
           <button id="add-rule" class="add-rule" type="button">
@@ -699,6 +740,10 @@
 
       <button id="save-profile" class="action-button save-button" type="button">
         Save Profile
+      </button>
+
+      <button id="save-strongswan" class="action-button save-button" type="button">
+        Save strongSwan
       </button>
     </div>
 
@@ -1488,9 +1533,7 @@ ${plistValueToXml(profile)}
       };
     }
 
-    function createOutputProfile() {
-      const values = collectValues();
-
+    function validateValues(values) {
       if (
         !values.name ||
         !values.server ||
@@ -1500,10 +1543,19 @@ ${plistValueToXml(profile)}
         error.textContent =
           "Name, Server, Remote ID and Username are required.";
         error.style.display = "block";
-        return null;
+        return false;
       }
 
       error.style.display = "none";
+      return true;
+    }
+
+    function createOutputProfile() {
+      const values = collectValues();
+
+      if (!validateValues(values)) {
+        return null;
+      }
 
       let outputProfile;
 
@@ -1533,6 +1585,116 @@ ${plistValueToXml(profile)}
         profile: outputProfile,
         values,
         xml: profileToXml(outputProfile)
+      };
+    }
+
+    function strongSwanEncryption(value) {
+      const map = {
+        "AES-128": "aes128",
+        "AES-256": "aes256"
+      };
+
+      return map[value] || "aes256";
+    }
+
+    function strongSwanIntegrity(value) {
+      const map = {
+        "SHA2-256": "sha256",
+        "SHA2-384": "sha384",
+        "SHA2-512": "sha512"
+      };
+
+      return map[value] || "sha256";
+    }
+
+    function strongSwanDhGroup(value) {
+      const map = {
+        "14": "modp2048",
+        "19": "ecp256",
+        "20": "ecp384"
+      };
+
+      return map[String(value)] || "modp2048";
+    }
+
+    function buildStrongSwanProfile(values) {
+      const encryption =
+        strongSwanEncryption(values.encryption);
+
+      const integrity =
+        strongSwanIntegrity(values.integrity);
+
+      const dh =
+        strongSwanDhGroup(values.dhGroup);
+
+      const identity =
+        getProfileIdentity(values.name);
+
+      const profile = {
+        uuid:
+          identity.vpnUUID.toLowerCase(),
+
+        name:
+          values.name,
+
+        type:
+          "ikev2-eap",
+
+        remote: {
+          addr:
+            values.server,
+
+          id:
+            values.remoteId
+        },
+
+        local: {
+          eap_id:
+            values.username
+        },
+
+        "ike-proposal":
+          encryption +
+          "-" +
+          integrity +
+          "-" +
+          dh,
+
+        "esp-proposal":
+          encryption +
+          "-" +
+          integrity +
+          (values.pfs ? "-" + dh : "")
+      };
+
+      if (values.localId) {
+        profile.local.id =
+          values.localId;
+      }
+
+      if (values.password) {
+        profile.local.shared_secret =
+          values.password;
+      }
+
+      return profile;
+    }
+
+    function createStrongSwanOutput() {
+      const values = collectValues();
+
+      if (!validateValues(values)) {
+        return null;
+      }
+
+      const profile =
+        buildStrongSwanProfile(values);
+
+      return {
+        profile,
+        values,
+        json:
+          JSON.stringify(profile, null, 2) + "\n"
       };
     }
 
@@ -1588,9 +1750,8 @@ ${plistValueToXml(profile)}
 
       downloadBlob(
         output.xml,
-        "application/xml;charset=utf-8",
-        safeFileName(output.values.name) +
-        ".mobileconfig.xml"
+        "application/x-apple-aspen-config",
+        fileName
       );
     }
 
@@ -1737,6 +1898,25 @@ ${plistValueToXml(profile)}
           if (!output) return;
 
           await saveProfileThroughShare(output);
+        }
+      );
+
+    document
+      .getElementById("save-strongswan")
+      .addEventListener(
+        "click",
+        function() {
+          const output =
+            createStrongSwanOutput();
+
+          if (!output) return;
+
+          downloadBlob(
+            output.json,
+            "application/vnd.strongswan.profile",
+            safeFileName(output.values.name) +
+            ".sswan"
+          );
         }
       );
 
