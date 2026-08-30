@@ -1,4 +1,4 @@
-<!-- Tolf Configurator IKEv2 — Build 2026-08-30.1 -->
+<!-- Tolf Configurator IKEv2 — Build 2026-08-30.2 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -524,7 +524,7 @@
 
     <div class="title-row">
       <h1>IKEv2</h1>
-      <span class="build-number">Build 2026-08-30.1</span>
+      <span class="build-number">Build 2026-08-30.2</span>
     </div>
 
     <p class="subtitle">
@@ -763,6 +763,7 @@
 
     let importedProfile = null;
     let importedVpnPayloadIndex = -1;
+    let importedFileBaseName = null;
 
     const onDemandCheckbox = document.getElementById("on-demand");
     const alwaysOnCheckbox = document.getElementById("always-on");
@@ -811,6 +812,21 @@
         .trim()
         .replace(/\s+/g, " ")
         .toLocaleLowerCase();
+    }
+
+    function baseNameFromImportedFile(fileName) {
+      return fileName
+        .replace(/\.mobileconfig\.xml$/i, "")
+        .replace(/\.mobileconfig$/i, "")
+        .replace(/\.xml$/i, "")
+        .trim()
+        || "IKEv2";
+    }
+
+    function outputBaseName(profileName) {
+      return importedFileBaseName
+        ? safeFileName(importedFileBaseName)
+        : safeFileName(profileName);
     }
 
     function deepClone(value) {
@@ -1717,7 +1733,7 @@ ${plistValueToXml(profile)}
 
     async function saveProfileThroughShare(output) {
       const fileName =
-        safeFileName(output.values.name) +
+        outputBaseName(output.values.name) +
         ".mobileconfig";
 
       const file = new File(
@@ -1763,6 +1779,9 @@ ${plistValueToXml(profile)}
     importFile.addEventListener("change", async function() {
       const file = importFile.files[0];
       if (!file) return;
+
+      importedFileBaseName =
+        baseNameFromImportedFile(file.name);
 
       try {
         const text = await file.text();
@@ -1839,6 +1858,7 @@ ${plistValueToXml(profile)}
       } catch (importError) {
         importedProfile = null;
         importedVpnPayloadIndex = -1;
+        importedFileBaseName = null;
 
         error.textContent =
           importError.message ||
@@ -1881,7 +1901,7 @@ ${plistValueToXml(profile)}
           downloadBlob(
             output.xml,
             "application/x-apple-aspen-config",
-            safeFileName(output.values.name) +
+            outputBaseName(output.values.name) +
             ".mobileconfig"
           );
         }
@@ -1914,7 +1934,7 @@ ${plistValueToXml(profile)}
           downloadBlob(
             output.json,
             "application/vnd.strongswan.profile",
-            safeFileName(output.values.name) +
+            outputBaseName(output.values.name) +
             ".sswan"
           );
         }
