@@ -369,11 +369,14 @@ summary {
 }
 
 .action-button:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.install-button:disabled {
   border: 1px solid #d8d8dc;
   background: #e9e9eb;
   color: #9a9aa0;
-  opacity: 1;
-  cursor: default;
 }
 
 .note {
@@ -497,8 +500,8 @@ summary {
     color: #1d1d1f;
   }
 
-  .action-button:disabled {
-    border-color: #38383a;
+  .install-button:disabled {
+    border: 1px solid #38383a;
     background: #2c2c2e;
     color: #6e6e73;
   }
