@@ -68,10 +68,23 @@
       border-bottom: 0;
     }
 
+    .item-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+    }
+
     .item-title {
       display: block;
       font-size: 18px;
       font-weight: 600;
+    }
+
+    .coming-soon {
+      color: #8e8e93;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
     }
 
     .item-description {
@@ -80,6 +93,15 @@
       color: #5f5f63;
       font-size: 17px;
       line-height: 1.45;
+    }
+
+    .item-disabled {
+      cursor: default;
+    }
+
+    .item-disabled .item-title,
+    .item-disabled .item-description {
+      opacity: 0.55;
     }
 
     footer {
@@ -94,7 +116,7 @@
     }
 
     @media (hover: hover) {
-      .item:hover {
+      a.item:hover {
         background: #f7f7f8;
       }
     }
@@ -110,6 +132,10 @@
         color: #b8b8bd;
       }
 
+      .coming-soon {
+        color: #9a9aa0;
+      }
+
       footer {
         color: #9a9aa0;
       }
@@ -123,7 +149,7 @@
         border-color: #38383a;
       }
 
-      .item:hover {
+      a.item:hover {
         background: #2c2c2e;
       }
     }
@@ -146,19 +172,25 @@
         </span>
       </a>
 
-      <a class="item" href="#">
-        <span class="item-title">DNS</span>
+      <div class="item item-disabled" aria-disabled="true">
+        <div class="item-title-row">
+          <span class="item-title">DNS</span>
+          <span class="coming-soon">Coming Soon</span>
+        </div>
         <span class="item-description">
           Create a system DNS configuration profile.
         </span>
-      </a>
+      </div>
 
-      <a class="item" href="#">
-        <span class="item-title">Wi-Fi</span>
+      <div class="item item-disabled" aria-disabled="true">
+        <div class="item-title-row">
+          <span class="item-title">Wi-Fi</span>
+          <span class="coming-soon">Coming Soon</span>
+        </div>
         <span class="item-description">
           Create a Wi-Fi configuration profile.
         </span>
-      </a>
+      </div>
     </div>
 
     <footer>
