@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-08-31.4 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-01.1 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IKEv2 — TOLF Configurator</title>
 
-  <link rel="stylesheet" href="styles.css?v=20260831.3">
+  <link rel="stylesheet" href="styles.css?v=20260901.1">
 </head>
 
 <body>
@@ -17,7 +17,7 @@
 
     <div class="title-row">
       <h1>IKEv2</h1>
-      <span class="build-number">Build 2026-08-31.4</span>
+      <span class="build-number">Build 2026-09-01.1</span>
     </div>
 
     <p class="subtitle">
@@ -207,6 +207,18 @@
               <option value="Ignore">Ignore</option>
             </select>
           </div>
+
+          <div class="field">
+            <label for="ethernet-action">
+              Ethernet
+              <span class="platform-note">Apple only</span>
+            </label>
+            <select id="ethernet-action">
+              <option value="Connect" selected>Connect</option>
+              <option value="Disconnect">Disconnect</option>
+              <option value="Ignore">Ignore</option>
+            </select>
+          </div>
         </div>
 
         <div class="subsection-title">Additional Rules · Apple only</div>
@@ -255,6 +267,6 @@
 
   </main>
 
-  <script src="app.js?v=20260831.3"></script>
+  <script src="app.js?v=20260901.1"></script>
 </body>
 </html>
