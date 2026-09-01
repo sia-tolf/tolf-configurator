@@ -14,4 +14,4 @@ All configuration data is processed locally. Nothing is sent to a backend.
 Add a screenshot here:
 
 ```markdown
-![TOLF Configurator](docs/screenshot.png)
+![TOLF Configurator](docs/screenshot.jpg)
