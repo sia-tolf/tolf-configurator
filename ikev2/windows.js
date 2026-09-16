@@ -24,6 +24,8 @@
       androidSave: "Save Android (.sswan)",
       windowsShare: "Share Windows (.ps1)",
       windowsSave: "Save Windows (.ps1)",
+      launcherShare: "Share Windows launcher (.cmd)",
+      launcherSave: "Save Windows launcher (.cmd)",
       addRule: "+ Add Rule",
       sha512Unsupported: "Windows PowerShell export supports SHA-256 or SHA-384. Select one of those IKE Integrity options."
     },
@@ -36,6 +38,8 @@
       androidSave: "Сохранить Android (.sswan)",
       windowsShare: "Поделиться Windows (.ps1)",
       windowsSave: "Сохранить Windows (.ps1)",
+      launcherShare: "Поделиться запуском Windows (.cmd)",
+      launcherSave: "Сохранить запуск Windows (.cmd)",
       addRule: "+ Добавить правило",
       sha512Unsupported: "Экспорт Windows PowerShell поддерживает SHA-256 или SHA-384. Выберите один из этих вариантов IKE Integrity."
     },
@@ -48,6 +52,8 @@
       androidSave: "Saglabāt Android (.sswan)",
       windowsShare: "Kopīgot Windows (.ps1)",
       windowsSave: "Saglabāt Windows (.ps1)",
+      launcherShare: "Kopīgot Windows palaidēju (.cmd)",
+      launcherSave: "Saglabāt Windows palaidēju (.cmd)",
       addRule: "+ Pievienot noteikumu",
       sha512Unsupported: "Windows PowerShell eksports atbalsta SHA-256 vai SHA-384. Izvēlieties vienu no šīm IKE Integrity opcijām."
     }
@@ -93,21 +99,42 @@
     return `# TOLF Configurator — Windows IKEv2 profile\n# Run in Windows PowerShell as the target user.\n# Generated locally in the browser.\n\n$ErrorActionPreference = 'Stop'\n$Name = ${name}\n$Server = ${server}\n$UserName = ${username}\n\n# Replace an existing connection with the same name.\n$existing = Get-VpnConnection -Name $Name -ErrorAction SilentlyContinue\nif ($existing) {\n    Remove-VpnConnection -Name $Name -Force\n}\n\n# Windows built-in IKEv2 uses EAP-MSCHAPv2 here.\n$Eap = New-EapConfiguration\n\n$VpnParams = @{\n    Name = $Name\n    ServerAddress = $Server\n    TunnelType = 'Ikev2'\n    AuthenticationMethod = 'Eap'\n    EapConfigXmlStream = $Eap.EapConfigXmlStream\n    EncryptionLevel = 'Required'\n    RememberCredential = $true\n    Force = $true\n}\nAdd-VpnConnection @VpnParams\n\n$IpsecParams = @{\n    ConnectionName = $Name\n    AuthenticationTransformConstants = '${authTransform}'\n    CipherTransformConstants = '${encryption}'\n    EncryptionMethod = '${encryption}'\n    IntegrityCheckMethod = '${integrity}'\n    DHGroup = '${dh}'\n    PfsGroup = '${pfs}'\n    Force = $true\n}\nSet-VpnConnectionIPsecConfiguration @IpsecParams\n\nWrite-Host \"VPN profile '$($Name)' created.\"\nWrite-Host \"Use Windows Settings > Network & Internet > VPN to connect.\"\nWrite-Host \"Username: $UserName\"\n\n# Windows Add-VpnConnection does not expose Apple-style Remote ID / Local ID fields.\n# Remote ID supplied in the configurator: ${remoteId}\n# Local ID supplied in the configurator: ${localId}\n`;
   }
 
-  async function saveWindowsScript() {
+  function buildWindowsLauncher() {
+    return `@echo off\r\nsetlocal\r\nset "PS1=%~dp0%~n0.ps1"\r\nif not exist "%PS1%" (\r\n  echo PowerShell file not found: "%PS1%"\r\n  echo Keep this .cmd file in the same folder as the .ps1 file with the same name.\r\n  pause\r\n  exit /b 1\r\n)\r\npowershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PS1%"\r\nset "RC=%ERRORLEVEL%"\r\nif not "%RC%"=="0" (\r\n  echo.\r\n  echo Setup failed with exit code %RC%.\r\n  pause\r\n)\r\nexit /b %RC%\r\n`;
+  }
+
+  function getValidatedWindowsValues() {
     const values = collectValues();
-    if (!validateValues(values)) return;
+    if (!validateValues(values)) return null;
 
     if (values.integrity === "SHA2-512") {
       error.textContent = copy.sha512Unsupported;
       error.style.display = "block";
-      return;
+      return null;
     }
 
     error.style.display = "none";
-    const script = buildWindowsPowerShell(values);
+    return values;
+  }
+
+  async function saveWindowsScript() {
+    const values = getValidatedWindowsValues();
+    if (!values) return;
+
     await shareOrSaveFile(
-      script,
+      buildWindowsPowerShell(values),
       outputBaseName(values.name) + ".ps1",
+      "text/plain;charset=utf-8"
+    );
+  }
+
+  async function saveWindowsLauncher() {
+    const values = getValidatedWindowsValues();
+    if (!values) return;
+
+    await shareOrSaveFile(
+      buildWindowsLauncher(),
+      outputBaseName(values.name) + ".cmd",
       "text/plain;charset=utf-8"
     );
   }
@@ -123,6 +150,14 @@
   windowsButton.textContent = runningOnWindows ? copy.windowsSave : copy.windowsShare;
   windowsButton.addEventListener("click", saveWindowsScript);
   action.appendChild(windowsButton);
+
+  const launcherButton = document.createElement("button");
+  launcherButton.id = "save-windows-launcher";
+  launcherButton.className = "action-button save-button";
+  launcherButton.type = "button";
+  launcherButton.textContent = runningOnWindows ? copy.launcherSave : copy.launcherShare;
+  launcherButton.addEventListener("click", saveWindowsLauncher);
+  action.appendChild(launcherButton);
 
   const importButtonEl = document.getElementById("import-button");
   const installButtonEl = document.getElementById("install-profile");
