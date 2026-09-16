@@ -1,6 +1,8 @@
 // TOLF Configurator — Windows PowerShell export
 (() => {
+  const requested = new URL(location.href).searchParams.get("lang");
   const lang = (() => {
+    if (["en", "ru", "lv"].includes(requested)) return requested;
     const saved = localStorage.getItem("tolf-language");
     if (["en", "ru", "lv"].includes(saved)) return saved;
     const browser = (navigator.language || "en").toLowerCase();
@@ -9,6 +11,7 @@
     return "en";
   })();
 
+  localStorage.setItem("tolf-language", lang);
   document.documentElement.lang = lang;
 
   const copy = {
@@ -21,7 +24,8 @@
       androidSave: "Save Android (.sswan)",
       windowsShare: "Share Windows (.ps1)",
       windowsSave: "Save Windows (.ps1)",
-      addRule: "+ Add Rule"
+      addRule: "+ Add Rule",
+      sha512Unsupported: "Windows PowerShell export supports SHA-256 or SHA-384. Select one of those IKE Integrity options."
     },
     ru: {
       importProfile: "Импортировать профиль",
@@ -32,7 +36,8 @@
       androidSave: "Сохранить Android (.sswan)",
       windowsShare: "Поделиться Windows (.ps1)",
       windowsSave: "Сохранить Windows (.ps1)",
-      addRule: "+ Добавить правило"
+      addRule: "+ Добавить правило",
+      sha512Unsupported: "Экспорт Windows PowerShell поддерживает SHA-256 или SHA-384. Выберите один из этих вариантов IKE Integrity."
     },
     lv: {
       importProfile: "Importēt profilu",
@@ -43,7 +48,8 @@
       androidSave: "Saglabāt Android (.sswan)",
       windowsShare: "Kopīgot Windows (.ps1)",
       windowsSave: "Saglabāt Windows (.ps1)",
-      addRule: "+ Pievienot noteikumu"
+      addRule: "+ Pievienot noteikumu",
+      sha512Unsupported: "Windows PowerShell eksports atbalsta SHA-256 vai SHA-384. Izvēlieties vienu no šīm IKE Integrity opcijām."
     }
   }[lang];
 
@@ -58,13 +64,18 @@
   }
 
   function windowsIntegrity(value) {
-    return ({"SHA2-256":"SHA256","SHA2-384":"SHA384","SHA2-512":"SHA512"})[value] || "SHA256";
+    return value === "SHA2-384" ? "SHA384" : "SHA256";
+  }
+
+  function windowsAuthTransform(value) {
+    return value === "SHA2-384" ? "None" : "SHA256128";
   }
 
   function windowsPfs(values) {
     if (!values.pfs) return "None";
-    return String(values.dhGroup) === "19" ? "ECP256" :
-      String(values.dhGroup) === "20" ? "ECP384" : "PFS2048";
+    if (String(values.dhGroup) === "19") return "ECP256";
+    if (String(values.dhGroup) === "20") return "ECP384";
+    return "PFS2048";
   }
 
   function buildWindowsPowerShell(values) {
@@ -73,16 +84,26 @@
     const username = psQuote(values.username);
     const encryption = windowsEncryption(values.encryption);
     const integrity = windowsIntegrity(values.integrity);
+    const authTransform = windowsAuthTransform(values.integrity);
     const dh = windowsDhGroup(values.dhGroup);
     const pfs = windowsPfs(values);
+    const remoteId = String(values.remoteId || "").replace(/\r?\n/g, " ");
+    const localId = String(values.localId || "").replace(/\r?\n/g, " ");
 
-    return `# TOLF Configurator — Windows IKEv2 profile\n# Run in Windows PowerShell as the target user.\n# Generated locally in the browser.\n\n$ErrorActionPreference = 'Stop'\n$Name = ${name}\n$Server = ${server}\n$UserName = ${username}\n\n# Replace an existing connection with the same name.\n$existing = Get-VpnConnection -Name $Name -ErrorAction SilentlyContinue\nif ($existing) {\n    Remove-VpnConnection -Name $Name -Force\n}\n\n# Windows built-in IKEv2 uses EAP-MSCHAPv2 here.\n$Eap = New-EapConfiguration\n\nAdd-VpnConnection \\`\n    -Name $Name \\`\n    -ServerAddress $Server \\`\n    -TunnelType Ikev2 \\`\n    -AuthenticationMethod Eap \\`\n    -EapConfigXmlStream $Eap.EapConfigXmlStream \\`\n    -EncryptionLevel Required \\`\n    -RememberCredential \\`\n    -Force\n\nSet-VpnConnectionIPsecConfiguration \\`\n    -ConnectionName $Name \\`\n    -AuthenticationTransformConstants SHA256128 \\`\n    -CipherTransformConstants ${encryption} \\`\n    -EncryptionMethod ${encryption} \\`\n    -IntegrityCheckMethod ${integrity} \\`\n    -DHGroup ${dh} \\`\n    -PfsGroup ${pfs} \\`\n    -Force\n\nWrite-Host \"VPN profile '$($Name)' created.\"\nWrite-Host \"Use Windows Settings > Network & Internet > VPN to connect.\"\nWrite-Host \"Username: $UserName\"\n\n# Note: Add-VpnConnection does not expose Apple-style Remote ID / Local ID fields.\n# Remote ID supplied in the configurator: ${String(values.remoteId || "").replace(/\r?\n/g, " ")}\n# Local ID supplied in the configurator: ${String(values.localId || "").replace(/\r?\n/g, " ")}\n`;
+    return `# TOLF Configurator — Windows IKEv2 profile\n# Run in Windows PowerShell as the target user.\n# Generated locally in the browser.\n\n$ErrorActionPreference = 'Stop'\n$Name = ${name}\n$Server = ${server}\n$UserName = ${username}\n\n# Replace an existing connection with the same name.\n$existing = Get-VpnConnection -Name $Name -ErrorAction SilentlyContinue\nif ($existing) {\n    Remove-VpnConnection -Name $Name -Force\n}\n\n# Windows built-in IKEv2 uses EAP-MSCHAPv2 here.\n$Eap = New-EapConfiguration\n\n$VpnParams = @{\n    Name = $Name\n    ServerAddress = $Server\n    TunnelType = 'Ikev2'\n    AuthenticationMethod = 'Eap'\n    EapConfigXmlStream = $Eap.EapConfigXmlStream\n    EncryptionLevel = 'Required'\n    RememberCredential = $true\n    Force = $true\n}\nAdd-VpnConnection @VpnParams\n\n$IpsecParams = @{\n    ConnectionName = $Name\n    AuthenticationTransformConstants = '${authTransform}'\n    CipherTransformConstants = '${encryption}'\n    EncryptionMethod = '${encryption}'\n    IntegrityCheckMethod = '${integrity}'\n    DHGroup = '${dh}'\n    PfsGroup = '${pfs}'\n    Force = $true\n}\nSet-VpnConnectionIPsecConfiguration @IpsecParams\n\nWrite-Host \"VPN profile '$($Name)' created.\"\nWrite-Host \"Use Windows Settings > Network & Internet > VPN to connect.\"\nWrite-Host \"Username: $UserName\"\n\n# Windows Add-VpnConnection does not expose Apple-style Remote ID / Local ID fields.\n# Remote ID supplied in the configurator: ${remoteId}\n# Local ID supplied in the configurator: ${localId}\n`;
   }
 
   async function saveWindowsScript() {
     const values = collectValues();
     if (!validateValues(values)) return;
 
+    if (values.integrity === "SHA2-512") {
+      error.textContent = copy.sha512Unsupported;
+      error.style.display = "block";
+      return;
+    }
+
+    error.style.display = "none";
     const script = buildWindowsPowerShell(values);
     await shareOrSaveFile(
       script,
