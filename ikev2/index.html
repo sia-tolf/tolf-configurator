@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-17.1 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-17.2 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,6 +8,134 @@
   <title>IKEv2 — TOLF Configurator</title>
 
   <link rel="stylesheet" href="styles.css?v=20260917.1">
+  <style>
+    .configurator-hero {
+      display: block;
+      margin-bottom: 24px;
+    }
+
+    .configurator-hero-copy {
+      min-width: 0;
+    }
+
+    .target-platform-selector {
+      width: min(480px, 100%);
+      min-height: 0;
+      margin: 26px auto 0;
+      padding: 4px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      border: 1px solid #d2d2d7;
+      border-radius: 14px;
+      background: #e9e9ed;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .target-platform-choice {
+      position: relative;
+      width: auto;
+      height: auto;
+      min-width: 0;
+      display: block;
+      cursor: pointer;
+    }
+
+    .target-platform-choice input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .target-platform-segment {
+      min-height: 42px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #5f5f63;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .target-platform-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      display: block;
+      border: 1px solid #b8b8bd;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .target-platform-choice input:checked + .target-platform-segment {
+      background: #ffffff;
+      color: #1d1d1f;
+      border-color: #d2d2d7;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .target-platform-choice input:checked + .target-platform-segment .target-platform-dot {
+      background: #34c759;
+      border-color: #248a3d;
+    }
+
+    .target-platform-choice input:focus-visible + .target-platform-segment {
+      outline: 2px solid #1d1d1f;
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 560px) {
+      .target-platform-selector {
+        width: 100%;
+        margin-top: 22px;
+      }
+
+      .target-platform-segment {
+        min-height: 40px;
+        padding: 7px 8px;
+        gap: 5px;
+        font-size: 14px;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .target-platform-selector {
+        background: #1c1c1e;
+        border-color: #38383a;
+      }
+
+      .target-platform-segment {
+        color: #9a9aa0;
+      }
+
+      .target-platform-dot {
+        border-color: #636366;
+      }
+
+      .target-platform-choice input:checked + .target-platform-segment {
+        background: #2c2c2e;
+        color: #f5f5f7;
+        border-color: #48484a;
+        box-shadow: none;
+      }
+
+      .target-platform-choice input:checked + .target-platform-segment .target-platform-dot {
+        background: #30d158;
+        border-color: #248a3d;
+      }
+
+      .target-platform-choice input:focus-visible + .target-platform-segment {
+        outline-color: #f5f5f7;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -19,7 +147,7 @@
       <div class="configurator-hero-copy">
         <div class="title-row">
           <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-17.1</span>
+          <span class="build-number">Build 2026-09-17.2</span>
         </div>
 
         <p class="subtitle">
@@ -28,26 +156,29 @@
       </div>
 
       <div class="target-platform-selector" role="radiogroup" aria-label="Target platform">
-        <div class="target-platform-names" aria-hidden="true">
-          <label for="target-apple">Apple</label>
-          <label for="target-android">Android</label>
-          <label for="target-windows">Windows</label>
-        </div>
+        <label class="target-platform-choice">
+          <input id="target-apple" type="radio" name="target-platform" value="apple" checked>
+          <span class="target-platform-segment">
+            <span class="target-platform-dot" aria-hidden="true"></span>
+            <span>Apple</span>
+          </span>
+        </label>
 
-        <div class="target-platform-track">
-          <label class="target-platform-choice" for="target-apple" aria-label="Apple">
-            <input id="target-apple" type="radio" name="target-platform" value="apple" checked>
-            <span class="target-platform-dot"></span>
-          </label>
-          <label class="target-platform-choice" for="target-android" aria-label="Android">
-            <input id="target-android" type="radio" name="target-platform" value="android">
-            <span class="target-platform-dot"></span>
-          </label>
-          <label class="target-platform-choice" for="target-windows" aria-label="Windows">
-            <input id="target-windows" type="radio" name="target-platform" value="windows">
-            <span class="target-platform-dot"></span>
-          </label>
-        </div>
+        <label class="target-platform-choice">
+          <input id="target-android" type="radio" name="target-platform" value="android">
+          <span class="target-platform-segment">
+            <span class="target-platform-dot" aria-hidden="true"></span>
+            <span>Android</span>
+          </span>
+        </label>
+
+        <label class="target-platform-choice">
+          <input id="target-windows" type="radio" name="target-platform" value="windows">
+          <span class="target-platform-segment">
+            <span class="target-platform-dot" aria-hidden="true"></span>
+            <span>Windows</span>
+          </span>
+        </label>
       </div>
     </div>
 
