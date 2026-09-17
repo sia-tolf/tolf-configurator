@@ -28,6 +28,14 @@
       ikev2Title: "IKEv2 — TOLF Configurator",
       backConfigurator: "‹ TOLF Configurator",
       ikev2Subtitle: "Create IKEv2 configuration files for Apple devices, strongSwan on Android, and Windows PowerShell.",
+      privacyHeading: "Private by design",
+      privacyLead: "Your VPN configuration stays on this device. Imported profiles, server addresses, usernames, passwords and generated configuration files are processed locally in your browser and are not uploaded to TOLF.",
+      privacyNetwork: "The browser still makes ordinary requests required to load the website; your configuration values are not included in those requests.",
+      privacyDetails: "Privacy details",
+      privacyImported: "Imported files are read locally by your browser.",
+      privacyCredentials: "Form values and passwords are not sent to the configurator server.",
+      privacyGenerated: "Configuration files are generated locally on this device.",
+      privacyContents: "TOLF does not receive the contents of generated profiles.",
       importExistingConfiguration: "Import Existing Configuration",
       connection: "Connection",
       name: "Name",
@@ -83,6 +91,14 @@
       ikev2Title: "IKEv2 — TOLF Configurator",
       backConfigurator: "‹ TOLF Configurator",
       ikev2Subtitle: "Создавайте конфигурации IKEv2 для устройств Apple, strongSwan на Android и Windows PowerShell.",
+      privacyHeading: "Приватность заложена в основу",
+      privacyLead: "Ваша VPN-конфигурация остаётся на этом устройстве. Импортированные профили, адреса серверов, имена пользователей, пароли и создаваемые конфигурационные файлы обрабатываются локально в браузере и не загружаются в TOLF.",
+      privacyNetwork: "Браузер по-прежнему выполняет обычные запросы, необходимые для загрузки сайта; значения вашей конфигурации в эти запросы не включаются.",
+      privacyDetails: "Подробнее о приватности",
+      privacyImported: "Импортированные файлы читаются локально вашим браузером.",
+      privacyCredentials: "Значения полей формы и пароли не отправляются на сервер конфигуратора.",
+      privacyGenerated: "Конфигурационные файлы создаются локально на этом устройстве.",
+      privacyContents: "TOLF не получает содержимое созданных профилей.",
       importExistingConfiguration: "Импортировать конфигурацию",
       connection: "Подключение",
       name: "Название",
@@ -138,6 +154,14 @@
       ikev2Title: "IKEv2 — TOLF Configurator",
       backConfigurator: "‹ TOLF Configurator",
       ikev2Subtitle: "Izveidojiet IKEv2 konfigurācijas Apple ierīcēm, strongSwan Android ierīcēs un Windows PowerShell.",
+      privacyHeading: "Privātums pēc būtības",
+      privacyLead: "Jūsu VPN konfigurācija paliek šajā ierīcē. Importētie profili, serveru adreses, lietotājvārdi, paroles un izveidotie konfigurācijas faili tiek apstrādāti lokāli pārlūkprogrammā un netiek augšupielādēti TOLF.",
+      privacyNetwork: "Pārlūkprogramma joprojām veic parastos pieprasījumus, kas nepieciešami vietnes ielādei; jūsu konfigurācijas vērtības šajos pieprasījumos netiek iekļautas.",
+      privacyDetails: "Plašāk par privātumu",
+      privacyImported: "Importētie faili tiek nolasīti lokāli jūsu pārlūkprogrammā.",
+      privacyCredentials: "Veidlapas vērtības un paroles netiek nosūtītas konfiguratora serverim.",
+      privacyGenerated: "Konfigurācijas faili tiek izveidoti lokāli šajā ierīcē.",
+      privacyContents: "TOLF nesaņem izveidoto profilu saturu.",
       importExistingConfiguration: "Importēt esošu konfigurāciju",
       connection: "Savienojums",
       name: "Nosaukums",
@@ -182,6 +206,146 @@
       disclaimer: "TOLF Configurator ir neatkarīgs projekts, kas nav saistīts ar Apple Inc. vai Google LLC un nav šo uzņēmumu atbalstīts. Apple un Google nav atbildīgi par šo vietni vai tās izveidotajiem konfigurācijas profiliem. Apple, iPhone, iPad un iOS ir Apple Inc. preču zīmes. Android un Google ir Google LLC preču zīmes."
     }
   };
+
+  function installPrivacyPanel() {
+    if (document.body?.dataset.page !== "ikev2") return;
+    const hero = document.querySelector(".configurator-hero");
+    if (!hero || document.querySelector(".privacy-assurance")) return;
+
+    const panel = document.createElement("section");
+    panel.className = "privacy-assurance";
+    panel.setAttribute("aria-label", "Privacy");
+    panel.innerHTML = `
+      <div class="privacy-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.5 19 5v5.6c0 4.8-2.9 8.8-7 10.9-4.1-2.1-7-6.1-7-10.9V5l7-2.5Zm0 2.1L7 6.4v4.2c0 3.8 2.1 7.1 5 8.9 2.9-1.8 5-5.1 5-8.9V6.4l-5-1.8Z"/>
+        </svg>
+      </div>
+      <div class="privacy-copy">
+        <h2 data-i18n="privacyHeading">Private by design</h2>
+        <p data-i18n="privacyLead">Your VPN configuration stays on this device. Imported profiles, server addresses, usernames, passwords and generated configuration files are processed locally in your browser and are not uploaded to TOLF.</p>
+        <p class="privacy-network" data-i18n="privacyNetwork">The browser still makes ordinary requests required to load the website; your configuration values are not included in those requests.</p>
+        <details class="privacy-details">
+          <summary data-i18n="privacyDetails">Privacy details</summary>
+          <ul>
+            <li data-i18n="privacyImported">Imported files are read locally by your browser.</li>
+            <li data-i18n="privacyCredentials">Form values and passwords are not sent to the configurator server.</li>
+            <li data-i18n="privacyGenerated">Configuration files are generated locally on this device.</li>
+            <li data-i18n="privacyContents">TOLF does not receive the contents of generated profiles.</li>
+          </ul>
+        </details>
+      </div>
+    `;
+    hero.insertAdjacentElement("afterend", panel);
+
+    document.querySelector('.note[data-i18n="localProcessingNote"]')?.remove();
+
+    const style = document.createElement("style");
+    style.textContent = `
+      .privacy-assurance {
+        margin: 18px 0 0;
+        padding: 16px 18px;
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 13px;
+        border: 1px solid #d8d8dc;
+        border-radius: 14px;
+        background: rgba(255,255,255,.68);
+      }
+      .privacy-assurance + .configurator-tool-row {
+        margin-top: 16px;
+      }
+      .privacy-icon {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #d2d2d7;
+        border-radius: 10px;
+        background: #f1f1f3;
+        color: #5f5f63;
+      }
+      .privacy-icon svg {
+        width: 19px;
+        height: 19px;
+        fill: currentColor;
+      }
+      .privacy-copy h2 {
+        margin: 1px 0 5px;
+        font-size: 16px;
+        line-height: 1.25;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+      }
+      .privacy-copy p {
+        margin: 0;
+        color: #5f5f63;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+      .privacy-copy .privacy-network {
+        margin-top: 7px;
+        color: #77777c;
+        font-size: 13px;
+      }
+      .privacy-details {
+        margin-top: 9px;
+      }
+      .privacy-details summary {
+        width: fit-content;
+        color: #5f5f63;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .privacy-details ul {
+        margin: 9px 0 0;
+        padding-left: 20px;
+        color: #5f5f63;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .privacy-details li + li {
+        margin-top: 3px;
+      }
+      @media (max-width: 560px) {
+        .privacy-assurance {
+          grid-template-columns: 30px minmax(0, 1fr);
+          gap: 11px;
+          padding: 14px;
+        }
+        .privacy-icon {
+          width: 30px;
+          height: 30px;
+          border-radius: 9px;
+        }
+        .privacy-icon svg {
+          width: 17px;
+          height: 17px;
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        .privacy-assurance {
+          background: rgba(28,28,30,.72);
+          border-color: #38383a;
+        }
+        .privacy-icon {
+          background: #2c2c2e;
+          border-color: #48484a;
+          color: #b8b8bd;
+        }
+        .privacy-copy p,
+        .privacy-details summary,
+        .privacy-details ul {
+          color: #b8b8bd;
+        }
+        .privacy-copy .privacy-network {
+          color: #9a9aa0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   function applyLanguage(lang) {
     const dictionary = text[lang] || text.en;
@@ -231,5 +395,6 @@
     });
   });
 
+  installPrivacyPanel();
   applyLanguage(language);
 })();
