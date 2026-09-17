@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-16.2 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-17.1 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IKEv2 — TOLF Configurator</title>
 
-  <link rel="stylesheet" href="styles.css?v=20260901.1">
+  <link rel="stylesheet" href="styles.css?v=20260917.1">
 </head>
 
 <body>
@@ -15,14 +15,41 @@
 
     <a class="back" href="/">‹ TOLF Configurator</a>
 
-    <div class="title-row">
-      <h1>IKEv2</h1>
-      <span class="build-number">Build 2026-09-16.2</span>
-    </div>
+    <div class="configurator-hero">
+      <div class="configurator-hero-copy">
+        <div class="title-row">
+          <h1>IKEv2</h1>
+          <span class="build-number">Build 2026-09-17.1</span>
+        </div>
 
-    <p class="subtitle">
-      Create IKEv2 configuration files for Apple devices, strongSwan on Android, and Windows PowerShell.
-    </p>
+        <p class="subtitle">
+          Create IKEv2 configuration files for Apple devices, strongSwan on Android, and Windows PowerShell.
+        </p>
+      </div>
+
+      <div class="target-platform-selector" role="radiogroup" aria-label="Target platform">
+        <div class="target-platform-names" aria-hidden="true">
+          <label for="target-apple">Apple</label>
+          <label for="target-android">Android</label>
+          <label for="target-windows">Windows</label>
+        </div>
+
+        <div class="target-platform-track">
+          <label class="target-platform-choice" for="target-apple" aria-label="Apple">
+            <input id="target-apple" type="radio" name="target-platform" value="apple" checked>
+            <span class="target-platform-dot"></span>
+          </label>
+          <label class="target-platform-choice" for="target-android" aria-label="Android">
+            <input id="target-android" type="radio" name="target-platform" value="android">
+            <span class="target-platform-dot"></span>
+          </label>
+          <label class="target-platform-choice" for="target-windows" aria-label="Windows">
+            <input id="target-windows" type="radio" name="target-platform" value="windows">
+            <span class="target-platform-dot"></span>
+          </label>
+        </div>
+      </div>
+    </div>
 
     <div class="import-area">
       <button id="import-button" class="import-button" type="button">
