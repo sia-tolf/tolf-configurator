@@ -16,7 +16,7 @@
 
   const copy = {
     en: {
-      importProfile: "Import Existing Profile",
+      importProfile: "Import Existing Configuration",
       installProfile: "Install Profile",
       appleShare: "Share Apple (.mobileconfig)",
       appleSave: "Save Apple (.mobileconfig)",
@@ -30,7 +30,7 @@
       sha512Unsupported: "Windows PowerShell export supports SHA-256 or SHA-384. Select one of those IKE Integrity options."
     },
     ru: {
-      importProfile: "Импортировать профиль",
+      importProfile: "Импортировать конфигурацию",
       installProfile: "Установить профиль",
       appleShare: "Поделиться Apple (.mobileconfig)",
       appleSave: "Сохранить Apple (.mobileconfig)",
@@ -44,7 +44,7 @@
       sha512Unsupported: "Экспорт Windows PowerShell поддерживает SHA-256 или SHA-384. Выберите один из этих вариантов IKE Integrity."
     },
     lv: {
-      importProfile: "Importēt profilu",
+      importProfile: "Importēt esošu konfigurāciju",
       installProfile: "Instalēt profilu",
       appleShare: "Kopīgot Apple (.mobileconfig)",
       appleSave: "Saglabāt Apple (.mobileconfig)",
