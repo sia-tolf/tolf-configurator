@@ -93,10 +93,19 @@
     const authTransform = windowsAuthTransform(values.integrity);
     const dh = windowsDhGroup(values.dhGroup);
     const pfs = windowsPfs(values);
-    const remoteId = String(values.remoteId || "").replace(/\r?\n/g, " ");
-    const localId = String(values.localId || "").replace(/\r?\n/g, " ");
+    const metadata = JSON.stringify({
+      version: 1,
+      platform: "windows",
+      name: values.name,
+      server: values.server,
+      username: values.username,
+      encryption: values.encryption,
+      integrity: values.integrity,
+      dhGroup: String(values.dhGroup),
+      pfs: Boolean(values.pfs)
+    });
 
-    return `# TOLF Configurator — Windows IKEv2 profile\n# Run in Windows PowerShell as the target user.\n# Generated locally in the browser.\n\n$ErrorActionPreference = 'Stop'\n$Name = ${name}\n$Server = ${server}\n$UserName = ${username}\n\n# Replace an existing connection with the same name.\n$existing = Get-VpnConnection -Name $Name -ErrorAction SilentlyContinue\nif ($existing) {\n    Remove-VpnConnection -Name $Name -Force\n}\n\n# Windows built-in IKEv2 uses EAP-MSCHAPv2 here.\n$Eap = New-EapConfiguration\n\n$VpnParams = @{\n    Name = $Name\n    ServerAddress = $Server\n    TunnelType = 'Ikev2'\n    AuthenticationMethod = 'Eap'\n    EapConfigXmlStream = $Eap.EapConfigXmlStream\n    EncryptionLevel = 'Required'\n    RememberCredential = $true\n    Force = $true\n}\nAdd-VpnConnection @VpnParams\n\n$IpsecParams = @{\n    ConnectionName = $Name\n    AuthenticationTransformConstants = '${authTransform}'\n    CipherTransformConstants = '${encryption}'\n    EncryptionMethod = '${encryption}'\n    IntegrityCheckMethod = '${integrity}'\n    DHGroup = '${dh}'\n    PfsGroup = '${pfs}'\n    Force = $true\n}\nSet-VpnConnectionIPsecConfiguration @IpsecParams\n\nWrite-Host \"VPN profile '$($Name)' created.\"\nWrite-Host \"Use Windows Settings > Network & Internet > VPN to connect.\"\nWrite-Host \"Username: $UserName\"\n\n# Windows Add-VpnConnection does not expose Apple-style Remote ID / Local ID fields.\n# Remote ID supplied in the configurator: ${remoteId}\n# Local ID supplied in the configurator: ${localId}\n`;
+    return `# TOLF Configurator — Windows IKEv2 profile\n# TOLF-Configurator-Metadata: ${metadata}\n# Run in Windows PowerShell as the target user.\n# Generated locally in the browser.\n\n$ErrorActionPreference = 'Stop'\n$Name = ${name}\n$Server = ${server}\n$UserName = ${username}\n\n# Replace an existing connection with the same name.\n$existing = Get-VpnConnection -Name $Name -ErrorAction SilentlyContinue\nif ($existing) {\n    Remove-VpnConnection -Name $Name -Force\n}\n\n# Windows built-in IKEv2 uses EAP-MSCHAPv2 here.\n$Eap = New-EapConfiguration\n\n$VpnParams = @{\n    Name = $Name\n    ServerAddress = $Server\n    TunnelType = 'Ikev2'\n    AuthenticationMethod = 'Eap'\n    EapConfigXmlStream = $Eap.EapConfigXmlStream\n    EncryptionLevel = 'Required'\n    RememberCredential = $true\n    Force = $true\n}\nAdd-VpnConnection @VpnParams\n\n$IpsecParams = @{\n    ConnectionName = $Name\n    AuthenticationTransformConstants = '${authTransform}'\n    CipherTransformConstants = '${encryption}'\n    EncryptionMethod = '${encryption}'\n    IntegrityCheckMethod = '${integrity}'\n    DHGroup = '${dh}'\n    PfsGroup = '${pfs}'\n    Force = $true\n}\nSet-VpnConnectionIPsecConfiguration @IpsecParams\n\nWrite-Host \"VPN profile '$($Name)' created.\"\nWrite-Host \"Use Windows Settings > Network & Internet > VPN to connect.\"\nWrite-Host \"Username: $UserName\"\n`;
   }
 
   function buildWindowsLauncher() {
