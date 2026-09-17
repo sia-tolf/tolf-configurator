@@ -650,3 +650,36 @@ summary {
     color: #ffb4ab;
   }
 }
+
+/* Full-width sticky top bar, matching the main TOLF site. */
+main {
+  padding-top: 0;
+}
+
+.page-top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100vw;
+  min-height: 58px;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding: 8px max(16px, calc((100vw - 720px) / 2));
+  background: rgba(245, 245, 247, 0.86);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+@media (max-width: 560px) {
+  main {
+    padding-top: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .page-top {
+    background: rgba(0, 0, 0, 0.84);
+    border-bottom-color: rgba(255, 255, 255, 0.09);
+  }
+}
