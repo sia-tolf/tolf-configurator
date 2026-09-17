@@ -34,6 +34,19 @@ main {
   text-decoration: none;
 }
 
+.configurator-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+
+.configurator-hero-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .title-row {
   display: flex;
   align-items: baseline;
@@ -57,10 +70,80 @@ h1 {
 }
 
 .subtitle {
-  margin: 0 0 24px;
+  margin: 0;
   color: #5f5f63;
   font-size: 17px;
   line-height: 1.5;
+}
+
+.target-platform-selector {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  gap: 9px;
+  min-height: 92px;
+  margin-top: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.target-platform-names {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  align-items: center;
+  text-align: right;
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.target-platform-names label {
+  cursor: pointer;
+}
+
+.target-platform-track {
+  width: 30px;
+  padding: 8px 0;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  align-items: center;
+  justify-items: center;
+  border: 1px solid #d8d8dc;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.target-platform-choice {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.target-platform-choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.target-platform-dot {
+  width: 12px;
+  height: 12px;
+  display: block;
+  border: 1px solid #d2d2d7;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.target-platform-choice input:checked + .target-platform-dot {
+  border-color: #248a3d;
+  background: #34c759;
+}
+
+.target-platform-choice input:focus-visible + .target-platform-dot {
+  outline: 2px solid #1d1d1f;
+  outline-offset: 3px;
 }
 
 .import-area {
@@ -426,8 +509,20 @@ summary {
     padding-top: 28px;
   }
 
+  .configurator-hero {
+    gap: 18px;
+  }
+
   h1 {
     font-size: 32px;
+  }
+
+  .target-platform-selector {
+    min-height: 86px;
+  }
+
+  .target-platform-names {
+    font-size: 12px;
   }
 
   .field {
@@ -464,6 +559,17 @@ summary {
   }
 }
 
+@media (max-width: 430px) {
+  .configurator-hero {
+    display: block;
+  }
+
+  .target-platform-selector {
+    width: max-content;
+    margin-top: 18px;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background: #000000;
@@ -479,7 +585,8 @@ summary {
 
   .group,
   .import-button,
-  .save-button {
+  .save-button,
+  .target-platform-track {
     background: #1c1c1e;
     border-color: #38383a;
   }
@@ -487,6 +594,20 @@ summary {
   .import-button,
   .save-button {
     color: #f5f5f7;
+  }
+
+  .target-platform-dot {
+    background: #ffffff;
+    border-color: #636366;
+  }
+
+  .target-platform-choice input:checked + .target-platform-dot {
+    background: #30d158;
+    border-color: #248a3d;
+  }
+
+  .target-platform-choice input:focus-visible + .target-platform-dot {
+    outline-color: #f5f5f7;
   }
 
   .field,
