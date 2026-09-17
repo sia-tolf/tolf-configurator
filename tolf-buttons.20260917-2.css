@@ -1,0 +1,389 @@
+/* TOLF buttons — approved light/dark scheme, 2026-09-17.2: Blue 6, pale green, destructive hierarchy.
+   Identical local asset in all TOLF web repositories; no external requests.
+   Button presentation only: authentication, routing and profile code are unchanged. */
+html[data-tolf-ui] {
+  color-scheme: light dark;
+  --tolf-blue: #0c3f85;
+  --tolf-blue-hover: #0a3673;
+  --tolf-blue-pressed: #082d61;
+  --tolf-action-text: #0c3f85;
+  --tolf-outline: #0c3f85;
+  --tolf-secondary-hover: #f0f4fa;
+  --tolf-secondary-pressed: #e2eaf4;
+  --tolf-disabled-bg: #ccd5e2;
+  --tolf-disabled-text: #52647d;
+  --tolf-muted: #6e6e73;
+  --tolf-success-bg: #edf7f0;
+  --tolf-success-hover: #e3f1e8;
+  --tolf-success-pressed: #d8ebdf;
+  --tolf-success-text: #0f5132;
+  --tolf-success-border: #cadfd1;
+  --tolf-danger-bg: #fce4e5;
+  --tolf-danger-hover: #f9d1d4;
+  --tolf-danger-pressed: #f5bdc3;
+  --tolf-danger-text: #b4232c;
+  --tolf-danger-border: #ebb7bd;
+  --tolf-warning-bg: #fff3da;
+  --tolf-warning-text: #805000;
+  --tolf-warning-border: #d7b872;
+  --tolf-page: #f5f5f7;
+  --tolf-card: #ffffff;
+  --tolf-ink: #1d1d1f;
+  --tolf-line: #d8d8dc;
+  --tolf-soft: #ececf0;
+  --tolf-radius: 12px;
+  /* Map existing component tokens without changing the page layout. */
+  --bg: var(--tolf-page);
+  --background: var(--tolf-page);
+  --surface: var(--tolf-card);
+  --surface-solid: var(--tolf-card);
+  --card: var(--tolf-card);
+  --text: var(--tolf-ink);
+  --border: var(--tolf-line);
+  --line: var(--tolf-line);
+  --line-strong: var(--tolf-line);
+  --soft: var(--tolf-soft);
+  --segment-background: var(--tolf-soft);
+  --code-background: var(--tolf-soft);
+  --secondary: var(--tolf-muted);
+  --accent: var(--tolf-action-text);
+  --accent-hover: var(--tolf-blue-hover);
+  --button: var(--tolf-blue);
+  --button-text: #ffffff;
+  --constructive-text: var(--tolf-success-text);
+  --constructive-border: var(--tolf-success-border);
+  --constructive-pressed: var(--tolf-success-pressed);
+}
+@media (prefers-color-scheme: dark) {
+  html[data-tolf-ui] {
+    --tolf-page: #141d25;
+    --tolf-card: #1e2934;
+    --tolf-ink: #f5f7fa;
+    --tolf-line: #42505e;
+    --tolf-soft: #283644;
+    --tolf-muted: #aab7c4;
+    --tolf-action-text: #80baff;
+    --tolf-outline: #69aaff;
+    --tolf-secondary-hover: #253a50;
+    --tolf-secondary-pressed: #304a65;
+    --tolf-disabled-bg: #354f6e;
+    --tolf-disabled-text: #b1c0d1;
+    --tolf-success-bg: #24362f;
+    --tolf-success-hover: #2b4438;
+    --tolf-success-pressed: #345240;
+    --tolf-success-text: #b8dfc8;
+    --tolf-success-border: #526d5e;
+    --tolf-danger-bg: #47232d;
+    --tolf-danger-hover: #5c2b36;
+    --tolf-danger-pressed: #71333f;
+    --tolf-danger-text: #ffadb3;
+    --tolf-danger-border: #99505b;
+    --tolf-warning-bg: #493c25;
+    --tolf-warning-text: #f1cd86;
+    --tolf-warning-border: #927949;
+  }
+}
+html[data-tolf-ui], html[data-tolf-ui] body {
+  background-color: var(--tolf-page);
+  color: var(--tolf-ink);
+}
+/* Shared action shape. Widths and layout remain controlled by each page. */
+html[data-tolf-ui] :is(
+  .button, .button-link, button.primary, button.secondary, button.constructive,
+  button.warning, button.danger, .action-button, .import-button,
+  .delete-button, .account-delete-button, .passkey-remove-button,
+  .network-test-button, .add-on-demand-rule, .add-rule
+) {
+  min-height: 48px;
+  height: auto;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--tolf-outline);
+  border-radius: var(--tolf-radius);
+  background: var(--tolf-card);
+  color: var(--tolf-action-text);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-tolf-ui] :is(.button, .button-link, button.secondary, .import-button,
+  .save-button, .add-on-demand-rule, .add-rule):hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--tolf-secondary-hover);
+  border-color: var(--tolf-outline);
+}
+html[data-tolf-ui] :is(.button, .button-link, button.secondary, .import-button,
+  .save-button, .add-on-demand-rule, .add-rule):active:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--tolf-secondary-pressed);
+  opacity: 1;
+  transform: none;
+}
+/* Primary action: the same blue and white label on light and dark pages. */
+html[data-tolf-ui] :is(button.primary, .button.primary, .button-link.primary,
+  .action-button.install-button, [id="save-windows"]) {
+  background: var(--tolf-blue);
+  border-color: var(--tolf-blue);
+  color: #ffffff;
+}
+html[data-tolf-ui] :is(button.primary, .button.primary, .button-link.primary,
+  .action-button.install-button, [id="save-windows"]):hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--tolf-blue-hover);
+  border-color: var(--tolf-blue-hover);
+}
+html[data-tolf-ui] :is(button.primary, .button.primary, .button-link.primary,
+  .action-button.install-button, [id="save-windows"]):active:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--tolf-blue-pressed);
+  border-color: var(--tolf-blue-pressed);
+  opacity: 1;
+}
+/* Sharing / QR / constructive actions keep their green meaning. */
+html[data-tolf-ui] :is(button.constructive, .button-link.constructive,
+  [id="shareProfileButton"], [id="profileQrButton"], [id="save-profile"], [id="save-strongswan"]) {
+  background: var(--tolf-success-bg);
+  border-color: var(--tolf-success-border);
+  color: var(--tolf-success-text);
+}
+html[data-tolf-ui] :is(button.constructive, .button-link.constructive,
+  [id="shareProfileButton"], [id="profileQrButton"], [id="save-profile"], [id="save-strongswan"]):hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--tolf-success-hover);
+  border-color: var(--tolf-success-border);
+}
+html[data-tolf-ui] :is(button.constructive, .button-link.constructive,
+  [id="shareProfileButton"], [id="profileQrButton"], [id="save-profile"], [id="save-strongswan"]):active:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--tolf-success-pressed);
+  opacity: 1;
+}
+/* Destructive controls stay visibly distinct, including dynamically added ones. */
+html[data-tolf-ui] :is(button.danger, .delete-button, .account-delete-button, .passkey-remove-button) {
+  background: var(--tolf-danger-bg);
+  border-color: var(--tolf-danger-border);
+  color: var(--tolf-danger-text);
+}
+html[data-tolf-ui] :is(button.danger, .delete-button, .account-delete-button, .passkey-remove-button):hover:not(:disabled) {
+  background: var(--tolf-danger-hover);
+}
+html[data-tolf-ui] :is(button.danger, .delete-button, .account-delete-button, .passkey-remove-button):active:not(:disabled) {
+  background: var(--tolf-danger-pressed);
+  opacity: 1;
+}
+html[data-tolf-ui] button.warning {
+  background: var(--tolf-warning-bg);
+  border-color: var(--tolf-warning-border);
+  color: var(--tolf-warning-text);
+}
+/* Text actions stay compact; never turn header controls into large CTA blocks. */
+html[data-tolf-ui] :is(.text-button, .account-create, .back-home, .windows-back-button) {
+  color: var(--tolf-action-text);
+  font-weight: 600;
+}
+html[data-tolf-ui] .top-actions :is(.account-link, .authenticated-account-logout) {
+  color: var(--tolf-action-text) !important;
+  font-weight: 600 !important;
+  background: transparent;
+  border-color: transparent;
+}
+html[data-tolf-ui] .signup-link {
+  color: var(--tolf-action-text);
+  border-color: var(--tolf-outline);
+  background: var(--tolf-card);
+  font-weight: 600;
+}
+html[data-tolf-ui] .signup-link:hover {
+  background: var(--tolf-secondary-hover);
+}
+html[data-tolf-ui] :is(.sign-out-button, .passkey-remove-button,
+  .promo-actions > button, .network-test-button) {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+html[data-tolf-ui] .sign-out-button {
+  color: var(--tolf-action-text);
+  border-color: var(--tolf-outline);
+  background: var(--tolf-card);
+  font-weight: 600;
+}
+/* Disabled states override hover and pressed; no change to disabled behavior. */
+html[data-tolf-ui] :is(button, .button, .button-link):is(:disabled, [aria-disabled="true"]) {
+  cursor: default;
+  opacity: .5;
+  transform: none;
+}
+html[data-tolf-ui] :is(button.primary, .button.primary, .button-link.primary,
+  .action-button.install-button, [id="save-windows"]):is(:disabled, [aria-disabled="true"]) {
+  opacity: 1;
+  background: var(--tolf-disabled-bg);
+  border-color: var(--tolf-disabled-bg);
+  color: var(--tolf-disabled-text);
+}
+html[data-tolf-ui] :is(button, .button, .button-link, .signup-link, .account-link):focus-visible {
+  outline: 3px solid var(--tolf-outline);
+  outline-offset: 3px;
+}
+html[data-tolf-ui] :is(.button, .button-link, button):active { transform: none; }
+/* Configurator fields/cards follow the page theme, not a permanently dark mockup. */
+html[data-tolf-ui="configurator"] :is(.group, .list) {
+  background: var(--tolf-card);
+  border-color: var(--tolf-line);
+}
+html[data-tolf-ui="configurator"] .page-top {
+  background: color-mix(in srgb, var(--tolf-page) 88%, transparent) !important;
+  border-bottom-color: var(--tolf-line) !important;
+}
+/* The quick-setup flow uses some unclassed action buttons. */
+html[data-tolf-ui="quick"] :is([id="login"], [id="copyCode"], [id="copyLink"], [id="copyChromeSettings"], [id="retry"], [id="share"]) {
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid var(--tolf-outline);
+  border-radius: var(--tolf-radius);
+  color: var(--tolf-action-text);
+  background: var(--tolf-card);
+  font: inherit;
+  font-weight: 600;
+}
+html[data-tolf-ui="quick"] [id="share"] {
+  color: var(--tolf-success-text);
+  border-color: var(--tolf-success-border);
+  background: var(--tolf-success-bg);
+}
+html[data-tolf-ui="quick"] :is(.card, input, select) {
+  color: var(--tolf-ink);
+  background: var(--tolf-card);
+  border-color: var(--tolf-line);
+}
+html[data-tolf-ui="quick"] nav { background: var(--tolf-soft); }
+html[data-tolf-ui="quick"] nav button {
+  color: var(--tolf-muted);
+  background: transparent;
+}
+html[data-tolf-ui="quick"] nav button[aria-pressed="true"] {
+  color: var(--tolf-ink);
+  background: var(--tolf-card);
+}
+
+html[data-tolf-ui="configurator"] .privacy-assurance {
+  background: var(--tolf-card);
+  border-color: var(--tolf-line);
+}
+html[data-tolf-ui="admin"] :is(.admin-table button, .admin-pagination button, .admin-detail-heading button) {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+html[data-tolf-ui="admin"] :is(button.admin-disconnect, button.admin-access-suspend) {
+  color: var(--tolf-danger-text);
+  background: var(--tolf-danger-bg);
+  border: 1px solid var(--tolf-danger-border);
+}
+html[data-tolf-ui="admin"] .admin-access {
+  background: var(--tolf-card);
+  border-color: var(--tolf-line);
+}
+/* Wordmark spacing belongs to TOLF only, not the rest of a product name. */
+html[data-tolf-ui] .tolf-wordmark {
+  display: inline-block;
+  letter-spacing: .16em;
+  margin-inline-end: 0;
+  white-space: nowrap;
+}
+/* Low impact: removing a row or cancelling a pending link. */
+html[data-tolf-ui] :is(.remove-rule, .remove-on-demand-rule, [id="invitationDismiss"], [data-danger-level="low"]) {
+  color: var(--tolf-danger-text);
+  background: var(--tolf-card);
+  border: 1px solid var(--tolf-danger-text);
+  box-shadow: none;
+}
+html[data-tolf-ui] :is(.remove-rule, .remove-on-demand-rule, [id="invitationDismiss"], [data-danger-level="low"]):hover:not(:disabled) {
+  background: var(--tolf-danger-bg);
+}
+html[data-tolf-ui] :is(.remove-rule, .remove-on-demand-rule, [id="invitationDismiss"], [data-danger-level="low"]):active:not(:disabled) {
+  background: var(--tolf-danger-hover);
+}
+/* Medium-impact removal keeps the soft red above (VPN, device, Passkey).
+   Irreversible account deletion is solid red with white text in both themes. */
+html[data-tolf-ui] :is(.account-delete-button, #deleteAccountButton, [data-danger-level="critical"]) {
+  background: #b4232c;
+  border-color: #b4232c;
+  color: #ffffff;
+}
+html[data-tolf-ui] :is(.account-delete-button, #deleteAccountButton, [data-danger-level="critical"]):hover:not(:disabled) {
+  background: #8e1e24;
+  border-color: #8e1e24;
+}
+html[data-tolf-ui] :is(.account-delete-button, #deleteAccountButton, [data-danger-level="critical"]):active:not(:disabled) {
+  background: #75191f;
+  border-color: #75191f;
+}
+html[data-tolf-ui] :is(.account-delete-button, #deleteAccountButton, [data-danger-level="critical"]):is(:disabled, [aria-disabled="true"]) {
+  background: #d3a0a4;
+  border-color: #d3a0a4;
+  color: #ffffff;
+  opacity: 1;
+}
+/* The My VPN actions share the existing Apply control's 44px height. */
+html[data-tolf-ui="vpn"] .vpn-account-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+  min-width: 0;
+}
+html[data-tolf-ui="vpn"] :is(#redeemPromoButton, #signOutButton, #vpnAdminLink) {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  padding: 8px 12px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 600;
+  border-radius: 11px;
+  white-space: nowrap;
+}
+html[data-tolf-ui="vpn"] :is(#signOutButton, #vpnAdminLink) {
+  width: auto;
+  border: 1px solid var(--tolf-outline);
+  background: var(--tolf-card);
+  color: var(--tolf-action-text);
+}
+html[data-tolf-ui="vpn"] :is(#signOutButton, #vpnAdminLink):hover:not(:disabled) {
+  background: var(--tolf-secondary-hover);
+}
+html[data-tolf-ui="vpn"] :is(#signOutButton, #vpnAdminLink):active:not(:disabled) {
+  background: var(--tolf-secondary-pressed);
+}
+html[data-tolf-ui="vpn"] #vpnAdminLink.hidden {
+  display: none !important;
+}
+@media (max-width: 620px) {
+  html[data-tolf-ui="vpn"] #vpnCard .card-topline:has(#vpnAdminLink:not(.hidden)) {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  html[data-tolf-ui="vpn"] #vpnCard .card-topline:has(#vpnAdminLink:not(.hidden)) h2 {
+    flex-basis: 100%;
+  }
+  html[data-tolf-ui="vpn"] .vpn-account-actions:has(#vpnAdminLink:not(.hidden)) {
+    width: 100%;
+  }
+}
+@media (max-width: 380px) {
+  html[data-tolf-ui="vpn"] :is(#redeemPromoButton, #signOutButton, #vpnAdminLink) {
+    padding-inline: 8px;
+    font-size: 13px;
+  }
+}
