@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-17.4 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-17.5 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +21,7 @@
     .configurator-tool-row {
       margin: 26px 0 34px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(300px, .9fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       align-items: stretch;
     }
@@ -104,6 +104,7 @@
     }
 
     .configurator-tool-row .import-button {
+      width: 100%;
       height: 52px;
       white-space: nowrap;
     }
@@ -173,7 +174,7 @@
       <div class="configurator-hero-copy">
         <div class="title-row">
           <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-17.4</span>
+          <span class="build-number">Build 2026-09-17.5</span>
         </div>
 
         <p class="subtitle">
@@ -335,9 +336,9 @@
       </div>
     </details>
 
-    <div class="section-title">On Demand</div>
+    <div id="on-demand-title" class="section-title">On Demand</div>
 
-    <div class="group">
+    <div id="on-demand-group" class="group">
       <div class="switch-row">
         <span class="switch-label">
           Enable On Demand
@@ -358,19 +359,16 @@
       </div>
 
       <p id="always-on-hint" class="always-on-hint">
-        Connect automatically on all networks. On Android, Always-on VPN is enabled separately in system settings.
+        Connect automatically on all networks.
       </p>
 
       <div id="manual-rules" class="manual-rules">
 
-        <div class="subsection-title">Default Actions · Apple only</div>
+        <div class="subsection-title">Default Actions</div>
 
         <div class="group">
           <div class="field">
-            <label for="wifi-action">
-              Wi-Fi
-              <span class="platform-note">Apple only</span>
-            </label>
+            <label for="wifi-action">Wi-Fi</label>
             <select id="wifi-action">
               <option value="Connect" selected>Connect</option>
               <option value="Disconnect">Disconnect</option>
@@ -379,10 +377,7 @@
           </div>
 
           <div class="field">
-            <label for="cellular-action">
-              Cellular
-              <span class="platform-note">Apple only</span>
-            </label>
+            <label for="cellular-action">Cellular</label>
             <select id="cellular-action">
               <option value="Connect" selected>Connect</option>
               <option value="Disconnect">Disconnect</option>
@@ -391,10 +386,7 @@
           </div>
 
           <div class="field">
-            <label for="ethernet-action">
-              Ethernet
-              <span class="platform-note">Apple only</span>
-            </label>
+            <label for="ethernet-action">Ethernet</label>
             <select id="ethernet-action">
               <option value="Connect" selected>Connect</option>
               <option value="Disconnect">Disconnect</option>
@@ -403,7 +395,7 @@
           </div>
         </div>
 
-        <div class="subsection-title">Additional Rules · Apple only</div>
+        <div class="subsection-title">Additional Rules</div>
 
         <div id="rules-group" class="group">
           <button id="add-rule" class="add-rule" type="button">
@@ -451,5 +443,6 @@
 
   <script src="app.js?v=20260901.1"></script>
   <script src="windows.js?v=20260917.1"></script>
+  <script src="platform.js?v=20260917.1"></script>
 </body>
 </html>
