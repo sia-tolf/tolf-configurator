@@ -1,0 +1,42 @@
+/* TOLF 2026-09-17.3 — retain approved Blue 6 and action hierarchy. */
+@import url("./tolf-buttons.20260917-2.css");
+
+/* One neutral active language state across home, account and configurator. */
+html[data-tolf-ui] .language button:is(.active, [aria-pressed="true"]) {
+  color: var(--tolf-ink);
+  background: #d9d9df;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10);
+}
+@media (prefers-color-scheme: dark) {
+  html[data-tolf-ui] .language button:is(.active, [aria-pressed="true"]) {
+    background: #3a3a3c;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
+  }
+}
+
+/* Additional word gap, independent of the .16em tracking inside TOLF.
+   Preserve normal text spaces and do not pad a standalone logo. */
+html[data-tolf-ui] .tolf-wordmark[data-tolf-before="true"] {
+  margin-inline-start: .3em;
+}
+html[data-tolf-ui] .tolf-wordmark[data-tolf-after="true"] {
+  margin-inline-end: .3em;
+}
+/* The account label, not the language switcher/logout, yields on narrow screens. */
+html[data-tolf-ui="home"] .topbar-inner > .brand { flex: 0 0 auto; }
+html[data-tolf-ui="home"] .top-actions {
+  min-width: 0;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+html[data-tolf-ui="home"] .top-actions > .language { flex: 0 0 auto; }
+html[data-tolf-ui="home"] .authenticated-account { min-width: 0; flex: 0 1 auto; }
+html[data-tolf-ui="home"] .authenticated-account-status { flex: 0 1 auto; }
+html[data-tolf-ui="home"] .authenticated-account-logout { flex: 0 0 auto; }
+@media (max-width: 380px) {
+  html[data-tolf-ui="home"] .topbar-inner { gap: 6px; }
+  html[data-tolf-ui="home"] .top-actions { gap: 4px; }
+  html[data-tolf-ui="home"] .language button { min-width: 28px; padding-inline: 4px; font-size: 13px; }
+  html[data-tolf-ui="home"] .authenticated-account-logout { padding-inline: 4px; font-size: 13px; }
+}
