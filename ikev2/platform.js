@@ -13,6 +13,34 @@
 
   const selectorStyle = document.createElement("style");
   selectorStyle.textContent = `
+    main {
+      padding-top: 0 !important;
+    }
+
+    .page-top {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 50 !important;
+      width: 100vw !important;
+      min-height: 58px !important;
+      margin-left: calc(50% - 50vw) !important;
+      margin-right: calc(50% - 50vw) !important;
+      margin-bottom: 30px !important;
+      padding: 8px max(16px, calc((100vw - 720px) / 2)) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+      background: rgba(245, 245, 247, 0.86) !important;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+      backdrop-filter: saturate(180%) blur(20px) !important;
+      -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+    }
+
+    .page-top .back {
+      margin: 0 !important;
+    }
+
     .target-platform-dot {
       width: 12px !important;
       height: 12px !important;
@@ -26,6 +54,11 @@
     }
 
     @media (prefers-color-scheme: dark) {
+      .page-top {
+        background: rgba(0, 0, 0, 0.84) !important;
+        border-bottom-color: rgba(255, 255, 255, 0.09) !important;
+      }
+
       .target-platform-dot {
         background: #ffffff !important;
       }
