@@ -56,6 +56,7 @@
 
   const onDemandTitle = document.getElementById("on-demand-title");
   const onDemandGroup = document.getElementById("on-demand-group");
+  const onDemandOptionsEl = document.getElementById("on-demand-options");
 
   function updateImportAccept(platform) {
     const accept = {
@@ -100,7 +101,7 @@
 
     show(onDemandTitle, apple);
     show(onDemandGroup, apple);
-    show(document.getElementById("on-demand-options"), apple && onDemandCheckbox.checked);
+    show(onDemandOptionsEl, apple);
 
     document.querySelectorAll(".platform-note").forEach(note => {
       note.style.display = "none";
@@ -130,9 +131,7 @@
   const originalUpdateOnDemandVisibility = updateOnDemandVisibility;
   updateOnDemandVisibility = function() {
     originalUpdateOnDemandVisibility();
-    if (currentPlatform() !== "apple") {
-      show(document.getElementById("on-demand-options"), false);
-    }
+    show(onDemandOptionsEl, currentPlatform() === "apple");
   };
 
   function setValue(id, value) {
