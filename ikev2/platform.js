@@ -11,6 +11,32 @@
     return;
   }
 
+  const selectorStyle = document.createElement("style");
+  selectorStyle.textContent = `
+    .target-platform-dot {
+      width: 12px !important;
+      height: 12px !important;
+      flex: 0 0 12px !important;
+      background: #ffffff !important;
+    }
+
+    .target-platform-choice input:checked + .target-platform-segment .target-platform-dot {
+      background: #34c759 !important;
+      border-color: #248a3d !important;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .target-platform-dot {
+        background: #ffffff !important;
+      }
+
+      .target-platform-choice input:checked + .target-platform-segment .target-platform-dot {
+        background: #30d158 !important;
+      }
+    }
+  `;
+  document.head.appendChild(selectorStyle);
+
   const lang = ["en", "ru", "lv"].includes(document.documentElement.lang)
     ? document.documentElement.lang
     : "en";
@@ -38,6 +64,42 @@
       windowsRequired: "Jānorāda Name, Server un Username."
     }
   }[lang];
+
+  function detectPlatform() {
+    const ua = navigator.userAgent || "";
+    const platform = navigator.platform || "";
+    const uaPlatform = navigator.userAgentData?.platform || "";
+    const touchPoints = navigator.maxTouchPoints || 0;
+
+    if (/Android/i.test(ua) || /Android/i.test(uaPlatform)) {
+      return "android";
+    }
+
+    if (/Windows/i.test(ua) || /Windows/i.test(uaPlatform) || /^Win/i.test(platform)) {
+      return "windows";
+    }
+
+    if (/iPhone|iPad|iPod/i.test(ua)) {
+      return "apple";
+    }
+
+    if (
+      /macOS|Macintosh/i.test(uaPlatform) ||
+      /Macintosh/i.test(ua) ||
+      /^Mac/i.test(platform) ||
+      (platform === "MacIntel" && touchPoints > 1)
+    ) {
+      return "apple";
+    }
+
+    return "apple";
+  }
+
+  const detectedPlatform = detectPlatform();
+  const detectedInput = platformInputs.find(input => input.value === detectedPlatform);
+  if (detectedInput) {
+    detectedInput.checked = true;
+  }
 
   function currentPlatform() {
     return document.querySelector('input[name="target-platform"]:checked')?.value || "apple";
