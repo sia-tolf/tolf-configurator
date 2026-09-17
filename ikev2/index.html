@@ -1,14 +1,53 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-17.8 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-17.9 -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IKEv2 — TOLF Configurator</title>
+  <title data-i18n="ikev2Title">IKEv2 — TOLF Configurator</title>
 
   <link rel="stylesheet" href="styles.css?v=20260917.1">
   <style>
+    .page-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .page-top .back {
+      margin: 0;
+    }
+
+    .language {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .language button {
+      min-width: 42px;
+      height: 32px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 8px;
+      color: #6e6e73;
+      background: transparent;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .language button.active {
+      color: #1d1d1f;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
     .configurator-hero {
       display: block;
       margin-bottom: 0;
@@ -133,6 +172,21 @@
     }
 
     @media (prefers-color-scheme: dark) {
+      .language {
+        background: rgba(28, 28, 30, 0.82);
+        border-color: rgba(255, 255, 255, 0.09);
+      }
+
+      .language button {
+        color: #a1a1a6;
+      }
+
+      .language button.active {
+        color: #f5f5f7;
+        background: #3a3a3c;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+      }
+
       .target-platform-selector {
         background: #1c1c1e;
         border-color: #38383a;
@@ -166,19 +220,27 @@
   </style>
 </head>
 
-<body>
+<body data-page="ikev2">
   <main>
 
-    <a class="back" href="/">‹ TOLF Configurator</a>
+    <div class="page-top">
+      <a class="back" href="/" data-lang-link data-i18n="backConfigurator">‹ TOLF Configurator</a>
+
+      <div class="language" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="lv">LV</button>
+      </div>
+    </div>
 
     <div class="configurator-hero">
       <div class="configurator-hero-copy">
         <div class="title-row">
           <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-17.8</span>
+          <span class="build-number">Build 2026-09-17.9</span>
         </div>
 
-        <p class="subtitle">
+        <p class="subtitle" data-i18n="ikev2Subtitle">
           Create IKEv2 configuration files for Apple devices, strongSwan on Android, and Windows PowerShell.
         </p>
       </div>
@@ -212,7 +274,7 @@
       </div>
 
       <div class="import-area">
-        <button id="import-button" class="import-button" type="button">
+        <button id="import-button" class="import-button" type="button" data-i18n="importExistingConfiguration">
           Import Existing Configuration
         </button>
 
@@ -225,50 +287,50 @@
       </div>
     </div>
 
-    <div class="section-title">Connection</div>
+    <div class="section-title" data-i18n="connection">Connection</div>
 
     <div class="group">
       <div class="field">
-        <label for="name">Name</label>
+        <label for="name" data-i18n="name">Name</label>
         <input id="name" type="text" placeholder="My VPN">
       </div>
 
       <div class="field">
-        <label for="server">Server</label>
+        <label for="server" data-i18n="server">Server</label>
         <input id="server" type="text" placeholder="vpn.example.com">
       </div>
 
       <div class="field">
-        <label for="remote-id">Remote ID</label>
+        <label for="remote-id" data-i18n="remoteId">Remote ID</label>
         <input id="remote-id" type="text" placeholder="vpn.example.com">
       </div>
 
       <div class="field">
-        <label for="local-id">Local ID</label>
-        <input id="local-id" type="text" placeholder="Optional">
+        <label for="local-id" data-i18n="localId">Local ID</label>
+        <input id="local-id" type="text" placeholder="Optional" data-i18n-placeholder="optional">
       </div>
     </div>
 
-    <div class="section-title">Authentication</div>
+    <div class="section-title" data-i18n="authentication">Authentication</div>
 
     <div class="group">
       <div class="field">
-        <label for="username">Username</label>
-        <input id="username" type="text" autocomplete="username" placeholder="Username">
+        <label for="username" data-i18n="username">Username</label>
+        <input id="username" type="text" autocomplete="username" placeholder="Username" data-i18n-placeholder="username">
       </div>
 
       <div class="field">
-        <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" placeholder="Password">
+        <label for="password" data-i18n="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="Password" data-i18n-placeholder="password">
       </div>
     </div>
 
     <details>
-      <summary>Advanced Settings</summary>
+      <summary data-i18n="advancedSettings">Advanced Settings</summary>
 
       <div class="group advanced">
         <div class="field">
-          <label for="ike-encryption">IKE Encryption</label>
+          <label for="ike-encryption" data-i18n="ikeEncryption">IKE Encryption</label>
           <select id="ike-encryption">
             <option value="AES-256">AES-256</option>
             <option value="AES-128">AES-128</option>
@@ -276,7 +338,7 @@
         </div>
 
         <div class="field">
-          <label for="ike-integrity">IKE Integrity</label>
+          <label for="ike-integrity" data-i18n="ikeIntegrity">IKE Integrity</label>
           <select id="ike-integrity">
             <option value="SHA2-256">SHA-256</option>
             <option value="SHA2-384">SHA-384</option>
@@ -285,7 +347,7 @@
         </div>
 
         <div class="field">
-          <label for="dh-group">Diffie-Hellman</label>
+          <label for="dh-group" data-i18n="diffieHellman">Diffie-Hellman</label>
           <select id="dh-group">
             <option value="14">Group 14 (2048-bit MODP)</option>
             <option value="19">Group 19 (256-bit ECP)</option>
@@ -295,53 +357,53 @@
 
         <div class="field">
           <label for="dpd">
-            Dead Peer Detection
-            <span class="platform-note">Apple only</span>
+            <span data-i18n="dpd">Dead Peer Detection</span>
+            <span class="platform-note" data-i18n="appleOnly">Apple only</span>
           </label>
           <select id="dpd">
-            <option value="None">None</option>
-            <option value="Low">Low</option>
-            <option value="Medium" selected>Medium</option>
-            <option value="High">High</option>
+            <option value="None" data-i18n="none">None</option>
+            <option value="Low" data-i18n="low">Low</option>
+            <option value="Medium" selected data-i18n="medium">Medium</option>
+            <option value="High" data-i18n="high">High</option>
           </select>
         </div>
 
         <div class="switch-row">
-          <span>Perfect Forward Secrecy</span>
+          <span data-i18n="pfs">Perfect Forward Secrecy</span>
           <input id="pfs" class="ios-switch" type="checkbox" checked>
         </div>
 
         <div class="switch-row">
           <span class="switch-label">
             MOBIKE
-            <span class="platform-note">Apple only</span>
+            <span class="platform-note" data-i18n="appleOnly">Apple only</span>
           </span>
           <input id="mobike" class="ios-switch" type="checkbox" checked>
         </div>
 
         <div class="switch-row">
           <span class="switch-label">
-            Redirects
-            <span class="platform-note">Apple only</span>
+            <span data-i18n="redirects">Redirects</span>
+            <span class="platform-note" data-i18n="appleOnly">Apple only</span>
           </span>
           <input id="redirects" class="ios-switch" type="checkbox">
         </div>
 
         <div class="switch-row">
           <span class="switch-label">
-            IPv4/IPv6 Internal Subnet Attributes
-            <span class="platform-note">Apple only</span>
+            <span data-i18n="internalSubnet">IPv4/IPv6 Internal Subnet Attributes</span>
+            <span class="platform-note" data-i18n="appleOnly">Apple only</span>
           </span>
           <input id="internal-subnet" class="ios-switch" type="checkbox">
         </div>
       </div>
     </details>
 
-    <div id="on-demand-title" class="section-title">On Demand</div>
+    <div id="on-demand-title" class="section-title" data-i18n="onDemand">On Demand</div>
 
     <div id="on-demand-group" class="group">
       <div class="switch-row">
-        <span class="switch-label">
+        <span class="switch-label" data-i18n="enableOnDemand">
           Enable On Demand
         </span>
         <input id="on-demand" class="ios-switch" type="checkbox">
@@ -352,59 +414,59 @@
 
       <div class="group">
         <div class="switch-row">
-          <span class="switch-label">
+          <span class="switch-label" data-i18n="alwaysOn">
             Always On
           </span>
           <input id="always-on" class="ios-switch" type="checkbox">
         </div>
       </div>
 
-      <p id="always-on-hint" class="always-on-hint">
+      <p id="always-on-hint" class="always-on-hint" data-i18n="alwaysOnHint">
         Connect automatically on all networks.
       </p>
 
       <div id="manual-rules" class="manual-rules">
 
-        <div class="subsection-title">Default Actions</div>
+        <div class="subsection-title" data-i18n="defaultActions">Default Actions</div>
 
         <div class="group">
           <div class="field">
-            <label for="wifi-action">Wi-Fi</label>
+            <label for="wifi-action" data-i18n="wifi">Wi-Fi</label>
             <select id="wifi-action">
-              <option value="Connect" selected>Connect</option>
-              <option value="Disconnect">Disconnect</option>
-              <option value="Ignore">Ignore</option>
+              <option value="Connect" selected data-i18n="connect">Connect</option>
+              <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
+              <option value="Ignore" data-i18n="ignore">Ignore</option>
             </select>
           </div>
 
           <div class="field">
-            <label for="cellular-action">Cellular</label>
+            <label for="cellular-action" data-i18n="cellular">Cellular</label>
             <select id="cellular-action">
-              <option value="Connect" selected>Connect</option>
-              <option value="Disconnect">Disconnect</option>
-              <option value="Ignore">Ignore</option>
+              <option value="Connect" selected data-i18n="connect">Connect</option>
+              <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
+              <option value="Ignore" data-i18n="ignore">Ignore</option>
             </select>
           </div>
 
           <div class="field">
-            <label for="ethernet-action">Ethernet</label>
+            <label for="ethernet-action" data-i18n="ethernet">Ethernet</label>
             <select id="ethernet-action">
-              <option value="Connect" selected>Connect</option>
-              <option value="Disconnect">Disconnect</option>
-              <option value="Ignore">Ignore</option>
+              <option value="Connect" selected data-i18n="connect">Connect</option>
+              <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
+              <option value="Ignore" data-i18n="ignore">Ignore</option>
             </select>
           </div>
         </div>
 
-        <div class="subsection-title">Additional Rules</div>
+        <div class="subsection-title" data-i18n="additionalRules">Additional Rules</div>
 
         <div id="rules-group" class="group">
-          <button id="add-rule" class="add-rule" type="button">
+          <button id="add-rule" class="add-rule" type="button" data-i18n="addRule">
             + Add Rule
           </button>
         </div>
 
-        <p class="hint">
+        <p class="hint" data-i18n="additionalRulesHint">
           Additional rules are checked before the default actions.
         </p>
 
@@ -412,27 +474,27 @@
     </div>
 
     <div class="action">
-      <button id="install-profile" class="action-button install-button" type="button">
+      <button id="install-profile" class="action-button install-button" type="button" data-i18n="installProfile">
         Install Profile
       </button>
 
-      <button id="save-profile" class="action-button save-button" type="button">
+      <button id="save-profile" class="action-button save-button" type="button" data-i18n="shareProfile">
         Share Profile
       </button>
 
-      <button id="save-strongswan" class="action-button save-button" type="button">
+      <button id="save-strongswan" class="action-button save-button" type="button" data-i18n="shareStrongSwan">
         Share strongSwan
       </button>
     </div>
 
     <p id="error" class="error"></p>
 
-    <p class="note">
+    <p class="note" data-i18n="localProcessingNote">
       Profile data and imported files are processed locally in your browser.
       Nothing is sent to the server.
     </p>
 
-    <p class="disclaimer">
+    <p class="disclaimer" data-i18n="disclaimer">
       TOLF Configurator is an independent project and is not affiliated with,
       endorsed by, sponsored by, or supported by Apple Inc. or Google LLC.
       Apple and Google are not responsible for this site or for configuration
@@ -442,6 +504,7 @@
 
   </main>
 
+  <script src="../i18n.js?v=20260917.1"></script>
   <script src="app.js?v=20260901.1"></script>
   <script src="windows.js?v=20260917.2"></script>
   <script src="platform.js?v=20260917.2"></script>
