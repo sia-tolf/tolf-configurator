@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-17.2 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-17.3 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,17 +11,25 @@
   <style>
     .configurator-hero {
       display: block;
-      margin-bottom: 24px;
+      margin-bottom: 0;
     }
 
     .configurator-hero-copy {
       min-width: 0;
     }
 
+    .configurator-tool-row {
+      margin: 26px 0 34px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(230px, .65fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+
     .target-platform-selector {
-      width: min(480px, 100%);
+      width: 100%;
       min-height: 0;
-      margin: 26px auto 0;
+      margin: 0;
       padding: 4px;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -91,10 +99,24 @@
       outline-offset: 2px;
     }
 
+    .configurator-tool-row .import-area {
+      margin: 0;
+    }
+
+    .configurator-tool-row .import-button {
+      height: 52px;
+      white-space: nowrap;
+    }
+
     @media (max-width: 560px) {
+      .configurator-tool-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 22px;
+      }
+
       .target-platform-selector {
         width: 100%;
-        margin-top: 22px;
       }
 
       .target-platform-segment {
@@ -102,6 +124,10 @@
         padding: 7px 8px;
         gap: 5px;
         font-size: 14px;
+      }
+
+      .configurator-tool-row .import-button {
+        height: 50px;
       }
     }
 
@@ -147,14 +173,16 @@
       <div class="configurator-hero-copy">
         <div class="title-row">
           <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-17.2</span>
+          <span class="build-number">Build 2026-09-17.3</span>
         </div>
 
         <p class="subtitle">
           Create IKEv2 configuration files for Apple devices, strongSwan on Android, and Windows PowerShell.
         </p>
       </div>
+    </div>
 
+    <div class="configurator-tool-row">
       <div class="target-platform-selector" role="radiogroup" aria-label="Target platform">
         <label class="target-platform-choice">
           <input id="target-apple" type="radio" name="target-platform" value="apple" checked>
@@ -180,23 +208,19 @@
           </span>
         </label>
       </div>
-    </div>
 
-    <div class="import-area">
-      <button id="import-button" class="import-button" type="button">
-        Import Existing Profile
-      </button>
+      <div class="import-area">
+        <button id="import-button" class="import-button" type="button">
+          Import Existing Configuration
+        </button>
 
-      <input
-        id="import-file"
-        type="file"
-        accept=".mobileconfig,application/x-apple-aspen-config,application/xml,text/xml"
-        hidden
-      >
-
-      <p class="import-hint">
-        Import an existing .mobileconfig file to edit its IKEv2 settings.
-      </p>
+        <input
+          id="import-file"
+          type="file"
+          accept=".mobileconfig,application/x-apple-aspen-config,application/xml,text/xml"
+          hidden
+        >
+      </div>
     </div>
 
     <div class="section-title">Connection</div>
