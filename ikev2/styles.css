@@ -545,14 +545,13 @@ summary {
 @media (max-width: 560px) {
   .rule-row {
     display: grid;
-    grid-template-columns:
-      minmax(92px, 1.15fr)
-      minmax(58px, 0.8fr)
-      minmax(86px, 1fr)
-      28px;
-    grid-template-areas: "type value action remove";
-    gap: 8px;
-    padding: 10px 12px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "type remove"
+      "value value"
+      "action action";
+    gap: 6px 12px;
+    padding: 10px 16px 12px;
     align-items: center;
   }
 
@@ -560,7 +559,7 @@ summary {
     grid-area: type;
     width: 100%;
     min-width: 0;
-    font-size: 13px !important;
+    font-size: 14px !important;
     font-weight: 600;
     color: #5f5f63;
   }
@@ -569,17 +568,17 @@ summary {
     grid-area: value;
     width: 100%;
     min-width: 0;
-    padding: 0;
-    font-size: 14px !important;
+    padding: 2px 0 4px;
+    font-size: 16px !important;
   }
 
   .rule-action {
     grid-area: action;
     width: 100%;
     min-width: 0;
-    padding: 0;
+    padding: 2px 0;
     text-align: left;
-    font-size: 13px !important;
+    font-size: 15px !important;
     color: #5f5f63;
   }
 
