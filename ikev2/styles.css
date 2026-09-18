@@ -555,8 +555,8 @@ summary {
   }
 
   .action-button {
-    min-height: 40px !important;
-    height: 40px !important;
+    min-height: 48px !important;
+    height: 48px !important;
     padding: 6px 10px !important;
     font-size: 14px;
     line-height: 1.15;
