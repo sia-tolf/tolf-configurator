@@ -358,7 +358,7 @@ function updateAlwaysOnVisibility() {
 
 function createRuleRow(
   initialValue = "",
-  initialAction = "Disconnect"
+  initialAction = "Connect"
 ) {
   const row =
     document.createElement("div");
