@@ -432,8 +432,9 @@ summary {
 
 .rule-type {
   flex: 0 0 160px;
-  font-size: 17px;
-  font-weight: 500;
+  font-family: inherit !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
   color: inherit;
 }
 
@@ -562,8 +563,9 @@ summary {
     grid-area: type;
     width: 100%;
     min-width: 0;
+    font-family: inherit !important;
     font-size: 17px !important;
-    font-weight: 500;
+    font-weight: 600 !important;
     color: inherit;
   }
 
