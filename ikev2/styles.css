@@ -302,6 +302,14 @@ summary {
   letter-spacing: 0.03em;
 }
 
+#default-actions-block[hidden] {
+  display: none;
+}
+
+#on-demand-group.on-demand-compact #always-on-row {
+  border-bottom: 0;
+}
+
 .switch-label {
   display: flex;
   align-items: baseline;
