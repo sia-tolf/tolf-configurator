@@ -392,6 +392,28 @@ summary {
   display: block;
 }
 
+.rules-inline {
+  background: transparent;
+}
+
+#on-demand-group .rules-inline .add-rule {
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  border: 0 !important;
+  border-bottom: 1px solid #e5e5e7 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.group-inline-hint {
+  margin: 0;
+  padding: 10px 16px 12px;
+  color: #77777c;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .always-on-hint {
   display: none;
   margin: 10px 4px 0;
@@ -694,11 +716,16 @@ summary {
   .hint,
   .subsection-title,
   .always-on-hint,
+  .group-inline-hint,
   .remove-rule,
   .import-hint,
   .platform-note,
   .disclaimer {
     color: #9a9aa0;
+  }
+
+  #on-demand-group .rules-inline .add-rule {
+    border-bottom-color: #38383a !important;
   }
 
   .error {
