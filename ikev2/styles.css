@@ -830,3 +830,10 @@ main {
     border-bottom-color: rgba(255, 255, 255, 0.09);
   }
 }
+
+/* Keep On Demand controls aligned with their row labels. */
+#on-demand-group .field select,
+#on-demand-group .rule-row select,
+#on-demand-group .rule-row input {
+  padding-inline-start: 0;
+}
