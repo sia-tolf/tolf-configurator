@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-17.9 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-18.1 -->
 
 <!DOCTYPE html>
 <html lang="en" data-tolf-ui="configurator">
@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="ikev2Title">IKEv2 — TOLF Configurator</title>
 
-  <link rel="stylesheet" href="styles.css?v=20260918.3">
+  <link rel="stylesheet" href="styles.css?v=20260918.4">
   <style>
     .page-top {
       display: flex;
@@ -239,7 +239,7 @@
       <div class="configurator-hero-copy">
         <div class="title-row">
           <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-17.9</span>
+          <span class="build-number">Build 2026-09-18.1</span>
         </div>
 
         <p class="subtitle" data-i18n="ikev2Subtitle">
@@ -410,18 +410,16 @@
         </span>
         <input id="on-demand" class="ios-switch" type="checkbox">
       </div>
+
+      <div id="always-on-row" class="switch-row is-disabled" aria-disabled="true">
+        <span class="switch-label" data-i18n="alwaysOn">
+          Always On
+        </span>
+        <input id="always-on" class="ios-switch" type="checkbox" disabled>
+      </div>
     </div>
 
     <div id="on-demand-options" class="on-demand-options">
-
-      <div class="group">
-        <div class="switch-row">
-          <span class="switch-label" data-i18n="alwaysOn">
-            Always On
-          </span>
-          <input id="always-on" class="ios-switch" type="checkbox">
-        </div>
-      </div>
 
       <p id="always-on-hint" class="always-on-hint" data-i18n="alwaysOnHint">
         Connect automatically on all networks.
@@ -507,7 +505,7 @@
   </main>
 
   <script src="../i18n.js?v=20260917.1"></script>
-  <script src="app.js?v=20260901.1"></script>
+  <script src="app.js?v=20260918.1"></script>
   <script src="windows.js?v=20260917.2"></script>
   <script src="platform.js?v=20260917.2"></script>
 </body>
