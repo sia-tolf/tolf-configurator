@@ -278,6 +278,30 @@ summary {
   color: #8e8e93;
 }
 
+.field.is-disabled,
+.group-subsection-label.is-disabled {
+  color: #8e8e93;
+}
+
+.field.is-disabled select {
+  color: #8e8e93;
+  opacity: 1;
+  cursor: default;
+}
+
+.group-subsection-label {
+  min-height: 34px;
+  padding: 9px 16px 7px;
+  border-bottom: 1px solid #e5e5e7;
+  color: #77777c;
+  background: rgba(0, 0, 0, 0.018);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 .switch-label {
   display: flex;
   align-items: baseline;
@@ -624,8 +648,19 @@ summary {
 
   .field,
   .switch-row,
-  .rule-row {
+  .rule-row,
+  .group-subsection-label {
     border-color: #38383a;
+  }
+
+  .group-subsection-label {
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .field.is-disabled,
+  .field.is-disabled select,
+  .group-subsection-label.is-disabled {
+    color: #6e6e73;
   }
 
   .install-button {
