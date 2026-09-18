@@ -542,7 +542,7 @@ summary {
   line-height: 1.45;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 560px) {
   .rule-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -773,7 +773,7 @@ summary {
     border-bottom-color: #38383a !important;
   }
 
-  @media (max-width: 680px) {
+  @media (max-width: 560px) {
     .rule-type,
     .rule-action {
       color: #b8b8bd;
