@@ -40,3 +40,14 @@ html[data-tolf-ui="home"] .authenticated-account-logout { flex: 0 0 auto; }
   html[data-tolf-ui="home"] .language button { min-width: 28px; padding-inline: 4px; font-size: 13px; }
   html[data-tolf-ui="home"] .authenticated-account-logout { padding-inline: 4px; font-size: 13px; }
 }
+
+/* Phone: keep labels optically centered inside every Configurator button,
+   including multi-line actions such as Share Apple (.mobileconfig). */
+@media (max-width: 560px) {
+  html[data-tolf-ui="configurator"] button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+}
