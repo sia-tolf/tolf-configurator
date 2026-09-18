@@ -1,4 +1,4 @@
-// TOLF Configurator IKEv2 — Build 2026-09-18.1
+// TOLF Configurator IKEv2 — Build 2026-09-18.2
 
 const identityStorageKey = "tolf.ikev2.profile-identities.v2";
 const memoryIdentities = {};
@@ -10,6 +10,17 @@ let importedFileBaseName = null;
 const onDemandCheckbox = document.getElementById("on-demand");
 const alwaysOnCheckbox = document.getElementById("always-on");
 const alwaysOnRow = document.getElementById("always-on-row");
+const defaultActionsLabel = document.getElementById("default-actions-label");
+const defaultActionRows = [
+  document.getElementById("wifi-action-row"),
+  document.getElementById("cellular-action-row"),
+  document.getElementById("ethernet-action-row")
+].filter(Boolean);
+const defaultActionSelects = [
+  document.getElementById("wifi-action"),
+  document.getElementById("cellular-action"),
+  document.getElementById("ethernet-action")
+].filter(Boolean);
 const onDemandOptions = document.getElementById("on-demand-options");
 const manualRules = document.getElementById("manual-rules");
 const alwaysOnHint = document.getElementById("always-on-hint");
@@ -267,6 +278,35 @@ function updateOnDemandVisibility() {
   updateAlwaysOnVisibility();
 }
 
+function updateDefaultActionsState() {
+  const active =
+    onDemandCheckbox.checked &&
+    !alwaysOnCheckbox.checked;
+
+  defaultActionSelects.forEach(select => {
+    select.disabled = !active;
+  });
+
+  defaultActionRows.forEach(row => {
+    row.classList.toggle(
+      "is-disabled",
+      !active
+    );
+
+    row.setAttribute(
+      "aria-disabled",
+      active ? "false" : "true"
+    );
+  });
+
+  if (defaultActionsLabel) {
+    defaultActionsLabel.classList.toggle(
+      "is-disabled",
+      !active
+    );
+  }
+}
+
 function updateAlwaysOnVisibility() {
   if (!onDemandCheckbox.checked) {
     manualRules.classList.remove(
@@ -277,6 +317,7 @@ function updateAlwaysOnVisibility() {
       "visible"
     );
 
+    updateDefaultActionsState();
     return;
   }
 
@@ -297,6 +338,8 @@ function updateAlwaysOnVisibility() {
       "visible"
     );
   }
+
+  updateDefaultActionsState();
 }
 
 function createRuleRow(
