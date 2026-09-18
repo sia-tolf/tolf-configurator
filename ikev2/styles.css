@@ -432,6 +432,7 @@ summary {
 
 .rule-type {
   flex: 0 0 160px;
+  padding-inline-start: 0;
   font-family: inherit !important;
   font-size: 17px !important;
   font-weight: 500 !important;
