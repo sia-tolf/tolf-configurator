@@ -70,11 +70,11 @@
   `;
   document.head.appendChild(selectorStyle);
 
-  const lang = ["en", "ru", "lv"].includes(document.documentElement.lang)
+  const getLang = () => ["en", "ru", "lv"].includes(document.documentElement.lang)
     ? document.documentElement.lang
     : "en";
 
-  const copy = {
+  const translations = {
     en: {
       imported: "Configuration Imported",
       invalidAndroid: "The selected file is not a valid strongSwan .sswan configuration.",
@@ -96,7 +96,8 @@
       importFailed: "Konfigurāciju neizdevās importēt.",
       windowsRequired: "Jānorāda Name, Server un Username."
     }
-  }[lang];
+  };
+  const copy = new Proxy({}, { get: (_, key) => translations[getLang()][key] });
 
   function detectPlatform() {
     const ua = navigator.userAgent || "";
