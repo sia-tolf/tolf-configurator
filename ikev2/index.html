@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-18.2 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-18.3 -->
 
 <!DOCTYPE html>
 <html lang="en" data-tolf-ui="configurator">
@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="ikev2Title">IKEv2 — TOLF Configurator</title>
 
-  <link rel="stylesheet" href="styles.css?v=20260918.6">
+  <link rel="stylesheet" href="styles.css?v=20260918.7">
   <style>
     .page-top {
       display: flex;
@@ -239,7 +239,7 @@
       <div class="configurator-hero-copy">
         <div class="title-row">
           <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-18.2</span>
+          <span class="build-number">Build 2026-09-18.3</span>
         </div>
 
         <p class="subtitle" data-i18n="ikev2Subtitle">
@@ -418,35 +418,37 @@
         <input id="always-on" class="ios-switch" type="checkbox" disabled>
       </div>
 
-      <div id="default-actions-label" class="group-subsection-label is-disabled" data-i18n="defaultActions">
-        Default Actions
-      </div>
+      <div id="default-actions-block" hidden>
+        <div id="default-actions-label" class="group-subsection-label" data-i18n="defaultActions">
+          Default Actions
+        </div>
 
-      <div id="wifi-action-row" class="field is-disabled" aria-disabled="true">
-        <label for="wifi-action" data-i18n="wifi">Wi-Fi</label>
-        <select id="wifi-action" disabled>
-          <option value="Connect" selected data-i18n="connect">Connect</option>
-          <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
-          <option value="Ignore" data-i18n="ignore">Ignore</option>
-        </select>
-      </div>
+        <div id="wifi-action-row" class="field" aria-disabled="false">
+          <label for="wifi-action" data-i18n="wifi">Wi-Fi</label>
+          <select id="wifi-action">
+            <option value="Connect" selected data-i18n="connect">Connect</option>
+            <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
+            <option value="Ignore" data-i18n="ignore">Ignore</option>
+          </select>
+        </div>
 
-      <div id="cellular-action-row" class="field is-disabled" aria-disabled="true">
-        <label for="cellular-action" data-i18n="cellular">Cellular</label>
-        <select id="cellular-action" disabled>
-          <option value="Connect" selected data-i18n="connect">Connect</option>
-          <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
-          <option value="Ignore" data-i18n="ignore">Ignore</option>
-        </select>
-      </div>
+        <div id="cellular-action-row" class="field" aria-disabled="false">
+          <label for="cellular-action" data-i18n="cellular">Cellular</label>
+          <select id="cellular-action">
+            <option value="Connect" selected data-i18n="connect">Connect</option>
+            <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
+            <option value="Ignore" data-i18n="ignore">Ignore</option>
+          </select>
+        </div>
 
-      <div id="ethernet-action-row" class="field is-disabled" aria-disabled="true">
-        <label for="ethernet-action" data-i18n="ethernet">Ethernet</label>
-        <select id="ethernet-action" disabled>
-          <option value="Connect" selected data-i18n="connect">Connect</option>
-          <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
-          <option value="Ignore" data-i18n="ignore">Ignore</option>
-        </select>
+        <div id="ethernet-action-row" class="field" aria-disabled="false">
+          <label for="ethernet-action" data-i18n="ethernet">Ethernet</label>
+          <select id="ethernet-action">
+            <option value="Connect" selected data-i18n="connect">Connect</option>
+            <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
+            <option value="Ignore" data-i18n="ignore">Ignore</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -505,7 +507,7 @@
   </main>
 
   <script src="../i18n.js?v=20260917.1"></script>
-  <script src="app.js?v=20260918.2"></script>
+  <script src="app.js?v=20260918.3"></script>
   <script src="windows.js?v=20260917.2"></script>
   <script src="platform.js?v=20260917.2"></script>
 </body>
