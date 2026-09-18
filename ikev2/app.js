@@ -1,4 +1,4 @@
-// TOLF Configurator IKEv2 — Build 2026-09-01.1
+// TOLF Configurator IKEv2 — Build 2026-09-18.1
 
 const identityStorageKey = "tolf.ikev2.profile-identities.v2";
 const memoryIdentities = {};
@@ -9,6 +9,7 @@ let importedFileBaseName = null;
 
 const onDemandCheckbox = document.getElementById("on-demand");
 const alwaysOnCheckbox = document.getElementById("always-on");
+const alwaysOnRow = document.getElementById("always-on-row");
 const onDemandOptions = document.getElementById("on-demand-options");
 const manualRules = document.getElementById("manual-rules");
 const alwaysOnHint = document.getElementById("always-on-hint");
@@ -240,10 +241,28 @@ function saveImportedIdentity(
 }
 
 function updateOnDemandVisibility() {
+  const enabled =
+    onDemandCheckbox.checked;
+
   onDemandOptions.classList.toggle(
     "visible",
-    onDemandCheckbox.checked
+    enabled
   );
+
+  alwaysOnCheckbox.disabled =
+    !enabled;
+
+  if (alwaysOnRow) {
+    alwaysOnRow.classList.toggle(
+      "is-disabled",
+      !enabled
+    );
+
+    alwaysOnRow.setAttribute(
+      "aria-disabled",
+      enabled ? "false" : "true"
+    );
+  }
 
   updateAlwaysOnVisibility();
 }
