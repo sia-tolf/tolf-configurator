@@ -373,7 +373,7 @@ function createRuleRow(
     "rule-type";
 
   type.innerHTML =
-    `<option value="wifi">Wi-Fi Network</option>`;
+    `<option value="wifi" data-i18n="wifiNetwork">Wi-Fi Network</option>`;
 
   const value =
     document.createElement("input");
@@ -386,6 +386,7 @@ function createRuleRow(
 
   value.placeholder =
     "Network name";
+  value.dataset.i18nPlaceholder = "networkName";
 
   value.value =
     initialValue;
@@ -397,9 +398,9 @@ function createRuleRow(
     "rule-action";
 
   action.innerHTML = `
-    <option value="Connect">Connect</option>
-    <option value="Disconnect">Disconnect</option>
-    <option value="Ignore">Ignore</option>
+    <option value="Connect" data-i18n="connect">Connect</option>
+    <option value="Disconnect" data-i18n="disconnect">Disconnect</option>
+    <option value="Ignore" data-i18n="ignore">Ignore</option>
   `;
 
   action.value =
@@ -419,6 +420,8 @@ function createRuleRow(
     "Remove rule"
   );
 
+  remove.dataset.i18nAriaLabel = "removeRule";
+
   remove.textContent =
     "×";
 
@@ -431,6 +434,7 @@ function createRuleRow(
   row.appendChild(value);
   row.appendChild(action);
   row.appendChild(remove);
+  window.tolfTranslateElements?.(row);
 
   rulesGroup.insertBefore(
     row,
