@@ -71,6 +71,9 @@
       disconnect: "Disconnect",
       ignore: "Ignore",
       additionalRules: "Additional Rules",
+      wifiNetwork: "Wi-Fi Network",
+      networkName: "Network name",
+      removeRule: "Remove rule",
       addRule: "+ Add Rule",
       additionalRulesHint: "Additional rules are checked before the default actions.",
       installProfile: "Install Profile",
@@ -134,6 +137,9 @@
       disconnect: "Отключить",
       ignore: "Игнорировать",
       additionalRules: "Дополнительные правила",
+      wifiNetwork: "Сеть Wi-Fi",
+      networkName: "Название сети",
+      removeRule: "Удалить правило",
       addRule: "+ Добавить правило",
       additionalRulesHint: "Дополнительные правила проверяются перед действиями по умолчанию.",
       installProfile: "Установить профиль",
@@ -197,6 +203,9 @@
       disconnect: "Atvienot",
       ignore: "Ignorēt",
       additionalRules: "Papildu noteikumi",
+      wifiNetwork: "Wi-Fi tīkls",
+      networkName: "Tīkla nosaukums",
+      removeRule: "Dzēst noteikumu",
       addRule: "+ Pievienot noteikumu",
       additionalRulesHint: "Papildu noteikumi tiek pārbaudīti pirms noklusējuma darbībām.",
       installProfile: "Instalēt profilu",
@@ -347,24 +356,37 @@
     document.head.appendChild(style);
   }
 
-  function applyLanguage(lang) {
+  function translateElements(root = document, lang = document.documentElement.lang) {
     const dictionary = text[lang] || text.en;
-    document.documentElement.lang = lang;
-    localStorage.setItem("tolf-language", lang);
-
-    document.querySelectorAll("[data-i18n]").forEach(element => {
+    root.querySelectorAll("[data-i18n]").forEach(element => {
       const key = element.dataset.i18n;
       if (Object.prototype.hasOwnProperty.call(dictionary, key)) {
         element.textContent = dictionary[key];
       }
     });
 
-    document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+    root.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
       const key = element.dataset.i18nPlaceholder;
       if (Object.prototype.hasOwnProperty.call(dictionary, key)) {
         element.placeholder = dictionary[key];
       }
     });
+
+    root.querySelectorAll("[data-i18n-aria-label]").forEach(element => {
+      const key = element.dataset.i18nAriaLabel;
+      if (Object.prototype.hasOwnProperty.call(dictionary, key)) {
+        element.setAttribute("aria-label", dictionary[key]);
+      }
+    });
+  }
+
+  window.tolfTranslateElements = translateElements;
+
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+    localStorage.setItem("tolf-language", lang);
+
+    translateElements(document, lang);
 
     document.querySelectorAll(".language button[data-lang]").forEach(button => {
       const active = button.dataset.lang === lang;
@@ -391,7 +413,8 @@
       localStorage.setItem("tolf-language", next);
       const target = new URL(window.location.href);
       target.searchParams.set("lang", next);
-      window.location.href = target.href;
+      applyLanguage(next);
+      window.history.replaceState(null, "", target.href);
     });
   });
 
