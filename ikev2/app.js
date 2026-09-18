@@ -1,4 +1,4 @@
-// TOLF Configurator IKEv2 — Build 2026-09-18.2
+// TOLF Configurator IKEv2 — Build 2026-09-18.3
 
 const identityStorageKey = "tolf.ikev2.profile-identities.v2";
 const memoryIdentities = {};
@@ -10,6 +10,8 @@ let importedFileBaseName = null;
 const onDemandCheckbox = document.getElementById("on-demand");
 const alwaysOnCheckbox = document.getElementById("always-on");
 const alwaysOnRow = document.getElementById("always-on-row");
+const onDemandGroup = document.getElementById("on-demand-group");
+const defaultActionsBlock = document.getElementById("default-actions-block");
 const defaultActionsLabel = document.getElementById("default-actions-label");
 const defaultActionRows = [
   document.getElementById("wifi-action-row"),
@@ -282,6 +284,18 @@ function updateDefaultActionsState() {
   const active =
     onDemandCheckbox.checked &&
     !alwaysOnCheckbox.checked;
+
+  if (defaultActionsBlock) {
+    defaultActionsBlock.hidden =
+      !active;
+  }
+
+  if (onDemandGroup) {
+    onDemandGroup.classList.toggle(
+      "on-demand-compact",
+      !active
+    );
+  }
 
   defaultActionSelects.forEach(select => {
     select.disabled = !active;
