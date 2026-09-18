@@ -544,21 +544,66 @@ summary {
 
 @media (max-width: 680px) {
   .rule-row {
-    flex-wrap: wrap;
-    padding: 8px 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "type remove"
+      "value value"
+      "action action";
+    gap: 6px 12px;
+    padding: 10px 16px 12px;
+    align-items: center;
   }
 
   .rule-type {
-    flex: 1 1 42%;
+    grid-area: type;
+    width: 100%;
+    min-width: 0;
+    font-size: 14px !important;
+    font-weight: 600;
+    color: #5f5f63;
   }
 
   .rule-value {
-    flex: 1 1 42%;
+    grid-area: value;
+    width: 100%;
+    min-width: 0;
+    padding: 2px 0 4px;
+    font-size: 16px !important;
   }
 
   .rule-action {
-    flex: 1 1 calc(100% - 40px);
-    text-align: right;
+    grid-area: action;
+    width: 100%;
+    min-width: 0;
+    padding: 2px 0;
+    text-align: left;
+    font-size: 15px !important;
+    color: #5f5f63;
+  }
+
+  .remove-rule {
+    grid-area: remove;
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    border: 0 !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    color: #b4232c !important;
+    font-size: 22px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+  }
+
+  .remove-rule:active:not(:disabled) {
+    background: rgba(180, 35, 44, 0.08) !important;
   }
 }
 
@@ -726,6 +771,21 @@ summary {
 
   #on-demand-group .rules-inline .add-rule {
     border-bottom-color: #38383a !important;
+  }
+
+  @media (max-width: 680px) {
+    .rule-type,
+    .rule-action {
+      color: #b8b8bd;
+    }
+
+    .remove-rule {
+      color: #ff8f98 !important;
+    }
+
+    .remove-rule:active:not(:disabled) {
+      background: rgba(255, 143, 152, 0.10) !important;
+    }
   }
 
   .error {
