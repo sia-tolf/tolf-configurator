@@ -169,12 +169,16 @@
     const android = document.getElementById("save-strongswan");
     const windows = document.getElementById("save-windows");
     const launcher = document.getElementById("save-windows-launcher");
+    const formatHelpRows = document.querySelectorAll("[data-platform-help]");
 
     show(install, platform === "apple");
     show(apple, platform === "apple");
     show(android, platform === "android");
     show(windows, platform === "windows");
     show(launcher, platform === "windows");
+    formatHelpRows.forEach(row => {
+      show(row, row.dataset.platformHelp === platform);
+    });
 
     actionEl.style.gridTemplateColumns =
       platform === "android" ? "1fr" : "repeat(2, minmax(0, 1fr))";
