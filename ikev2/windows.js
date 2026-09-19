@@ -22,10 +22,10 @@
       appleSave: "Save Apple (.mobileconfig)",
       androidShare: "Share Android (.sswan)",
       androidSave: "Save Android (.sswan)",
-      windowsShare: "Share Windows (.ps1)",
-      windowsSave: "Save Windows (.ps1)",
-      launcherShare: "Share Windows launcher (.cmd)",
-      launcherSave: "Save Windows launcher (.cmd)",
+      windowsShare: "Share .ps1",
+      windowsSave: "Save .ps1",
+      launcherShare: "Share .cmd",
+      launcherSave: "Save .cmd",
       addRule: "+ Add Rule",
       sha512Unsupported: "Windows PowerShell export supports SHA-256 or SHA-384. Select one of those IKE Integrity options."
     },
@@ -36,10 +36,10 @@
       appleSave: "Сохранить Apple (.mobileconfig)",
       androidShare: "Поделиться Android (.sswan)",
       androidSave: "Сохранить Android (.sswan)",
-      windowsShare: "Поделиться Windows (.ps1)",
-      windowsSave: "Сохранить Windows (.ps1)",
-      launcherShare: "Поделиться запуском Windows (.cmd)",
-      launcherSave: "Сохранить запуск Windows (.cmd)",
+      windowsShare: "Поделиться .ps1",
+      windowsSave: "Сохранить .ps1",
+      launcherShare: "Поделиться .cmd",
+      launcherSave: "Сохранить .cmd",
       addRule: "+ Добавить правило",
       sha512Unsupported: "Экспорт Windows PowerShell поддерживает SHA-256 или SHA-384. Выберите один из этих вариантов IKE Integrity."
     },
@@ -50,10 +50,10 @@
       appleSave: "Saglabāt Apple (.mobileconfig)",
       androidShare: "Kopīgot Android (.sswan)",
       androidSave: "Saglabāt Android (.sswan)",
-      windowsShare: "Kopīgot Windows (.ps1)",
-      windowsSave: "Saglabāt Windows (.ps1)",
-      launcherShare: "Kopīgot Windows palaidēju (.cmd)",
-      launcherSave: "Saglabāt Windows palaidēju (.cmd)",
+      windowsShare: "Kopīgot .ps1",
+      windowsSave: "Saglabāt .ps1",
+      launcherShare: "Kopīgot .cmd",
+      launcherSave: "Saglabāt .cmd",
       addRule: "+ Pievienot noteikumu",
       sha512Unsupported: "Windows PowerShell eksports atbalsta SHA-256 vai SHA-384. Izvēlieties vienu no šīm IKE Integrity opcijām."
     }
@@ -156,6 +156,7 @@
   windowsButton.id = "save-windows";
   windowsButton.className = "action-button save-button";
   windowsButton.type = "button";
+  windowsButton.dataset.i18n = runningOnWindows ? "saveWindowsScript" : "shareWindowsScript";
   windowsButton.textContent = runningOnWindows ? copy.windowsSave : copy.windowsShare;
   windowsButton.addEventListener("click", saveWindowsScript);
   action.appendChild(windowsButton);
@@ -164,6 +165,7 @@
   launcherButton.id = "save-windows-launcher";
   launcherButton.className = "action-button save-button";
   launcherButton.type = "button";
+  launcherButton.dataset.i18n = runningOnWindows ? "saveWindowsLauncher" : "shareWindowsLauncher";
   launcherButton.textContent = runningOnWindows ? copy.launcherSave : copy.launcherShare;
   launcherButton.addEventListener("click", saveWindowsLauncher);
   action.appendChild(launcherButton);
