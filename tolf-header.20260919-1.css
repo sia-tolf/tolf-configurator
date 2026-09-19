@@ -1,0 +1,53 @@
+/* Shared header geometry — 2026-09-19. Language groups and adjacent controls: 42px. */
+html .language,
+html .language-switcher,
+html .admin-languages,
+html[data-tolf-ui="quick"] header nav[aria-label="Language"],
+html .header-switchers .platform-switcher {
+  box-sizing: border-box;
+  height: 42px;
+  min-height: 42px;
+  max-height: 42px;
+  padding-block: 4px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+html .language > button,
+html .language-switcher > button,
+html .admin-languages > button,
+html[data-tolf-ui="quick"] header nav[aria-label="Language"] > button,
+html .header-switchers .platform-switcher > button {
+  box-sizing: border-box;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  padding-block: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+html[data-tolf-ui] .top-actions :is(.account-link, .signup-link, .authenticated-account-status, .authenticated-account-logout),
+html[data-tolf-ui] .page-top .back,
+html[data-tolf-ui] .page-top > a,
+html[data-tolf-ui] .topbar-inner > .brand,
+html[data-tolf-ui] .admin-header > div > a,
+html[data-tolf-ui="quick"] header > a,
+html .brand .site-nav > a,
+html[data-tolf-ui="vpn"] :is(#redeemPromoButton, #signOutButton, #vpnAdminLink),
+html .header-promo .promo-input {
+  box-sizing: border-box;
+  height: 42px;
+  min-height: 42px;
+  max-height: 42px;
+  padding-block: 0;
+  align-items: center;
+}
+html[data-tolf-ui] .top-actions :is(.account-link, .signup-link, .authenticated-account-status, .authenticated-account-logout),
+html[data-tolf-ui] .page-top > a,
+html[data-tolf-ui] .topbar-inner > .brand,
+html[data-tolf-ui] .admin-header > div > a,
+html[data-tolf-ui="quick"] header > a {
+  display: inline-flex;
+  justify-content: center;
+}
