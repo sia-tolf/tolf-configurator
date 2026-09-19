@@ -532,8 +532,28 @@ summary {
   line-height: 1.5;
 }
 
+.format-help {
+  margin: 14px 4px 0;
+  color: #6e6e73;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.format-help-row {
+  margin: 0;
+}
+
+.format-help-row + .format-help-row {
+  margin-top: 5px;
+}
+
+.format-help-row strong {
+  color: #3a3a3c;
+  font-weight: 600;
+}
+
 .disclaimer {
-  margin: 10px 4px 0;
+  margin: 14px 4px 0;
   color: #8e8e93;
   font-size: 12px;
   line-height: 1.5;
@@ -770,6 +790,11 @@ summary {
   .remove-rule,
   .import-hint,
   .platform-note,
+  .format-help {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
   .disclaimer {
     color: #9a9aa0;
   }
