@@ -799,6 +799,11 @@ summary {
     line-height: 1.45;
   }
 
+  .legal-disclaimer {
+    background: rgba(28, 28, 30, 0.66);
+    border-color: #38383a;
+  }
+
   .disclaimer {
     color: #9a9aa0;
   }
