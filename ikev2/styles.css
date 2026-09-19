@@ -553,10 +553,14 @@ summary {
 }
 
 .disclaimer {
-  margin: 14px 4px 0;
-  color: #8e8e93;
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  color: #77777c;
   font-size: 12px;
   line-height: 1.5;
+  border: 1px solid #d8d8dc;
+  border-radius: 14px;
+  background: rgba(255,255,255,.54);
 }
 
 .error {
