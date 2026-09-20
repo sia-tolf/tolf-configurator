@@ -19,6 +19,7 @@
     en: {
       rootTitle: "TOLF Configurator",
       backTolf: "‹ TOLF",
+      backTolfAria: "TOLF home",
       rootSubtitle: "Generate network configuration profiles directly in your browser.",
       ikev2Description: "Create IKEv2 configuration files for Apple devices, Android strongSwan and Windows PowerShell (.ps1).",
       comingSoon: "Coming Soon",
@@ -94,6 +95,7 @@
     ru: {
       rootTitle: "TOLF Configurator",
       backTolf: "‹ TOLF",
+      backTolfAria: "На главную TOLF",
       rootSubtitle: "Создавайте сетевые конфигурации прямо в браузере.",
       ikev2Description: "Создавайте IKEv2-конфигурации для устройств Apple, Android strongSwan и Windows PowerShell (.ps1).",
       comingSoon: "Скоро",
@@ -169,6 +171,7 @@
     lv: {
       rootTitle: "TOLF Configurator",
       backTolf: "‹ TOLF",
+      backTolfAria: "Uz TOLF sākumlapu",
       rootSubtitle: "Izveidojiet tīkla konfigurācijas tieši pārlūkprogrammā.",
       ikev2Description: "Izveidojiet IKEv2 konfigurācijas Apple ierīcēm, Android strongSwan un Windows PowerShell (.ps1).",
       comingSoon: "Drīzumā",
