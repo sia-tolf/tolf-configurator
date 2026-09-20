@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-19.4 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-20.1 -->
 
 <!DOCTYPE html>
 <html lang="en" data-tolf-ui="configurator">
@@ -141,6 +141,13 @@
       white-space: nowrap;
     }
 
+    .import-hint {
+      margin: 8px 4px 0;
+      color: #77777c;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
     @media (max-width: 560px) {
       .configurator-tool-row {
         grid-template-columns: 1fr;
@@ -223,7 +230,7 @@
       <div class="configurator-hero-copy">
         <div class="title-row">
           <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-19.4</span>
+          <span class="build-number">Build 2026-09-20.1</span>
         </div>
 
         <p class="subtitle" data-i18n="ikev2Subtitle">
@@ -269,6 +276,10 @@
         <button id="import-button" class="import-button" type="button" data-i18n="importExistingConfiguration">
           Import Existing Configuration
         </button>
+
+        <p class="import-hint" data-i18n="importConfigurationHint">
+          Choose an existing profile or configuration file to load its settings into the configurator, edit them, and create a new file.
+        </p>
 
         <input
           id="import-file"
@@ -518,7 +529,7 @@
 
   </main>
 
-  <script src="../i18n.js?v=20260919.4"></script>
+  <script src="../i18n.js?v=20260920.1"></script>
   <script src="app.js?v=20260918.5"></script>
   <script src="windows.js?v=20260919.1"></script>
   <script src="platform.js?v=20260919.1"></script>
