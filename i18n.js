@@ -257,9 +257,9 @@
       <div class="privacy-copy">
         <h2 data-i18n="privacyHeading">Private by design</h2>
         <p data-i18n="privacyLead">Your VPN configuration stays on this device. Imported profiles, server addresses, usernames, passwords and generated configuration files are processed locally in your browser and are not uploaded to TOLF.</p>
-        <p class="privacy-network" data-i18n="privacyNetwork">The browser still makes ordinary requests required to load the website; your configuration values are not included in those requests.</p>
         <details class="privacy-details">
           <summary data-i18n="privacyDetails">Privacy details</summary>
+          <p class="privacy-network" data-i18n="privacyNetwork">The browser still makes ordinary requests required to load the website; your configuration values are not included in those requests.</p>
           <ul>
             <li data-i18n="privacyImported">Imported files are read locally by your browser.</li>
             <li data-i18n="privacyCredentials">Form values and passwords are not sent to the configurator server.</li>
