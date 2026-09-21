@@ -154,7 +154,14 @@
   const onDemandGroup = document.getElementById("on-demand-group");
   const onDemandOptionsEl = document.getElementById("on-demand-options");
 
+  function updateImportLabel() {
+    const keys = { apple: "importApple", android: "importAndroid", windows: "importWindows" };
+    importButtonEl.dataset.i18n = keys[currentPlatform()] || keys.apple;
+    window.tolfTranslateElements(importButtonEl.parentElement);
+  }
+
   function updateImportAccept(platform) {
+    updateImportLabel();
     const accept = {
       apple: ".mobileconfig,application/x-apple-aspen-config,application/xml,text/xml",
       android: ".sswan,application/vnd.strongswan.profile,application/json,text/json",
@@ -364,10 +371,9 @@
   }
 
   function flashImported() {
-    const original = importButtonEl.textContent;
     importButtonEl.textContent = copy.imported;
     setTimeout(() => {
-      importButtonEl.textContent = original;
+      updateImportLabel();
     }, 1600);
   }
 
