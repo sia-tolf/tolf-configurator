@@ -871,3 +871,25 @@ main {
 #on-demand-group .rule-row input {
   padding-inline-start: 0;
 }
+
+/* Keep primary connection fields compact on phones. */
+@media (max-width: 560px) {
+  .basic-fields .field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    column-gap: 12px;
+    align-items: center;
+    min-height: 48px;
+  }
+
+  .basic-fields .field label {
+    min-width: 0;
+    margin-bottom: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .basic-fields .field input {
+    min-height: 32px;
+    text-align: right;
+  }
+}
