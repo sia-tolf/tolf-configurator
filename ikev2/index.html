@@ -9,13 +9,16 @@
 
   <link rel="stylesheet" href="styles.css?v=20260919.2">
   <style>
+    .required-fields-note { margin: 0 4px 12px; color: #77777c; font-size: 13px; line-height: 1.4; }
+    .required-fields-note .required-star { color: #b4232c; font-weight: 600; }
     .required-label::after {
       content: " *";
       color: #b4232c;
       font-weight: 600;
     }
     @media (prefers-color-scheme: dark) {
-      .required-label::after { color: #ff8f98; }
+      .required-label::after, .required-fields-note .required-star { color: #ff8f98; }
+      .required-fields-note { color: #a1a1a6; }
     }
 
     .page-top {
@@ -316,6 +319,8 @@
       </div>
     </div>
 
+    <p class="required-fields-note"><span class="required-star" aria-hidden="true">*</span> <span data-i18n="requiredFieldsNote">Fields marked with * are required.</span></p>
+
     <div class="section-title" data-i18n="connection">Connection</div>
 
     <div class="group">
@@ -555,7 +560,7 @@
 
   </main>
 
-  <script src="../i18n.20260920-1.js?v=import-hint-20260921"></script>
+  <script src="../i18n.20260920-1.js?v=required-note-20260921"></script>
   <script src="app.js?v=20260918.5"></script>
   <script src="windows.js?v=20260919.1"></script>
   <script src="platform.js?v=20260919.1"></script>
