@@ -65,7 +65,7 @@
     .configurator-tool-row {
       margin: 26px 0 34px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
       gap: 12px;
       align-items: start;
     }
@@ -295,7 +295,7 @@
         </button>
 
         <p class="import-hint" data-i18n="importConfigurationHint">
-          Choose an existing profile or configuration file to load its settings into the configurator, edit them, and create a new file.
+          Load an existing file to edit its settings.
         </p>
 
         <input
@@ -546,7 +546,7 @@
 
   </main>
 
-  <script src="../i18n.20260920-1.js"></script>
+  <script src="../i18n.20260920-1.js?v=import-hint-20260921"></script>
   <script src="app.js?v=20260918.5"></script>
   <script src="windows.js?v=20260919.1"></script>
   <script src="platform.js?v=20260919.1"></script>
