@@ -9,6 +9,15 @@
 
   <link rel="stylesheet" href="styles.css?v=20260919.2">
   <style>
+    .required-label::after {
+      content: " *";
+      color: #b4232c;
+      font-weight: 600;
+    }
+    @media (prefers-color-scheme: dark) {
+      .required-label::after { color: #ff8f98; }
+    }
+
     .page-top {
       display: flex;
       align-items: center;
@@ -311,23 +320,23 @@
 
     <div class="group">
       <div class="field">
-        <label for="name" data-i18n="name">Name</label>
-        <input id="name" type="text" placeholder="My VPN">
+        <label for="name" class="required-label" data-i18n="name">Name</label>
+        <input id="name" aria-required="true" type="text" placeholder="My VPN">
       </div>
 
       <div class="field">
-        <label for="server" data-i18n="server">Server</label>
-        <input id="server" type="text" placeholder="vpn.example.com">
+        <label for="server" class="required-label" data-i18n="server">Server</label>
+        <input id="server" aria-required="true" type="text" placeholder="vpn.example.com">
       </div>
 
       <div class="field">
-        <label for="remote-id" data-i18n="remoteId">Remote ID</label>
-        <input id="remote-id" type="text" placeholder="vpn.example.com">
+        <label for="remote-id" class="required-label" data-i18n="remoteId">Remote ID</label>
+        <input id="remote-id" aria-required="true" type="text" placeholder="vpn.example.com">
       </div>
 
       <div class="field">
         <label for="local-id" data-i18n="localId">Local ID</label>
-        <input id="local-id" type="text" placeholder="Optional" data-i18n-placeholder="optional">
+        <input id="local-id" type="text">
       </div>
     </div>
 
@@ -335,8 +344,8 @@
 
     <div class="group">
       <div class="field">
-        <label for="username" data-i18n="username">Username</label>
-        <input id="username" type="text" autocomplete="username" placeholder="Username" data-i18n-placeholder="username">
+        <label for="username" class="required-label" data-i18n="username">Username</label>
+        <input id="username" aria-required="true" type="text" autocomplete="username" placeholder="Username" data-i18n-placeholder="username">
       </div>
 
       <div class="field">
