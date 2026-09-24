@@ -17,7 +17,7 @@ const $=id=>document.getElementById(id);
 const provider=$("provider"),providerProtocol=$("providerProtocol"),providerEndpoint=$("providerEndpoint"),providerPanel=$("providerPanel"),customPanel=$("customPanel"),customProtocol=$("customProtocol"),urlField=$("urlField"),hostField=$("hostField"),addressesField=$("addressesField"),error=$("error");
 let mode="provider";
 function tr(k){return I[lang][k]||I.en[k]||k}
-function applyLanguage(){document.documentElement.lang=lang;document.querySelectorAll("[data-t]").forEach(x=>x.textContent=tr(x.dataset.t));document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("active",x.dataset.lang===lang))}
+function applyLanguage(){document.documentElement.lang=lang;document.querySelectorAll("[data-t]").forEach(x=>x.textContent=tr(x.dataset.t));document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("active",x.dataset.lang===lang));const back=document.querySelector(".back");if(back)back.href="/?lang="+encodeURIComponent(lang)}
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;localStorage.setItem("tolf-language",lang);const u=new URL(location.href);u.searchParams.set("lang",lang);history.replaceState(null,"",u);applyLanguage()});
 document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x===b));providerPanel.classList.toggle("hidden",mode!=="provider");customPanel.classList.toggle("hidden",mode!=="custom");hideError()});
 function updateProvider(){const p=providers[provider.value];providerProtocol.textContent=p.protocol==="HTTPS"?"DoH":"DoT";providerEndpoint.textContent=p.url;$("profileName").value=p.name+" DNS"}
