@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 284 284" role="img" aria-labelledby="title desc">
+  <title id="title">TOLF logo</title>
+  <desc id="desc">A white eight-point star with equal, widened rays in a dark cherry circle.</desc>
+  <circle cx="142" cy="142" r="142" fill="#7D1534"/>
+  <polygon points="142.0000,21.0000 161.1342,95.8060 227.5599,56.4401 188.1940,122.8658 263.0000,142.0000 188.1940,161.1342 227.5599,227.5599 161.1342,188.1940 142.0000,263.0000 122.8658,188.1940 56.4401,227.5599 95.8060,161.1342 21.0000,142.0000 95.8060,122.8658 56.4401,56.4401 122.8658,95.8060" fill="#FFFFFF"/>
+</svg>
