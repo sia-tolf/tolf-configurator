@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>TOLF DNS Configurator</title>
-<link rel="stylesheet" href="styles.css?v=dns-action-hierarchy-20260926-7">
+<link rel="stylesheet" href="styles.css?v=dns-xml-copy-20260926-8">
 </head>
 <body>
 <main>
@@ -160,7 +160,16 @@
 
       <details class="raw-profile">
         <summary data-t="showRaw">Show .mobileconfig contents</summary>
-        <pre id="previewRaw"></pre>
+        <div class="raw-profile-box">
+          <button id="copyRawProfile" class="copy-raw-button" type="button" data-t-aria="copyRaw" aria-label="Copy .mobileconfig">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+              <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+            </svg>
+          </button>
+          <span id="copyRawStatus" class="copy-raw-status hidden" data-t="copied">Copied</span>
+          <pre id="previewRaw"></pre>
+        </div>
       </details>
     </section>
   </section>
@@ -170,6 +179,6 @@
     <p data-t="privateText">DNS settings and generated profiles stay in this browser and are not sent to TOLF.</p>
   </details>
 </main>
-<script src="app.js?v=dns-action-hierarchy-20260926-7"></script>
+<script src="app.js?v=dns-xml-copy-20260926-8"></script>
 </body>
 </html>
