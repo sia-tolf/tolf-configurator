@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-26 sticky-platform -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-26 sticky-platform-v2 -->
 
 <!DOCTYPE html>
 <html lang="en" data-tolf-ui="configurator">
@@ -30,7 +30,18 @@
     }
 
     .page-top {
-      position: static;
+      position: static !important;
+      top: auto !important;
+      z-index: auto !important;
+      width: auto !important;
+      min-height: 0 !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border-bottom: 0 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
     }
 
     .page-top .back {
@@ -81,6 +92,8 @@
     .configurator-tool-row {
       margin: 26px 0 34px;
       display: grid;
+      position: static;
+      overflow: visible;
       grid-template-columns: minmax(0, 1fr);
       gap: 12px;
       align-items: start;
@@ -89,7 +102,7 @@
     .target-platform-selector {
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 100;
       width: 100%;
       min-height: 0;
       margin: 0;
