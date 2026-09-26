@@ -5,61 +5,122 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>TOLF DNS Configurator</title>
-<style>
-:root{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;color-scheme:light dark}
-*{box-sizing:border-box}body{margin:0;background:#f5f5f7;color:#1d1d1f}main{width:min(720px,calc(100% - 32px));margin:0 auto;padding:0 0 48px}
-.page-top{position:sticky;top:0;z-index:50;width:100vw;min-height:58px;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);margin-bottom:30px;padding:8px max(16px,calc((100vw - 720px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(245,245,247,.86);border-bottom:1px solid rgba(0,0,0,.08);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
-.back{color:#1d1d1f;font-size:20px;font-weight:650;letter-spacing:.12em;text-decoration:none}.language{display:inline-flex;padding:4px;border:1px solid rgba(0,0,0,.08);border-radius:11px;background:rgba(255,255,255,.82)}.language button{min-width:42px;height:32px;padding:0 10px;border:0;border-radius:8px;color:#6e6e73;background:transparent;cursor:pointer}.language button.active{color:#1d1d1f;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-h1{margin:0 0 10px;font-size:36px;line-height:1.1;font-weight:650;letter-spacing:-.02em}.subtitle{margin:0 0 30px;color:#5f5f63;font-size:17px;line-height:1.5}
-.card{background:#fff;border:1px solid #d8d8dc;border-radius:14px;padding:20px}.field{margin-bottom:18px}.field:last-child{margin-bottom:0}label{display:block;margin-bottom:7px;color:#5f5f63;font-size:14px}select,input{width:100%;min-height:44px;padding:8px 11px;border:1px solid #c7c7cc;border-radius:10px;background:#fff;color:#1d1d1f;font:inherit}.note{margin:18px 0 0;color:#77777c;font-size:13px;line-height:1.45}.actions{margin-top:20px}.primary{width:100%;min-height:46px;border:0;border-radius:11px;background:#1d1d1f;color:#fff;font:inherit;font-weight:600;cursor:pointer}.custom{display:none}.custom.visible{display:block}
-footer{margin-top:34px;color:#77777c;font-size:14px}
-@media(prefers-color-scheme:dark){body{background:#000;color:#f5f5f7}.page-top{background:rgba(0,0,0,.84);border-bottom-color:rgba(255,255,255,.09)}.back{color:#f5f5f7}.language{background:rgba(28,28,30,.82);border-color:rgba(255,255,255,.09)}.language button{color:#a1a1a6}.language button.active{color:#f5f5f7;background:#3a3a3c}.subtitle,label,.note,footer{color:#b8b8bd}.card{background:#1c1c1e;border-color:#38383a}select,input{background:#2c2c2e;color:#f5f5f7;border-color:#48484a}.primary{background:#f5f5f7;color:#1d1d1f}}
-</style>
+<link rel="stylesheet" href="styles.css?v=dns-ui-20260926-1">
 </head>
 <body>
 <main>
-<div class="page-top">
-<a class="back" id="backLink" href="/">TOLF</a>
-<div class="language" aria-label="Language"><button data-lang="en">EN</button><button data-lang="ru">RU</button><button data-lang="lv">LV</button></div>
-</div>
-<h1 id="title">DNS Configurator</h1>
-<p class="subtitle" id="subtitle">Create an encrypted DNS profile locally in your browser. No account or server-side generation is used.</p>
-<section class="card">
-<div class="field"><label id="providerLabel" for="provider">Provider</label><select id="provider"><option value="quad9">Quad9</option><option value="cloudflare">Cloudflare</option><option value="google">Google Public DNS</option><option value="yandex">Yandex DNS</option><option value="custom">Custom</option></select></div>
-<div class="field"><label id="protocolLabel" for="protocol">Protocol</label><select id="protocol"><option value="HTTPS">DNS over HTTPS (DoH)</option><option value="TLS">DNS over TLS (DoT)</option></select></div>
-<div id="customFields" class="custom">
-<div class="field"><label id="dohLabel" for="customDoh">DoH URL</label><input id="customDoh" type="url" placeholder="https://example.com/dns-query" autocomplete="off"></div>
-<div class="field"><label id="dotLabel" for="customDot">DoT hostname</label><input id="customDot" type="text" placeholder="dns.example.com" autocomplete="off" autocapitalize="none"></div>
-</div>
-<div class="actions"><button class="primary" id="createButton" type="button">Create .mobileconfig</button></div>
-<p class="note" id="note">The profile is generated on this device. TOLF does not receive the selected provider or profile contents.</p>
-</section>
-<footer id="footer">Apple encrypted DNS profile · iOS / iPadOS / macOS</footer>
+  <header class="page-header">
+    <nav class="header-navigation" aria-label="Navigation">
+      <a class="back" id="backLink" href="/?lang=en" aria-label="TOLF Configurator">
+        <span class="back-chevron" aria-hidden="true">‹</span>
+        <span class="tolf-wordmark">TOLF</span>
+      </a>
+
+      <div class="header-right">
+        <div class="language" aria-label="Language">
+          <button data-lang="en" type="button" lang="en" aria-label="English">EN</button>
+          <button data-lang="ru" type="button" lang="ru" aria-label="Русский">RU</button>
+          <button data-lang="lv" type="button" lang="lv" aria-label="Latviešu">LV</button>
+        </div>
+        <a id="helpLink" class="help-link" href="https://tolf.is/?lang=en#help" data-t="help">Help</a>
+      </div>
+    </nav>
+
+    <div class="brand-copy">
+      <h1 data-t="title">TOLF DNS</h1>
+      <p class="subtitle" data-t="subtitle">Create a DNS configuration profile directly in your browser.</p>
+    </div>
+  </header>
+
+  <section class="platform-card" aria-label="Device platform">
+    <div class="platform-label" data-t="platform">Platform</div>
+    <div class="platform-switcher" id="platformSwitcher">
+      <button class="platform-button" type="button" data-platform="ios" aria-pressed="false">
+        <span class="platform-icon" aria-hidden="true">●</span><span>iOS</span>
+      </button>
+      <button class="platform-button" type="button" data-platform="ipados" aria-pressed="false">
+        <span class="platform-icon" aria-hidden="true">●</span><span>iPadOS</span>
+      </button>
+      <button class="platform-button" type="button" data-platform="android" aria-pressed="false">
+        <span class="platform-icon android-icon" aria-hidden="true">●</span><span>Android</span>
+      </button>
+      <button class="platform-button" type="button" data-platform="windows" aria-pressed="false">
+        <span class="platform-icon windows-icon" aria-hidden="true">◆</span><span>Windows</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="card dns-card">
+    <div class="mode-tabs" role="tablist" aria-label="DNS mode">
+      <button class="mode active" type="button" data-mode="provider" data-t="providerMode">Provider</button>
+      <button class="mode" type="button" data-mode="custom" data-t="customMode">Custom DNS</button>
+    </div>
+
+    <div id="providerPanel">
+      <div class="field first-field">
+        <label for="provider" data-t="provider">DNS provider</label>
+        <select id="provider">
+          <option value="quad9">Quad9</option>
+          <option value="cloudflare">Cloudflare</option>
+          <option value="yandex">Yandex DNS</option>
+          <option value="dns4eu">DNS4EU</option>
+        </select>
+      </div>
+
+      <div class="provider-info">
+        <div>
+          <span data-t="protocol">Protocol</span>
+          <strong id="providerProtocol">DoH</strong>
+        </div>
+        <div>
+          <span data-t="endpoint">Endpoint</span>
+          <code id="providerEndpoint"></code>
+        </div>
+      </div>
+    </div>
+
+    <div id="customPanel" class="hidden">
+      <div class="field first-field">
+        <label for="customProtocol" data-t="protocol">Protocol</label>
+        <select id="customProtocol">
+          <option value="HTTPS">DNS over HTTPS (DoH)</option>
+          <option value="TLS">DNS over TLS (DoT)</option>
+          <option value="Cleartext" data-t="plainDns">DNS (unencrypted)</option>
+        </select>
+      </div>
+
+      <div id="urlField" class="field">
+        <label for="serverUrl" data-t="dohUrl">DoH URL</label>
+        <input id="serverUrl" type="url" placeholder="https://example.com/dns-query" autocomplete="off" autocapitalize="none" spellcheck="false">
+      </div>
+
+      <div id="hostField" class="field hidden">
+        <label for="serverName" data-t="dotHost">DoT server name</label>
+        <input id="serverName" type="text" placeholder="dns.example.com" autocomplete="off" autocapitalize="none" spellcheck="false">
+      </div>
+
+      <div id="addressesField" class="field hidden">
+        <label for="serverAddresses" data-t="addresses">DNS addresses</label>
+        <textarea id="serverAddresses" rows="3" placeholder="9.9.9.9, 149.112.112.112"></textarea>
+        <p class="hint" data-t="addressesHint">Enter IPv4 or IPv6 addresses separated by commas or new lines.</p>
+      </div>
+    </div>
+
+    <input id="profileName" type="hidden" value="TOLF DNS Quad9">
+
+    <div id="error" class="error hidden" role="alert"></div>
+
+    <div class="actions">
+      <button id="install" class="primary" type="button" data-t="install">Install Profile</button>
+      <button id="share" class="secondary" type="button" data-t="share">Share Profile</button>
+    </div>
+  </section>
+
+  <details class="privacy">
+    <summary data-t="privateTitle">Processed locally</summary>
+    <p data-t="privateText">DNS settings and generated profiles stay in this browser and are not sent to TOLF.</p>
+  </details>
 </main>
-<script>
-const providers={
- quad9:{name:"Quad9",HTTPS:"https://dns.quad9.net/dns-query",TLS:"dns.quad9.net"},
- cloudflare:{name:"Cloudflare",HTTPS:"https://cloudflare-dns.com/dns-query",TLS:"one.one.one.one"},
- google:{name:"Google Public DNS",HTTPS:"https://dns.google/dns-query",TLS:"dns.google"},
- yandex:{name:"Yandex DNS",HTTPS:"https://common.dot.dns.yandex.net/dns-query",TLS:"common.dot.dns.yandex.net"}
-};
-const copy={
- en:{title:"DNS Configurator",subtitle:"Create an encrypted DNS profile locally in your browser. No account or server-side generation is used.",provider:"Provider",protocol:"Protocol",doh:"DoH URL",dot:"DoT hostname",create:"Create .mobileconfig",profileName:"Profile name",note:"The profile is generated on this device. TOLF does not receive the selected provider or profile contents.",footer:"Apple encrypted DNS profile · iOS / iPadOS / macOS",invalid:"Enter a valid DNS endpoint."},
- ru:{title:"DNS Configurator",subtitle:"Создайте профиль зашифрованного DNS прямо в браузере. Аккаунт и серверная генерация не используются.",provider:"Провайдер",protocol:"Протокол",doh:"URL DoH",dot:"Имя хоста DoT",create:"Создать .mobileconfig",profileName:"Название профиля",note:"Профиль создаётся на этом устройстве. TOLF не получает выбранного провайдера и содержимое профиля.",footer:"Профиль зашифрованного DNS Apple · iOS / iPadOS / macOS",invalid:"Укажите корректный адрес DNS."},
- lv:{title:"DNS Configurator",subtitle:"Izveidojiet šifrēta DNS profilu lokāli pārlūkā. Konts un servera ģenerēšana netiek izmantoti.",provider:"Pakalpojuma sniedzējs",protocol:"Protokols",doh:"DoH URL",dot:"DoT resursdatora nosaukums",create:"Izveidot .mobileconfig",profileName:"Profila nosaukums",note:"Profils tiek izveidots šajā ierīcē. TOLF nesaņem izvēlēto pakalpojuma sniedzēju vai profila saturu.",footer:"Apple šifrēta DNS profils · iOS / iPadOS / macOS",invalid:"Ievadiet derīgu DNS adresi."}
-};
-const $=id=>document.getElementById(id);
-const provider=$("provider"),protocol=$("protocol"),customFields=$("customFields");
-let lang=new URLSearchParams(location.search).get("lang")||localStorage.getItem("tolfLanguage")||"en";if(!copy[lang])lang="en";
-function applyLang(){document.documentElement.lang=lang;localStorage.setItem("tolfLanguage",lang);const c=copy[lang];$("title").textContent=c.title;$("subtitle").textContent=c.subtitle;$("providerLabel").textContent=c.provider;$("protocolLabel").textContent=c.protocol;$("dohLabel").textContent=c.doh;$("dotLabel").textContent=c.dot;$("createButton").textContent=c.create;$("note").textContent=c.note;$("footer").textContent=c.footer;document.querySelectorAll("[data-lang]").forEach(b=>b.classList.toggle("active",b.dataset.lang===lang));$("backLink").href="/?lang="+lang}
-document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;applyLang()});
-provider.onchange=()=>customFields.classList.toggle("visible",provider.value==="custom");
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;")}
-function uuid(){return crypto.randomUUID().toUpperCase()}
-function endpoint(){if(provider.value!=="custom")return providers[provider.value][protocol.value];return protocol.value==="HTTPS"?$("customDoh").value.trim():$("customDot").value.trim()}
-function valid(v){if(protocol.value==="HTTPS"){try{const u=new URL(v);return u.protocol==="https:"&&u.hostname}catch{return false}}return /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i.test(v)}
-$("createButton").onclick=()=>{const ep=endpoint();if(!valid(ep)){alert(copy[lang].invalid);return}const proposed=provider.value==="custom"?"TOLF DNS Custom":"TOLF DNS "+providers[provider.value].name;const entered=window.prompt(copy[lang].profileName,proposed);if(entered===null)return;const name=entered.trim();if(!name)return;const dns=protocol.value==="HTTPS"?`<key>DNSProtocol</key><string>HTTPS</string><key>ServerURL</key><string>${esc(ep)}</string>`:`<key>DNSProtocol</key><string>TLS</string><key>ServerName</key><string>${esc(ep)}</string>`;const profileUuid=uuid(),dnsUuid=uuid();const xml=`<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict><key>PayloadContent</key><array><dict><key>DNSSettings</key><dict>${dns}</dict><key>PayloadDisplayName</key><string>${esc(name)}</string><key>PayloadIdentifier</key><string>is.tolf.configurator.dns.${dnsUuid.toLowerCase()}</string><key>PayloadType</key><string>com.apple.dnsSettings.managed</string><key>PayloadUUID</key><string>${dnsUuid}</string><key>PayloadVersion</key><integer>1</integer></dict></array><key>PayloadDisplayName</key><string>${esc(name)}</string><key>PayloadIdentifier</key><string>is.tolf.configurator.profile.${profileUuid.toLowerCase()}</string><key>PayloadRemovalDisallowed</key><false/><key>PayloadType</key><string>Configuration</string><key>PayloadUUID</key><string>${profileUuid}</string><key>PayloadVersion</key><integer>1</integer></dict></plist>\n`;const blob=new Blob([xml],{type:"application/x-apple-aspen-config"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${name.replace(/[^\\p{L}\\p{N}._-]+/gu,"-")}.mobileconfig`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
-applyLang();provider.onchange();
-</script>
+<script src="app.js?v=dns-ui-20260926-1"></script>
 </body>
 </html>
