@@ -29,6 +29,19 @@ const I = {
     profileName: "Profile name",
     install: "Install Profile",
     share: "Share Profile",
+    preview: "Preview Profile",
+    previewTitle: "Profile preview",
+    previewType: "Type",
+    previewChanges: "What this profile changes",
+    previewOnlyDns: "DNS settings only.",
+    previewNoVpn: "VPN is not configured.",
+    previewNoCerts: "No certificates are installed.",
+    previewNoCredentials: "No account credentials are added.",
+    previewNoMdm: "Device management (MDM) is not enabled.",
+    previewSignature: "Digital signature",
+    previewUnsigned: "none",
+    previewLocal: "The profile is generated locally in this browser.",
+    showRaw: "Show .mobileconfig contents",
     androidCopy: "Copy Private DNS",
     windowsCopy: "Copy Windows Setup",
     howTo: "How to set up",
@@ -61,6 +74,19 @@ const I = {
     profileName: "Название профиля",
     install: "Установить профиль",
     share: "Поделиться профилем",
+    preview: "Просмотреть профиль",
+    previewTitle: "Просмотр профиля",
+    previewType: "Тип",
+    previewChanges: "Что изменяет этот профиль",
+    previewOnlyDns: "Только настройки DNS.",
+    previewNoVpn: "VPN не настраивается.",
+    previewNoCerts: "Сертификаты не устанавливаются.",
+    previewNoCredentials: "Учетные данные не добавляются.",
+    previewNoMdm: "Управление устройством (MDM) не включается.",
+    previewSignature: "Цифровая подпись",
+    previewUnsigned: "нет",
+    previewLocal: "Профиль создаётся локально в этом браузере.",
+    showRaw: "Показать содержимое .mobileconfig",
     androidCopy: "Скопировать Private DNS",
     windowsCopy: "Скопировать настройку Windows",
     howTo: "Как настроить",
@@ -93,6 +119,19 @@ const I = {
     profileName: "Profila nosaukums",
     install: "Instalēt profilu",
     share: "Kopīgot profilu",
+    preview: "Apskatīt profilu",
+    previewTitle: "Profila priekšskatījums",
+    previewType: "Tips",
+    previewChanges: "Ko šis profils maina",
+    previewOnlyDns: "Tikai DNS iestatījumus.",
+    previewNoVpn: "VPN netiek konfigurēts.",
+    previewNoCerts: "Sertifikāti netiek instalēti.",
+    previewNoCredentials: "Konta piekļuves dati netiek pievienoti.",
+    previewNoMdm: "Ierīces pārvaldība (MDM) netiek ieslēgta.",
+    previewSignature: "Digitālais paraksts",
+    previewUnsigned: "nav",
+    previewLocal: "Profils tiek izveidots lokāli šajā pārlūkprogrammā.",
+    showRaw: "Rādīt .mobileconfig saturu",
     androidCopy: "Kopēt Private DNS",
     windowsCopy: "Kopēt Windows iestatīšanu",
     howTo: "Kā iestatīt",
@@ -127,6 +166,8 @@ const error = $("error");
 const profileName = $("profileName");
 const primaryAction = $("install");
 const secondaryAction = $("share");
+const previewAction = $("preview");
+const profilePreview = $("profilePreview");
 
 const params = new URL(location.href).searchParams;
 const requestedLanguage = params.get("lang");
@@ -192,6 +233,7 @@ function applyLanguage() {
 
   updateActions();
   updateProviderDisplay();
+  if (!profilePreview.classList.contains("hidden")) renderProfilePreview();
 }
 
 document.querySelectorAll("[data-lang]").forEach(button => {
@@ -206,10 +248,15 @@ function updateActions() {
   if (selectedPlatform === "apple") {
     primaryAction.textContent = tr("install");
     secondaryAction.textContent = tr("share");
+    previewAction.classList.remove("hidden");
   } else if (selectedPlatform === "android") {
+    previewAction.classList.add("hidden");
+    profilePreview.classList.add("hidden");
     primaryAction.textContent = tr("androidCopy");
     secondaryAction.textContent = tr("howTo");
   } else {
+    previewAction.classList.add("hidden");
+    profilePreview.classList.add("hidden");
     primaryAction.textContent = tr("windowsCopy");
     secondaryAction.textContent = tr("howTo");
   }
@@ -529,6 +576,65 @@ if ($isAdmin) {
   Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded"
 }`;
 }
+
+function previewData() {
+  if (mode === "provider") {
+    const p = providers[provider.value];
+    return {
+      name: profileName.value.trim() || proposedProfileName(),
+      provider: p.name,
+      protocol: "DoH",
+      endpoint: p.url
+    };
+  }
+
+  const protocol = customProtocol.value;
+  return {
+    name: profileName.value.trim() || "TOLF DNS Custom",
+    provider: tr("customMode"),
+    protocol: protocol === "HTTPS" ? "DoH" : protocol === "TLS" ? "DoT" : tr("plainDns"),
+    endpoint: protocol === "HTTPS"
+      ? $("serverUrl").value.trim() || "—"
+      : protocol === "TLS"
+        ? $("serverName").value.trim() || "—"
+        : addresses().join(", ") || "—"
+  };
+}
+
+function renderProfilePreview() {
+  const validationError = validateApple();
+  if (validationError) {
+    showError(validationError);
+    return false;
+  }
+
+  hideError();
+  const data = previewData();
+  $("previewName").textContent = data.name;
+  $("previewProtocol").textContent = data.protocol;
+  $("previewProvider").textContent = data.provider;
+  $("previewEndpoint").textContent = data.endpoint;
+
+  const oldName = profileName.value;
+  profileName.value = data.name;
+  const raw = buildAppleProfile();
+  profileName.value = oldName || data.name;
+  if (!raw) return false;
+
+  $("previewRaw").textContent = raw;
+  return true;
+}
+
+previewAction.addEventListener("click", () => {
+  if (selectedPlatform !== "apple") return;
+  if (!renderProfilePreview()) return;
+  profilePreview.classList.remove("hidden");
+  profilePreview.scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+
+$("closePreview").addEventListener("click", () => {
+  profilePreview.classList.add("hidden");
+});
 
 primaryAction.addEventListener("click", async () => {
   hideError();
