@@ -20,7 +20,7 @@ function tr(k){return I[lang][k]||I.en[k]||k}
 function applyLanguage(){document.documentElement.lang=lang;document.querySelectorAll("[data-t]").forEach(x=>x.textContent=tr(x.dataset.t));document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("active",x.dataset.lang===lang));const back=document.querySelector(".back");if(back)back.href="/?lang="+encodeURIComponent(lang)}
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;localStorage.setItem("tolf-language",lang);const u=new URL(location.href);u.searchParams.set("lang",lang);history.replaceState(null,"",u);applyLanguage()});
 document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x===b));providerPanel.classList.toggle("hidden",mode!=="provider");customPanel.classList.toggle("hidden",mode!=="custom");hideError()});
-function updateProvider(){const p=providers[provider.value];providerProtocol.textContent=p.protocol==="HTTPS"?"DoH":"DoT";providerEndpoint.textContent=p.url;$("profileName").value=p.name+" DNS"}
+function updateProvider(){const p=providers[provider.value];providerProtocol.textContent=p.protocol==="HTTPS"?"DoH":"DoT";providerEndpoint.textContent=p.url;$("profileName").value="TOLF DNS "+p.name}
 provider.onchange=updateProvider;
 function updateCustom(){const p=customProtocol.value;urlField.classList.toggle("hidden",p!=="HTTPS");hostField.classList.toggle("hidden",p!=="TLS");addressesField.classList.toggle("hidden",p==="HTTPS")}
 customProtocol.onchange=updateCustom;
@@ -35,7 +35,7 @@ function validate(){
  if(customProtocol.value!=="HTTPS"&&!addresses().length)return tr("invalidAddresses");
  return null
 }
-function hideError(){error.classList.add("hidden")}
+function hideError(){error.classList.add("hidden")}\nfunction askProfileName(){const proposed=$("profileName").value.trim()||(mode==="provider"?"TOLF DNS "+providers[provider.value].name:"TOLF DNS Custom");const value=window.prompt(tr("profileName"),proposed);if(value===null)return false;const name=value.trim();if(!name){error.textContent=tr("nameRequired");error.classList.remove("hidden");return false}$("profileName").value=name;hideError();return true}
 function build(){
  const e=validate();if(e){error.textContent=e;error.classList.remove("hidden");return null}hideError();
  const name=$("profileName").value.trim(),pu=uuid(),du=uuid();let settings="";
@@ -46,6 +46,6 @@ function build(){
 }
 function fileName(){return ($("profileName").value.trim()||"DNS").replace(/[^\p{L}\p{N}._-]+/gu,"-")+".mobileconfig"}
 function download(content){const blob=new Blob([content],{type:"application/x-apple-aspen-config"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=fileName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-$("install").onclick=()=>{const x=build();if(x)download(x)};
-$("share").onclick=async()=>{const x=build();if(!x)return;const file=new File([x],fileName(),{type:"application/x-apple-aspen-config"});if(navigator.share&&navigator.canShare?.({files:[file]})){try{await navigator.share({files:[file]});return}catch(e){if(e.name==="AbortError")return}}download(x)};
+$("install").onclick=()=>{if(!askProfileName())return;const x=build();if(x)download(x)};
+$("share").onclick=async()=>{if(!askProfileName())return;const x=build();if(!x)return;const file=new File([x],fileName(),{type:"application/x-apple-aspen-config"});if(navigator.share&&navigator.canShare?.({files:[file]})){try{await navigator.share({files:[file]});return}catch(e){if(e.name==="AbortError")return}}download(x)};
 applyLanguage();updateProvider();updateCustom();
