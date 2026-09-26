@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>TOLF DNS Configurator</title>
-<link rel="stylesheet" href="styles.css?v=dns-platform-actions-20260926-4">
+<link rel="stylesheet" href="styles.css?v=dns-preview-20260926-5">
 </head>
 <body>
 <main>
@@ -127,6 +127,42 @@
       <button id="install" class="primary" type="button" data-t="install">Install Profile</button>
       <button id="share" class="secondary" type="button" data-t="share">Share Profile</button>
     </div>
+    <button id="preview" class="preview-button" type="button" data-t="preview">Preview Profile</button>
+
+    <section id="profilePreview" class="profile-preview hidden" aria-live="polite">
+      <div class="preview-header">
+        <div>
+          <div class="preview-kicker" data-t="previewTitle">Profile preview</div>
+          <h2 id="previewName">TOLF DNS Quad9</h2>
+        </div>
+        <button id="closePreview" class="preview-close" type="button" aria-label="Close">×</button>
+      </div>
+
+      <div class="preview-grid">
+        <div><span data-t="previewType">Type</span><strong>DNS configuration</strong></div>
+        <div><span data-t="protocol">Protocol</span><strong id="previewProtocol">DoH</strong></div>
+        <div><span data-t="provider">DNS provider</span><strong id="previewProvider">Quad9</strong></div>
+        <div class="preview-wide"><span data-t="endpoint">Endpoint</span><code id="previewEndpoint"></code></div>
+      </div>
+
+      <div class="preview-scope">
+        <div class="preview-scope-title" data-t="previewChanges">What this profile changes</div>
+        <p data-t="previewOnlyDns">DNS settings only.</p>
+        <ul>
+          <li data-t="previewNoVpn">VPN is not configured.</li>
+          <li data-t="previewNoCerts">No certificates are installed.</li>
+          <li data-t="previewNoCredentials">No account credentials are added.</li>
+          <li data-t="previewNoMdm">Device management (MDM) is not enabled.</li>
+        </ul>
+        <p><span data-t="previewSignature">Digital signature</span>: <strong data-t="previewUnsigned">none</strong></p>
+        <p data-t="previewLocal">The profile is generated locally in this browser.</p>
+      </div>
+
+      <details class="raw-profile">
+        <summary data-t="showRaw">Show .mobileconfig contents</summary>
+        <pre id="previewRaw"></pre>
+      </details>
+    </section>
   </section>
 
   <details class="privacy">
@@ -134,6 +170,6 @@
     <p data-t="privateText">DNS settings and generated profiles stay in this browser and are not sent to TOLF.</p>
   </details>
 </main>
-<script src="app.js?v=dns-platform-actions-20260926-4"></script>
+<script src="app.js?v=dns-preview-20260926-5"></script>
 </body>
 </html>
