@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>TOLF DNS Configurator</title>
-<link rel="stylesheet" href="styles.css?v=dns-preview-20260926-5">
+<link rel="stylesheet" href="styles.css?v=dns-preview-buttons-20260926-6">
 </head>
 <body>
 <main>
@@ -123,11 +123,11 @@
 
     <div id="error" class="error hidden" role="alert"></div>
 
-    <div class="actions">
+    <div class="actions profile-actions">
       <button id="install" class="primary" type="button" data-t="install">Install Profile</button>
+      <button id="preview" class="secondary preview-button" type="button" data-t="preview">Preview Profile</button>
       <button id="share" class="secondary" type="button" data-t="share">Share Profile</button>
     </div>
-    <button id="preview" class="preview-button" type="button" data-t="preview">Preview Profile</button>
 
     <section id="profilePreview" class="profile-preview hidden" aria-live="polite">
       <div class="preview-header">
@@ -170,6 +170,6 @@
     <p data-t="privateText">DNS settings and generated profiles stay in this browser and are not sent to TOLF.</p>
   </details>
 </main>
-<script src="app.js?v=dns-preview-20260926-5"></script>
+<script src="app.js?v=dns-preview-buttons-20260926-6"></script>
 </body>
 </html>
