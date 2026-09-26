@@ -42,6 +42,7 @@ const I = {
     previewUnsigned: "none",
     previewLocal: "The profile is generated locally in this browser.",
     showRaw: "Show .mobileconfig contents",
+    copyRaw: "Copy .mobileconfig",
     androidCopy: "Copy Private DNS",
     windowsCopy: "Copy Windows Setup",
     howTo: "How to set up",
@@ -87,6 +88,7 @@ const I = {
     previewUnsigned: "нет",
     previewLocal: "Профиль создаётся локально в этом браузере.",
     showRaw: "Показать содержимое .mobileconfig",
+    copyRaw: "Скопировать .mobileconfig",
     androidCopy: "Скопировать Private DNS",
     windowsCopy: "Скопировать настройку Windows",
     howTo: "Как настроить",
@@ -132,6 +134,7 @@ const I = {
     previewUnsigned: "nav",
     previewLocal: "Profils tiek izveidots lokāli šajā pārlūkprogrammā.",
     showRaw: "Rādīt .mobileconfig saturu",
+    copyRaw: "Kopēt .mobileconfig",
     androidCopy: "Kopēt Private DNS",
     windowsCopy: "Kopēt Windows iestatīšanu",
     howTo: "Kā iestatīt",
@@ -223,6 +226,10 @@ function applyLanguage() {
 
   document.querySelectorAll("[data-lang]").forEach(button => {
     button.classList.toggle("active", button.dataset.lang === lang);
+  });
+  document.querySelectorAll("[data-t-aria]").forEach(node => {
+    node.setAttribute("aria-label", tr(node.dataset.tAria));
+    node.setAttribute("title", tr(node.dataset.tAria));
   });
 
   const back = $("backLink");
@@ -635,6 +642,18 @@ previewAction.addEventListener("click", () => {
 $("closePreview").addEventListener("click", () => {
   profilePreview.classList.add("hidden");
 });
+
+$("copyRawProfile").addEventListener("click", async () => {
+  const raw = $("previewRaw").textContent;
+  if (!raw) return;
+  if (await copyText(raw)) {
+    const status = $("copyRawStatus");
+    status.textContent = tr("copied");
+    status.classList.remove("hidden");
+    setTimeout(() => status.classList.add("hidden"), 1500);
+  }
+});
+
 
 primaryAction.addEventListener("click", async () => {
   hideError();
