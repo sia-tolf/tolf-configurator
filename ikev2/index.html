@@ -1,4 +1,4 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-26 sticky-platform-v3 -->
+<!-- TOLF Configurator IKEv2 — Build 2026-09-26.1 -->
 
 <!DOCTYPE html>
 <html lang="en" data-tolf-ui="configurator">
@@ -21,25 +21,17 @@
       .required-fields-note { color: #a1a1a6; }
     }
 
+    /* IKEv2 page: navigation scrolls normally; only platform bar is sticky. */
     .page-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 30px;
-    }
-
-    .page-top {
-      position: static !important;
+      position: relative !important;
       top: auto !important;
-      z-index: auto !important;
-      width: auto !important;
+      z-index: 1 !important;
+      width: 100% !important;
       min-height: 0 !important;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
+      margin: 0 0 30px !important;
       padding: 0 !important;
       background: transparent !important;
-      border-bottom: 0 !important;
+      border: 0 !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
     }
@@ -90,14 +82,14 @@
     }
 
     .platform-sticky-shell {
+      position: -webkit-sticky;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
+      width: 100%;
       margin: 26px 0 0;
       padding: 8px 0;
-      background: rgba(245,245,247,.96);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      background: #f5f5f7;
     }
 
     .configurator-tool-row {
@@ -111,7 +103,6 @@
     }
 
     .target-platform-selector {
-      position: static;
       width: 100%;
       min-height: 0;
       margin: 0;
@@ -322,7 +313,7 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
       <div class="configurator-hero-copy">
         <div class="title-row">
           <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-20.3</span>
+          <span class="build-number">Build 2026-09-26.1</span>
         </div>
 
         <p class="subtitle" data-i18n="ikev2Subtitle">
