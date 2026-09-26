@@ -1,8 +1,64 @@
 const providers = {
-  quad9: { name: "Quad9", protocol: "HTTPS", url: "https://dns.quad9.net/dns-query" },
-  cloudflare: { name: "Cloudflare", protocol: "HTTPS", url: "https://cloudflare-dns.com/dns-query" },
-  yandex: { name: "Yandex DNS", protocol: "HTTPS", url: "https://common.dot.dns.yandex.net/dns-query" },
-  dns4eu: { name: "DNS4EU", protocol: "HTTPS", url: "https://unfiltered.joindns4.eu/dns-query" }
+  quad9: {
+    name: "Quad9",
+    protocol: "HTTPS",
+    url: "https://dns.quad9.net/dns-query",
+    dotHost: "dns.quad9.net"
+  },
+  quad9ecs: {
+    name: "Quad9 ECS",
+    protocol: "HTTPS",
+    url: "https://dns11.quad9.net/dns-query",
+    dotHost: "dns11.quad9.net"
+  },
+  cloudflare: {
+    name: "Cloudflare",
+    protocol: "HTTPS",
+    url: "https://cloudflare-dns.com/dns-query",
+    dotHost: "one.one.one.one"
+  },
+  google: {
+    name: "Google Public DNS",
+    protocol: "HTTPS",
+    url: "https://dns.google/dns-query",
+    dotHost: "dns.google"
+  },
+  adguard: {
+    name: "AdGuard DNS",
+    protocol: "HTTPS",
+    url: "https://unfiltered.adguard-dns.com/dns-query",
+    dotHost: "unfiltered.adguard-dns.com"
+  },
+  mullvad: {
+    name: "Mullvad DNS",
+    protocol: "HTTPS",
+    url: "https://dns.mullvad.net/dns-query",
+    dotHost: "dns.mullvad.net"
+  },
+  dns4eu: {
+    name: "DNS4EU",
+    protocol: "HTTPS",
+    url: "https://unfiltered.joindns4.eu/dns-query",
+    dotHost: "unfiltered.joindns4.eu"
+  },
+  yandex: {
+    name: "Yandex DNS",
+    protocol: "HTTPS",
+    url: "https://common.dot.dns.yandex.net/dns-query",
+    dotHost: "common.dot.dns.yandex.net"
+  },
+  dnspod: {
+    name: "DNSPod / Tencent",
+    protocol: "HTTPS",
+    url: "https://dns.pub/dns-query",
+    dotHost: "dot.pub"
+  },
+  alidns: {
+    name: "AliDNS",
+    protocol: "HTTPS",
+    url: "https://dns.alidns.com/dns-query",
+    dotHost: "dns.alidns.com"
+  }
 };
 
 const I = {
