@@ -515,7 +515,7 @@ function buildAppleProfile() {
     '  </dict>',
     '</plist>',
     ''
-  ].join("\\n");
+  ].join("\n");
 }
 
 function fileName() {
