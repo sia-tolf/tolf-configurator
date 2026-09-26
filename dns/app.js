@@ -10,7 +10,6 @@ const I = {
     title: "TOLF DNS",
     subtitle: "Create a DNS configuration profile directly in your browser.",
     help: "Help",
-    platform: "Platform",
     providerMode: "Provider",
     customMode: "Custom DNS",
     provider: "DNS provider",
@@ -35,7 +34,6 @@ const I = {
     title: "TOLF DNS",
     subtitle: "Создайте профиль DNS прямо в браузере.",
     help: "Помощь",
-    platform: "Платформа",
     providerMode: "Провайдер",
     customMode: "Свой DNS",
     provider: "DNS-провайдер",
@@ -60,7 +58,6 @@ const I = {
     title: "TOLF DNS",
     subtitle: "Izveidojiet DNS konfigurācijas profilu tieši pārlūkprogrammā.",
     help: "Palīdzība",
-    platform: "Platforma",
     providerMode: "Pakalpojuma sniedzējs",
     customMode: "Savs DNS",
     provider: "DNS pakalpojuma sniedzējs",
@@ -84,7 +81,7 @@ const I = {
 };
 
 const supportedLanguages = ["en", "ru", "lv"];
-const supportedPlatforms = ["ios", "ipados", "android", "windows"];
+const supportedPlatforms = ["apple", "android", "windows"];
 const $ = id => document.getElementById(id);
 
 const provider = $("provider");
@@ -112,13 +109,14 @@ let lang = supportedLanguages.includes(requestedLanguage)
         ? "lv"
         : "en";
 
-const requestedPlatform = params.get("platform");
-const savedPlatform = localStorage.getItem("tolf-platform");
-let selectedPlatform = supportedPlatforms.includes(requestedPlatform)
-  ? requestedPlatform
-  : supportedPlatforms.includes(savedPlatform)
-    ? savedPlatform
-    : "ios";
+function normalizePlatform(value) {
+  if (value === "ios" || value === "ipados") return "apple";
+  return supportedPlatforms.includes(value) ? value : null;
+}
+
+const requestedPlatform = normalizePlatform(params.get("platform"));
+const savedPlatform = normalizePlatform(localStorage.getItem("tolf-platform"));
+let selectedPlatform = requestedPlatform || savedPlatform || "apple";
 
 let mode = "provider";
 
