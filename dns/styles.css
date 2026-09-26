@@ -132,3 +132,63 @@ textarea{resize:vertical}
   .secondary{background:#2c2c2e;color:#f5f5f7;border-color:#48484a}
   .primary{background:#f5f5f7;color:#1d1d1f;border-color:#f5f5f7}
 }
+.preview-button{
+  width:100%;
+  min-height:42px;
+  margin-top:10px;
+  border:0;
+  background:transparent;
+  color:#5f5f63;
+  font:inherit;
+  font-size:14px;
+  cursor:pointer;
+}
+.preview-button:hover{text-decoration:underline}
+.profile-preview{
+  margin-top:18px;
+  padding:18px;
+  border:1px solid #d8d8dc;
+  border-radius:14px;
+  background:#f8f8fa;
+}
+.preview-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.preview-kicker{color:#6e6e73;font-size:13px;margin-bottom:4px}
+.profile-preview h2{margin:0;font-size:20px;line-height:1.2;font-weight:650}
+.preview-close{
+  width:32px;height:32px;min-width:32px;padding:0;
+  border:1px solid #d2d2d7;border-radius:9px;
+  background:#fff;color:#6e6e73;font-size:22px;line-height:1;cursor:pointer;
+}
+.preview-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0 20px;margin-top:16px;
+  border-top:1px solid #dedee2;
+}
+.preview-grid>div{padding:11px 0;border-bottom:1px solid #dedee2}
+.preview-grid span{display:block;color:#6e6e73;font-size:12px;margin-bottom:3px}
+.preview-grid strong,.preview-grid code{font-size:14px;overflow-wrap:anywhere}
+.preview-wide{grid-column:1/-1}
+.preview-scope{margin-top:16px;font-size:14px;line-height:1.45}
+.preview-scope-title{font-weight:650;margin-bottom:5px}
+.preview-scope p{margin:6px 0}
+.preview-scope ul{margin:7px 0 10px;padding-left:20px}
+.preview-scope li{margin:4px 0}
+.raw-profile{margin-top:14px;border-top:1px solid #dedee2;padding-top:12px}
+.raw-profile summary{cursor:pointer;color:#5f5f63;font-size:13px;font-weight:600}
+.raw-profile pre{
+  max-height:320px;overflow:auto;margin:12px 0 0;padding:12px;
+  border:1px solid #dedee2;border-radius:10px;
+  background:#fff;color:#1d1d1f;
+  font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  white-space:pre-wrap;overflow-wrap:anywhere;
+}
+@media(max-width:520px){
+  .preview-grid{grid-template-columns:1fr}
+  .preview-wide{grid-column:auto}
+}
+@media(prefers-color-scheme:dark){
+  .preview-button,.preview-kicker,.preview-grid span,.raw-profile summary{color:#a1a1a6}
+  .profile-preview{background:#151517;border-color:#38383a}
+  .preview-close,.raw-profile pre{background:#1c1c1e;color:#f5f5f7;border-color:#38383a}
+  .preview-grid,.preview-grid>div,.raw-profile{border-color:#38383a}
+}
