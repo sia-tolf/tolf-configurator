@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>TOLF DNS Configurator</title>
-<link rel="stylesheet" href="styles.css?v=dns-platform-20260926-2">
+<link rel="stylesheet" href="styles.css?v=dns-providers-20260926-3">
 </head>
 <body>
 <main>
@@ -68,9 +68,15 @@
         <label for="provider" data-t="provider">DNS provider</label>
         <select id="provider">
           <option value="quad9">Quad9</option>
+          <option value="quad9ecs">Quad9 ECS</option>
           <option value="cloudflare">Cloudflare</option>
-          <option value="yandex">Yandex DNS</option>
+          <option value="google">Google Public DNS</option>
+          <option value="adguard">AdGuard DNS</option>
+          <option value="mullvad">Mullvad DNS</option>
           <option value="dns4eu">DNS4EU</option>
+          <option value="yandex">Yandex DNS</option>
+          <option value="dnspod">DNSPod / Tencent</option>
+          <option value="alidns">AliDNS</option>
         </select>
       </div>
 
@@ -128,6 +134,6 @@
     <p data-t="privateText">DNS settings and generated profiles stay in this browser and are not sent to TOLF.</p>
   </details>
 </main>
-<script src="app.js?v=dns-platform-20260926-2"></script>
+<script src="app.js?v=dns-providers-20260926-3"></script>
 </body>
 </html>
