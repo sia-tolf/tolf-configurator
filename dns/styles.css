@@ -28,25 +28,52 @@ main{width:min(720px,calc(100% - 32px));margin:0 auto;padding:0 0 48px}
 h1{margin:0 0 8px;font-size:36px;line-height:1.08;font-weight:650;letter-spacing:-.02em}
 .subtitle{margin:0;color:#5f5f63;font-size:17px;line-height:1.45}
 
-.platform-card{
-  position:sticky;top:8px;z-index:40;
-  margin:0 0 18px;padding:12px 14px;
-  background:rgba(255,255,255,.92);
-  border:1px solid #d8d8dc;border-radius:16px;
-  box-shadow:0 4px 18px rgba(0,0,0,.05);
-  backdrop-filter:saturate(180%) blur(20px);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
+.header-switchers{margin:0 0 18px}
+.platform-switcher{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  width:100%;
+  height:44px;
+  min-height:44px;
+  max-height:44px;
+  padding:4px;
+  gap:4px;
+  border:1px solid #d2d2d7;
+  border-radius:11px;
+  background:#e9e9ed;
 }
-.platform-label{margin:0 0 8px;color:#6e6e73;font-size:13px}
-.platform-switcher{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .platform-button{
-  min-height:42px;padding:0 10px;border:1px solid transparent;border-radius:10px;
-  background:transparent;color:#5f5f63;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:7px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  width:100%;
+  min-width:0;
+  height:34px;
+  min-height:34px;
+  max-height:34px;
+  padding:0 4px;
+  font-size:14px;
+  font-weight:500;
+  line-height:1.2;
+  border:1px solid transparent;
+  border-radius:7px;
+  color:#6e6e73;
+  background:transparent;
+  cursor:pointer;
 }
-.platform-button.active{background:#fff;color:#1d1d1f;border-color:#d2d2d7;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.platform-icon{font-size:9px;line-height:1;color:#7d1534}
-.windows-icon{font-size:10px}
+.platform-button.active{
+  color:#1d1d1f;
+  background:#fff;
+  border-color:#d2d2d7;
+  box-shadow:none;
+}
+.platform-icon{
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
+  fill:currentColor;
+}
 
 .card{background:#fff;border:1px solid #d8d8dc;border-radius:16px;padding:22px}
 .mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin-bottom:20px;background:#e9e9ed;border:1px solid #d2d2d7;border-radius:14px}
@@ -79,8 +106,6 @@ textarea{resize:vertical}
   .language button{min-width:36px;padding:0 7px}
   .help-link{padding:0 10px}
   h1{font-size:30px}
-  .platform-card{top:6px;padding:10px}
-  .platform-switcher{grid-template-columns:repeat(2,1fr)}
   .card{padding:18px}
   .actions{grid-template-columns:1fr}
 }
@@ -95,9 +120,10 @@ textarea{resize:vertical}
 @media(prefers-color-scheme:dark){
   :root,body{background:#000;color:#f5f5f7}
   .back,.help-link{color:#f5f5f7}
-  .language,.help-link,.card,input,select,textarea,.platform-card{background:#1c1c1e;color:#f5f5f7;border-color:#38383a}
+  .language,.help-link,.card,input,select,textarea{background:#1c1c1e;color:#f5f5f7;border-color:#38383a}
   .language button{color:#a1a1a6}
   .language button.active,.platform-button.active{background:#3a3a3c;color:#fff;border-color:#48484a}
+  .platform-switcher{background:#1c1c1e;border-color:#38383a}
   .platform-button{color:#a1a1a6}
   .mode-tabs{background:#1c1c1e;border-color:#38383a}
   .mode.active{background:#3a3a3c;color:#fff;border-color:#48484a}
