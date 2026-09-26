@@ -434,43 +434,88 @@ function buildAppleProfile() {
   const name = profileName.value.trim();
   const profileUuid = uuid();
   const dnsUuid = uuid();
-  let settings = "";
+  let settings = [];
 
   if (mode === "provider") {
     const p = providers[provider.value];
-    settings = `<key>DNSProtocol</key><string>HTTPS</string><key>ServerURL</key><string>${esc(p.url)}</string>`;
+    settings = [
+      "          <key>DNSProtocol</key>",
+      "          <string>HTTPS</string>",
+      "          <key>ServerURL</key>",
+      `          <string>${esc(p.url)}</string>`
+    ];
   } else if (customProtocol.value === "HTTPS") {
-    settings = `<key>DNSProtocol</key><string>HTTPS</string><key>ServerURL</key><string>${esc($("serverUrl").value.trim())}</string>`;
+    settings = [
+      "          <key>DNSProtocol</key>",
+      "          <string>HTTPS</string>",
+      "          <key>ServerURL</key>",
+      `          <string>${esc($("serverUrl").value.trim())}</string>`
+    ];
   } else {
     const protocol = customProtocol.value;
-    settings =
-      `<key>DNSProtocol</key><string>${protocol}</string>` +
-      (protocol === "TLS"
-        ? `<key>ServerName</key><string>${esc($("serverName").value.trim())}</string>`
-        : "") +
-      `<key>ServerAddresses</key><array>${addresses().map(value => `<string>${esc(value)}</string>`).join("")}</array>`;
+    settings = [
+      "          <key>DNSProtocol</key>",
+      `          <string>${protocol}</string>`
+    ];
+
+    if (protocol === "TLS") {
+      settings.push(
+        "          <key>ServerName</key>",
+        `          <string>${esc($("serverName").value.trim())}</string>`
+      );
+    }
+
+    settings.push("          <key>ServerAddresses</key>", "          <array>");
+    addresses().forEach(value => {
+      settings.push(`            <string>${esc(value)}</string>`);
+    });
+    settings.push("          </array>");
   }
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict>
-<key>PayloadContent</key><array><dict>
-<key>DNSSettings</key><dict>${settings}</dict>
-<key>PayloadDisplayName</key><string>${esc(name)}</string>
-<key>PayloadIdentifier</key><string>is.tolf.configurator.dns.settings.${dnsUuid.toLowerCase()}</string>
-<key>PayloadType</key><string>com.apple.dnsSettings.managed</string>
-<key>PayloadUUID</key><string>${dnsUuid}</string>
-<key>PayloadVersion</key><integer>1</integer>
-</dict></array>
-<key>PayloadDescription</key><string>DNS configuration generated locally by TOLF Configurator.</string>
-<key>PayloadDisplayName</key><string>${esc(name)}</string>
-<key>PayloadIdentifier</key><string>is.tolf.configurator.dns.profile.${profileUuid.toLowerCase()}</string>
-<key>PayloadOrganization</key><string>TOLF Configurator</string>
-<key>PayloadRemovalDisallowed</key><false/>
-<key>PayloadType</key><string>Configuration</string>
-<key>PayloadUUID</key><string>${profileUuid}</string>
-<key>PayloadVersion</key><integer>1</integer>
-</dict></plist>`;
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+    '<plist version="1.0">',
+    '  <dict>',
+    '    <key>PayloadContent</key>',
+    '    <array>',
+    '      <dict>',
+    '        <key>DNSSettings</key>',
+    '        <dict>',
+    ...settings,
+    '        </dict>',
+    '        <key>PayloadDisplayName</key>',
+    `        <string>${esc(name)}</string>`,
+    '        <key>PayloadIdentifier</key>',
+    `        <string>is.tolf.configurator.dns.settings.${dnsUuid.toLowerCase()}</string>`,
+    '        <key>PayloadType</key>',
+    '        <string>com.apple.dnsSettings.managed</string>',
+    '        <key>PayloadUUID</key>',
+    `        <string>${dnsUuid}</string>`,
+    '        <key>PayloadVersion</key>',
+    '        <integer>1</integer>',
+    '      </dict>',
+    '    </array>',
+    '    <key>PayloadDescription</key>',
+    '    <string>DNS configuration generated locally by TOLF Configurator.</string>',
+    '    <key>PayloadDisplayName</key>',
+    `    <string>${esc(name)}</string>`,
+    '    <key>PayloadIdentifier</key>',
+    `    <string>is.tolf.configurator.dns.profile.${profileUuid.toLowerCase()}</string>`,
+    '    <key>PayloadOrganization</key>',
+    '    <string>TOLF Configurator</string>',
+    '    <key>PayloadRemovalDisallowed</key>',
+    '    <false/>',
+    '    <key>PayloadType</key>',
+    '    <string>Configuration</string>',
+    '    <key>PayloadUUID</key>',
+    `    <string>${profileUuid}</string>`,
+    '    <key>PayloadVersion</key>',
+    '    <integer>1</integer>',
+    '  </dict>',
+    '</plist>',
+    ''
+  ].join("\\n");
 }
 
 function fileName() {
