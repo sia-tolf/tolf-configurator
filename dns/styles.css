@@ -235,3 +235,24 @@ textarea{resize:vertical}
   .preview-close,.raw-profile pre{background:#1c1c1e;color:#f5f5f7;border-color:#38383a}
   .preview-grid,.preview-grid>div,.raw-profile{border-color:#38383a}
 }
+
+.raw-profile-box{position:relative;margin-top:12px}
+.raw-profile-box pre{margin-top:0;padding-top:44px}
+.copy-raw-button{
+  position:absolute;top:8px;right:8px;z-index:2;
+  width:34px;height:34px;min-width:34px;min-height:34px;
+  padding:7px;border:0;border-radius:8px;
+  background:transparent;color:#5f5f63;cursor:pointer;
+}
+.copy-raw-button:hover{background:rgba(0,0,0,.05)}
+.copy-raw-button:active{background:rgba(0,0,0,.09)}
+.copy-raw-button svg{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.copy-raw-status{
+  position:absolute;top:13px;right:48px;z-index:2;
+  color:#5f5f63;font-size:12px;line-height:1.2;
+}
+@media(prefers-color-scheme:dark){
+  .copy-raw-button,.copy-raw-status{color:#a1a1a6}
+  .copy-raw-button:hover{background:rgba(255,255,255,.07)}
+  .copy-raw-button:active{background:rgba(255,255,255,.12)}
+}
