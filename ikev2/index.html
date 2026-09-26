@@ -29,6 +29,10 @@
       margin-bottom: 30px;
     }
 
+    .page-top {
+      position: static;
+    }
+
     .page-top .back {
       margin: 0;
     }
@@ -83,6 +87,9 @@
     }
 
     .target-platform-selector {
+      position: sticky;
+      top: 0;
+      z-index: 50;
       width: 100%;
       min-height: 0;
       margin: 0;
@@ -93,6 +100,7 @@
       border: 1px solid #d2d2d7;
       border-radius: 14px;
       background: #e9e9ed;
+      box-shadow: 0 -10px 0 10px rgba(245,245,247,.94), 0 10px 16px rgba(245,245,247,.94);
       user-select: none;
       -webkit-user-select: none;
     }
@@ -207,6 +215,7 @@
       .target-platform-selector {
         background: #1c1c1e;
         border-color: #38383a;
+        box-shadow: 0 -10px 0 10px rgba(0,0,0,.92), 0 10px 16px rgba(0,0,0,.92);
       }
 
       .target-platform-segment {
