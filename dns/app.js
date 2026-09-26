@@ -35,7 +35,8 @@ function validate(){
  if(customProtocol.value!=="HTTPS"&&!addresses().length)return tr("invalidAddresses");
  return null
 }
-function hideError(){error.classList.add("hidden")}\nfunction askProfileName(){const proposed=$("profileName").value.trim()||(mode==="provider"?"TOLF DNS "+providers[provider.value].name:"TOLF DNS Custom");const value=window.prompt(tr("profileName"),proposed);if(value===null)return false;const name=value.trim();if(!name){error.textContent=tr("nameRequired");error.classList.remove("hidden");return false}$("profileName").value=name;hideError();return true}
+function hideError(){error.classList.add("hidden")}
+function askProfileName(){const proposed=$("profileName").value.trim()||(mode==="provider"?"TOLF DNS "+providers[provider.value].name:"TOLF DNS Custom");const value=window.prompt(tr("profileName"),proposed);if(value===null)return false;const name=value.trim();if(!name){error.textContent=tr("nameRequired");error.classList.remove("hidden");return false}$("profileName").value=name;hideError();return true}
 function build(){
  const e=validate();if(e){error.textContent=e;error.classList.remove("hidden");return null}hideError();
  const name=$("profileName").value.trim(),pu=uuid(),du=uuid();let settings="";
