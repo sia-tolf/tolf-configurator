@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>TOLF DNS Configurator</title>
-<link rel="stylesheet" href="styles.css?v=dns-help-20260927-2">
+<link rel="stylesheet" href="styles.css?v=dns-guide-20260927-3">
 </head>
 <body>
 <main>
@@ -22,7 +22,7 @@
           <button data-lang="ru" type="button" lang="ru" aria-label="Русский">RU</button>
           <button data-lang="lv" type="button" lang="lv" aria-label="Latviešu">LV</button>
         </div>
-        <a id="helpLink" class="help-link" href="https://tolf.is/?lang=en#help" data-t="help">Help</a>
+        <a id="helpLink" class="help-link" href="#help" data-t="help">Help</a>
       </div>
     </nav>
 
@@ -186,7 +186,21 @@
     <summary data-t="privateTitle">Processed locally</summary>
     <p data-t="privateText">DNS settings and generated profiles stay in this browser and are not sent to TOLF.</p>
   </details>
+
+  <details class="dns-help" id="help">
+    <summary data-t="helpTitle">DNS setup help</summary>
+    <div class="dns-help-content">
+      <p data-t="helpIntro">Choose a device, a DNS provider and a protocol. The result configures DNS only; it does not set up a VPN.</p>
+      <h2>Apple</h2>
+      <p data-t="helpApple">Tap Install Profile, then open Settings and install the downloaded profile. You can inspect its DNS settings with Preview Profile first.</p>
+      <h2>Android</h2>
+      <p data-t="helpAndroid">Select DNS over TLS (DoT), tap Copy Private DNS, then paste the hostname in Settings → Network &amp; internet → Private DNS → Private DNS provider hostname.</p>
+      <h2>Windows</h2>
+      <p data-t="helpWindows">Select DNS over HTTPS (DoH), tap Copy Windows Setup, then paste the copied commands into PowerShell. The setup requests administrator permission and configures active physical network adapters.</p>
+      <p class="dns-help-note" data-t="helpCustom">For your own DNS provider, choose Custom DNS and enter its DoH URL or DoT hostname.</p>
+    </div>
+  </details>
 </main>
-<script src="app.js?v=dns-header-20260927-1"></script>
+<script src="app.js?v=dns-guide-20260927-3"></script>
 </body>
 </html>
