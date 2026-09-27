@@ -16,6 +16,7 @@ const providerProtocolSelect = document.getElementById("providerProtocolSelect")
 const I = {
   en: {
     title: "DNS",
+    backConfigurator: "Configurator",
     titleRest: "DNS Configurator",
     subtitle: "Configure DNS for Apple, Android or Windows directly in your browser.",
     help: "Help",
@@ -63,6 +64,7 @@ const I = {
   },
   ru: {
     title: "DNS",
+    backConfigurator: "Конфигуратор",
     titleRest: "DNS-конфигуратор",
     subtitle: "Настройте DNS для Apple, Android или Windows прямо в браузере.",
     help: "Помощь",
@@ -110,6 +112,7 @@ const I = {
   },
   lv: {
     title: "DNS",
+    backConfigurator: "Konfigurators",
     titleRest: "DNS konfigurators",
     subtitle: "Konfigurējiet DNS Apple, Android vai Windows ierīcei tieši pārlūkprogrammā.",
     help: "Palīdzība",
