@@ -261,3 +261,16 @@ textarea{resize:vertical}
 .tolf-wordmark {
   letter-spacing: .14em;
 }
+
+/* DNS page title: spaced TOLF wordmark with normal readable product-name gap. */
+.dns-configurator-title {
+  display: flex;
+  align-items: baseline;
+  gap: .42em;
+}
+.dns-configurator-title .dns-title-tolf {
+  letter-spacing: .14em;
+}
+.dns-configurator-title .dns-title-rest {
+  letter-spacing: normal;
+}
