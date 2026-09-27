@@ -281,3 +281,35 @@ textarea{resize:vertical}
   font-weight: 600;
   letter-spacing: normal;
 }
+
+/* Back navigation: match the main Configurator TOLF wordmark exactly. */
+.page-header .back {
+  gap: 8px;
+}
+.page-header .back .tolf-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 1.47;
+  letter-spacing: .16em;
+}
+.page-header .back .tolf-wordmark::before {
+  width: 22px;
+  height: 22px;
+  flex-basis: 22px;
+  margin-right: 0;
+}
+.page-header .back .back-product {
+  margin-left: 2px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.47;
+  letter-spacing: normal;
+  color: #6e6e73;
+}
+@media (max-width:520px) {
+  .page-header .back .tolf-wordmark { font-size:19px; }
+}
