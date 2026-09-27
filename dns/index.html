@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>TOLF DNS Configurator</title>
-<link rel="stylesheet" href="styles.css?v=dns-xml-copy-20260926-8">
+<link rel="stylesheet" href="styles.css?v=dns-protocol-select-20260927-1">
 </head>
 <body>
 <main>
@@ -77,6 +77,14 @@
           <option value="yandex">Yandex DNS</option>
           <option value="dnspod">DNSPod / Tencent</option>
           <option value="alidns">AliDNS</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="providerProtocolSelect" data-t="protocol">Protocol</label>
+        <select id="providerProtocolSelect">
+          <option value="HTTPS">DNS over HTTPS (DoH)</option>
+          <option value="TLS">DNS over TLS (DoT)</option>
         </select>
       </div>
 
