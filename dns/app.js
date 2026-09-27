@@ -15,7 +15,7 @@ const providerProtocolSelect = document.getElementById("providerProtocolSelect")
 
 const I = {
   en: {
-    title: "TOLF DNS",
+    title: "DNS",
     titleRest: "DNS Configurator",
     subtitle: "Configure DNS for Apple, Android or Windows directly in your browser.",
     help: "Help",
@@ -62,7 +62,7 @@ const I = {
     windowsHelp: "Windows: copy the setup block, open PowerShell normally and paste it. The script will request administrator rights through the standard UAC prompt, then configure DoH on active physical network adapters."
   },
   ru: {
-    title: "TOLF DNS",
+    title: "DNS",
     titleRest: "DNS-конфигуратор",
     subtitle: "Настройте DNS для Apple, Android или Windows прямо в браузере.",
     help: "Помощь",
@@ -109,7 +109,7 @@ const I = {
     windowsHelp: "Windows: скопируйте блок настройки, откройте обычный PowerShell и вставьте его. Скрипт сам запросит права администратора через стандартное окно UAC и затем настроит DoH на активных физических сетевых интерфейсах."
   },
   lv: {
-    title: "TOLF DNS",
+    title: "DNS",
     titleRest: "DNS konfigurators",
     subtitle: "Konfigurējiet DNS Apple, Android vai Windows ierīcei tieši pārlūkprogrammā.",
     help: "Palīdzība",
