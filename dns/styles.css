@@ -256,3 +256,8 @@ textarea{resize:vertical}
   .copy-raw-button:hover{background:rgba(255,255,255,.07)}
   .copy-raw-button:active{background:rgba(255,255,255,.12)}
 }
+
+/* TOLF configurator wordmark: spaced brand lettering. */
+.tolf-wordmark {
+  letter-spacing: .14em;
+}
