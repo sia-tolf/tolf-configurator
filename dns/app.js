@@ -20,6 +20,12 @@ const I = {
     titleRest: "DNS Configurator",
     subtitle: "Configure DNS for Apple, Android or Windows directly in your browser.",
     help: "Help",
+    helpTitle: "DNS setup help",
+    helpIntro: "Choose a device, a DNS provider and a protocol. The result configures DNS only; it does not set up a VPN.",
+    helpApple: "Tap Install Profile, then open Settings and install the downloaded profile. You can inspect its DNS settings with Preview Profile first.",
+    helpAndroid: "Select DNS over TLS (DoT), tap Copy Private DNS, then paste the hostname in Settings → Network & internet → Private DNS → Private DNS provider hostname.",
+    helpWindows: "Select DNS over HTTPS (DoH), tap Copy Windows Setup, then paste the copied commands into PowerShell. The setup requests administrator permission and configures active physical network adapters.",
+    helpCustom: "For your own DNS provider, choose Custom DNS and enter its DoH URL or DoT hostname.",
     providerMode: "Provider",
     customMode: "Custom DNS",
     provider: "DNS provider",
@@ -68,6 +74,12 @@ const I = {
     titleRest: "DNS-конфигуратор",
     subtitle: "Настройте DNS для Apple, Android или Windows прямо в браузере.",
     help: "Помощь",
+    helpTitle: "Помощь с настройкой DNS",
+    helpIntro: "Выберите устройство, DNS-провайдера и протокол. Результат настраивает только DNS, но не VPN.",
+    helpApple: "Нажмите «Установить профиль», затем откройте «Настройки» и установите загруженный профиль. Перед установкой его DNS-параметры можно проверить кнопкой «Просмотреть профиль».",
+    helpAndroid: "Выберите DNS over TLS (DoT), нажмите «Скопировать Private DNS» и вставьте имя сервера в «Настройки» → «Сеть и интернет» → «Частный DNS» → «Имя хоста поставщика частного DNS».",
+    helpWindows: "Выберите DNS over HTTPS (DoH), нажмите «Скопировать настройку Windows», затем вставьте команды в PowerShell. При настройке запрашиваются права администратора и изменяются активные физические сетевые интерфейсы.",
+    helpCustom: "Для своего DNS-провайдера выберите «Свой DNS» и укажите его адрес DoH либо имя сервера DoT.",
     providerMode: "Провайдер",
     customMode: "Свой DNS",
     provider: "DNS-провайдер",
@@ -116,6 +128,12 @@ const I = {
     titleRest: "DNS konfigurators",
     subtitle: "Konfigurējiet DNS Apple, Android vai Windows ierīcei tieši pārlūkprogrammā.",
     help: "Palīdzība",
+    helpTitle: "Palīdzība DNS iestatīšanā",
+    helpIntro: "Izvēlieties ierīci, DNS pakalpojuma sniedzēju un protokolu. Tiek iestatīts tikai DNS, nevis VPN.",
+    helpApple: "Nospiediet «Instalēt profilu», pēc tam atveriet Iestatījumus un instalējiet lejupielādēto profilu. Pirms instalēšanas DNS iestatījumus var pārbaudīt ar «Apskatīt profilu».",
+    helpAndroid: "Izvēlieties DNS over TLS (DoT), nospiediet «Kopēt Private DNS» un ielīmējiet servera nosaukumu sadaļā Iestatījumi → Tīkls un internets → Privātais DNS → Pakalpojuma sniedzēja resursdatora nosaukums.",
+    helpWindows: "Izvēlieties DNS over HTTPS (DoH), nospiediet «Kopēt Windows iestatīšanu» un ielīmējiet komandas PowerShell. Iestatīšana pieprasa administratora atļauju un konfigurē aktīvos fiziskos tīkla adapterus.",
+    helpCustom: "Savam DNS pakalpojuma sniedzējam izvēlieties «Savs DNS» un norādiet tā DoH adresi vai DoT servera nosaukumu.",
     providerMode: "Pakalpojuma sniedzējs",
     customMode: "Savs DNS",
     provider: "DNS pakalpojuma sniedzējs",
@@ -242,9 +260,6 @@ function applyLanguage() {
 
   const back = $("backLink");
   if (back) back.href = "/?lang=" + encodeURIComponent(lang);
-
-  const help = $("helpLink");
-  if (help) help.href = "https://tolf.is/?lang=" + encodeURIComponent(lang) + "#help";
 
   updateActions();
   updateProviderDisplay();
@@ -792,3 +807,5 @@ applyPlatform();
 syncUrl();
 updateProvider();
 updateCustom();
+$("helpLink").addEventListener("click", () => { $("help").open = true; });
+if (location.hash === "#help") $("help").open = true;
