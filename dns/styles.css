@@ -31,7 +31,7 @@ main{width:min(720px,calc(100% - 32px));margin:0 auto;padding:0 0 48px}
 .language{display:inline-flex;padding:4px;border:1px solid rgba(0,0,0,.08);border-radius:11px;background:#fff}
 .language button{min-width:42px;height:32px;padding:0 10px;border:0;border-radius:8px;background:transparent;color:#6e6e73;cursor:pointer}
 .language button.active{background:#ececf0;color:#1d1d1f}
-.help-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 12px;border:1px solid #d2d2d7;border-radius:11px;color:#1d1d1f;text-decoration:none;background:#fff;font-size:14px}
+.help-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 4px;border:0;border-radius:6px;color:var(--tolf-blue);text-decoration:none;background:transparent;font-size:14px;font-weight:500;white-space:nowrap}
 .brand-copy{margin-top:22px}
 h1{margin:0 0 8px;font-size:36px;line-height:1.08;font-weight:650;letter-spacing:-.02em}
 .subtitle{margin:0;color:#5f5f63;font-size:17px;line-height:1.45}
@@ -130,7 +130,7 @@ textarea{resize:vertical}
   .header-navigation{gap:8px}
   .header-right{gap:6px}
   .language button{min-width:36px;padding:0 7px}
-  .help-link{padding:0 10px}
+  .help-link{padding:0 4px}
   h1{font-size:30px}
   .card{padding:18px}
   .actions{grid-template-columns:1fr}
@@ -140,7 +140,7 @@ textarea{resize:vertical}
   .tolf-wordmark::before{width:20px;height:20px;flex-basis:20px;margin-right:6px}
   .back-chevron{font-size:25px}
   .language button{min-width:32px;padding:0 5px}
-  .help-link{min-height:38px;padding:0 8px;font-size:13px}
+  .help-link{min-height:44px;padding:0 4px;font-size:14px}
 }
 
 @media(prefers-color-scheme:dark){
@@ -153,7 +153,7 @@ textarea{resize:vertical}
   }
   :root,body{background:#000;color:#f5f5f7}
   .back,.help-link{color:#f5f5f7}
-  .language,.help-link,.card,input,select,textarea{background:#1c1c1e;color:#f5f5f7;border-color:#38383a}
+  .language,.card,input,select,textarea{background:#1c1c1e;color:#f5f5f7;border-color:#38383a}
   .language button{color:#a1a1a6}
   .language button.active,.platform-button.active{background:#3a3a3c;color:#fff;border-color:#48484a}
   .platform-switcher{background:#1c1c1e;border-color:#38383a}
@@ -314,7 +314,7 @@ textarea{resize:vertical}
   .page-header .back .tolf-wordmark { font-size:19px; }
 }
 
-/* DNS header: one unified back label and VPN-style Help emphasis. */
+/* DNS header: one unified back label and VPN-style Help link. */
 .page-header .back{
   gap:8px;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI",Helvetica,Arial,sans-serif;
@@ -342,7 +342,7 @@ textarea{resize:vertical}
 .page-header .help-link{
   color:var(--tolf-blue);
   font-size:14px;
-  font-weight:600;
+  font-weight:500;
 }
 .page-header .help-link:visited{
   color:var(--tolf-blue);
