@@ -11,6 +11,8 @@ const providers = {
   alidns: { name: "AliDNS", url: "https://dns.alidns.com/dns-query", dotHost: "dns.alidns.com" }
 };
 
+const providerProtocolSelect = document.getElementById("providerProtocolSelect");
+
 const I = {
   en: {
     title: "TOLF DNS",
@@ -316,6 +318,16 @@ function updateProviderDisplay() {
   const p = providers[provider.value];
 
   if (selectedPlatform === "android") {
+    providerProtocolSelect.value = "TLS";
+    providerProtocolSelect.disabled = true;
+  } else if (selectedPlatform === "windows") {
+    providerProtocolSelect.value = "HTTPS";
+    providerProtocolSelect.disabled = true;
+  } else {
+    providerProtocolSelect.disabled = false;
+  }
+
+  if (providerProtocolSelect.value === "TLS") {
     providerProtocol.textContent = "DoT";
     providerEndpoint.textContent = p.dotHost;
   } else {
@@ -331,6 +343,7 @@ function updateProvider() {
 }
 
 provider.addEventListener("change", updateProvider);
+providerProtocolSelect.addEventListener("change", updateProviderDisplay);
 
 function updateCustom() {
   const protocol = customProtocol.value;
@@ -438,12 +451,21 @@ function buildAppleProfile() {
 
   if (mode === "provider") {
     const p = providers[provider.value];
-    settings = [
-      "          <key>DNSProtocol</key>",
-      "          <string>HTTPS</string>",
-      "          <key>ServerURL</key>",
-      `          <string>${esc(p.url)}</string>`
-    ];
+    if (providerProtocolSelect.value === "TLS") {
+      settings = [
+        "          <key>DNSProtocol</key>",
+        "          <string>TLS</string>",
+        "          <key>ServerName</key>",
+        `          <string>${esc(p.dotHost)}</string>`
+      ];
+    } else {
+      settings = [
+        "          <key>DNSProtocol</key>",
+        "          <string>HTTPS</string>",
+        "          <key>ServerURL</key>",
+        `          <string>${esc(p.url)}</string>`
+      ];
+    }
   } else if (customProtocol.value === "HTTPS") {
     settings = [
       "          <key>DNSProtocol</key>",
