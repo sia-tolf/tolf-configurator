@@ -274,3 +274,10 @@ textarea{resize:vertical}
 .dns-configurator-title .dns-title-rest {
   letter-spacing: normal;
 }
+
+/* DNS configurator back wordmark: same compact treatment as the configurator navigation. */
+.page-header .back .tolf-wordmark {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: normal;
+}
