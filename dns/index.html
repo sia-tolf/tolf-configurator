@@ -5,29 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>TOLF DNS Configurator</title>
-<link rel="stylesheet" href="styles.css?v=dns-guide-20260927-3">
+<link rel="stylesheet" href="styles.css?v=unified-header-20260928-1">
+<link rel="stylesheet" href="../tolf-header.20260919-1.css?v=languages-2">
 </head>
 <body>
 <main>
   <header class="page-header">
     <nav class="header-navigation" aria-label="Navigation">
-      <a class="back" id="backLink" href="/?lang=en" aria-label="TOLF Configurator">
+      <a class="back" id="backLink" href="/?lang=en" aria-label="TOLF Configurator" data-t-aria="backConfigurator">
         <span class="back-chevron" aria-hidden="true">‹</span>
-        <span class="back-label" data-t="backConfigurator">TOLF Configurator</span>
+        <span class="back-label"><span class="back-wordmark" aria-hidden="true">TOLF</span><span class="back-product" data-t="backProduct">Configurator</span></span>
       </a>
 
+      <h1 class="header-title" data-t="title">DNS</h1>
+
       <div class="header-right">
-        <div class="language" aria-label="Language">
+        <div class="tolf-language language" aria-label="Language">
           <button data-lang="en" type="button" lang="en" aria-label="English">EN</button>
           <button data-lang="ru" type="button" lang="ru" aria-label="Русский">RU</button>
           <button data-lang="lv" type="button" lang="lv" aria-label="Latviešu">LV</button>
         </div>
-        <a id="helpLink" class="help-link" href="#help" data-t="help">Help</a>
+        <a id="helpLink" class="help-link" href="#help" aria-label="Help" data-t-aria="help">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7.9 8a4.1 4.1 0 0 1 8.2 0c0 2.7-4.1 3-4.1 6"></path><circle cx="12" cy="18.5" r="1.15" fill="currentColor" stroke="none"></circle></svg>
+        </a>
       </div>
     </nav>
 
     <div class="brand-copy">
-      <h1 data-t="title">DNS</h1>
+      <h1 class="mobile-title" data-t="title">DNS</h1>
       <p class="subtitle" data-t="subtitle">Create a DNS configuration profile directly in your browser.</p>
     </div>
   </header>

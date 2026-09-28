@@ -17,6 +17,7 @@ const I = {
   en: {
     title: "DNS",
     backConfigurator: "TOLF Configurator",
+    backProduct: "Configurator",
     titleRest: "DNS Configurator",
     subtitle: "Configure DNS for Apple, Android or Windows directly in your browser.",
     help: "Help",
@@ -71,6 +72,7 @@ const I = {
   ru: {
     title: "DNS",
     backConfigurator: "TOLF Конфигуратор",
+    backProduct: "Конфигуратор",
     titleRest: "DNS-конфигуратор",
     subtitle: "Настройте DNS для Apple, Android или Windows прямо в браузере.",
     help: "Помощь",
@@ -125,6 +127,7 @@ const I = {
   lv: {
     title: "DNS",
     backConfigurator: "TOLF Konfigurators",
+    backProduct: "Konfigurators",
     titleRest: "DNS konfigurators",
     subtitle: "Konfigurējiet DNS Apple, Android vai Windows ierīcei tieši pārlūkprogrammā.",
     help: "Palīdzība",
