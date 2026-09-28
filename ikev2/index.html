@@ -367,6 +367,56 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
 @media (prefers-color-scheme: dark) {
   html[data-tolf-ui] .page-top .back .tolf-wordmark { color: #f5f5f7; }
 }
+/* Keep the mobile navigation in two rows, even with shared header styles. */
+@media (max-width: 699px) {
+  html[data-tolf-ui="configurator"] body[data-page="ikev2"] .page-top {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100vw !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+    padding: 8px 16px !important;
+  }
+  html[data-tolf-ui="configurator"] body[data-page="ikev2"] .page-top > .back {
+    position: relative !important;
+    display: inline-flex !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    justify-self: start !important;
+    width: auto !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+  html[data-tolf-ui="configurator"] body[data-page="ikev2"] .page-top > .back .back-product {
+    display: inline-block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  html[data-tolf-ui="configurator"] body[data-page="ikev2"] .page-top > .header-title {
+    position: static !important;
+    display: block !important;
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    justify-self: start !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+  html[data-tolf-ui="configurator"] body[data-page="ikev2"] .page-top > .language {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    margin: 0 !important;
+  }
+}
 </style>
 </head>
 
