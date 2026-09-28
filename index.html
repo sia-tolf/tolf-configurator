@@ -118,12 +118,36 @@
       white-space: nowrap;
     }
 
-    .mobile-title { display: none; }
+    .mobile-title, .page-top .mobile-header-title { display: none; }
 
     @media (max-width: 699px) {
-      .page-top { margin-bottom: 20px; }
+      .page-top { margin-bottom: 12px; }
       .page-top .top-title { display: none; }
-      .mobile-title { display: block; }
+      .page-top .mobile-header-title { display: block; }
+    }
+
+    .page-top .mobile-header-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", sans-serif;
+      font-size: 24px;
+      font-weight: 650;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 370px) {
+      .page-top .back .tolf-wordmark { font-size: 16px; }
+      .page-top .back .tolf-wordmark::before {
+        width: 18px;
+        height: 18px;
+        flex-basis: 18px;
+      }
+      .page-top .mobile-header-title { font-size: 18px; }
+      .page-top .language button { min-width: 34px; padding: 0 6px; }
     }
 
     .subtitle {
@@ -301,6 +325,14 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
 @media (prefers-color-scheme: dark) {
   html[data-tolf-ui] .page-top .back .tolf-wordmark { color: #f5f5f7; }
 }
+@media (max-width: 370px) {
+  html[data-tolf-ui] .page-top .back .tolf-wordmark { font-size: 16px; }
+  html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+  }
+}
 </style>
 </head>
 
@@ -310,6 +342,7 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
       <a class="back" href="https://tolf.is/" aria-label="TOLF home" data-lang-link data-i18n="backTolf" data-i18n-aria-label="backTolfAria">‹ TOLF</a>
 
       <h1 class="top-title" data-i18n="rootHeading">Configurator</h1>
+      <h1 class="mobile-header-title">Config</h1>
 
       <div class="tolf-language language" aria-label="Language">
         <button type="button" data-lang="en" lang="en" aria-label="English">EN</button>
@@ -317,8 +350,6 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
         <button type="button" data-lang="lv" lang="lv" aria-label="Latviešu">LV</button>
       </div>
     </div>
-
-    <h1 class="mobile-title" data-i18n="rootHeading">Configurator</h1>
 
     <p class="subtitle" data-i18n="rootSubtitle">
       Generate network configuration profiles directly in your browser.

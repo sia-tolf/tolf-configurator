@@ -500,3 +500,28 @@ textarea{resize:vertical}
     border-color:#42505e;
   }
 }
+
+/* On narrow screens the DNS title shares the language and help row. */
+@media (max-width: 699px) {
+  .page-header .header-navigation {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 8px;
+    row-gap: 8px;
+  }
+  .page-header .back { grid-column: 1 / -1; grid-row: 1; }
+  .page-header .header-title {
+    position: static;
+    display: block;
+    grid-column: 1;
+    grid-row: 2;
+    transform: none;
+    max-width: none;
+    text-align: left;
+  }
+  .page-header .header-right { grid-column: 2; grid-row: 2; margin-left: 0; }
+  .page-header .mobile-title { display: none; }
+  .page-header .brand-copy { margin-top: 12px; }
+}
