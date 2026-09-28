@@ -1,5 +1,3 @@
-<!-- TOLF Configurator IKEv2 — Build 2026-09-26.1 -->
-
 <!DOCTYPE html>
 <html lang="en" data-tolf-ui="configurator">
 <head>
@@ -7,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="ikev2Title">IKEv2 — TOLF Configurator</title>
 
-  <link rel="stylesheet" href="styles.css?v=20260921-mobile-fields">
+  <link rel="stylesheet" href="styles.css?v=ikev2-header-20260928-1">
   <style>
     .required-fields-note { margin: 0 4px 12px; color: #77777c; font-size: 13px; line-height: 1.4; }
     .required-fields-note .required-star { color: #b4232c; font-weight: 600; }
@@ -26,14 +24,72 @@
       position: relative !important;
       top: auto !important;
       z-index: 1 !important;
-      width: 100% !important;
-      min-height: 0 !important;
-      margin: 0 0 30px !important;
-      padding: 0 !important;
-      background: transparent !important;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      width: 100vw !important;
+      min-height: 58px !important;
+      margin: 0 calc(50% - 50vw) 12px !important;
+      padding: 8px max(16px, calc((100vw - 720px) / 2)) !important;
+      background: rgba(245, 245, 247, 0.86) !important;
       border: 0 !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+      backdrop-filter: saturate(180%) blur(20px) !important;
+      -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+    }
+
+    .page-top .header-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: calc(100% - 370px);
+      margin: 0;
+      overflow: hidden;
+      color: inherit;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", sans-serif;
+      font-size: 24px;
+      font-weight: 650;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .page-top .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #1d1d1f;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", sans-serif;
+      text-decoration: none;
+    }
+    .page-top .back .back-product {
+      color: inherit;
+      font-size: 16px;
+      font-weight: 650;
+      line-height: 1.47;
+      letter-spacing: normal;
+    }
+    .configurator-hero .mobile-title { display: none; }
+
+    @media (max-width: 699px) {
+      .page-top .header-title { display: none; }
+      .configurator-hero .mobile-title { display: block; margin-bottom: 8px; }
+      .page-top { margin-bottom: 20px !important; }
+    }
+    @media (max-width: 620px) {
+      .page-top { flex-wrap: wrap; row-gap: 6px; }
+      .page-top .language { margin-left: auto; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .page-top {
+        background: rgba(0,0,0,.84) !important;
+        border-bottom-color: rgba(255,255,255,.09) !important;
+      }
+      .page-top .back { color: #f5f5f7; }
     }
 
     .page-top .back {
@@ -300,7 +356,8 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
   <main>
 
     <div class="page-top">
-      <a class="back" href="/" aria-label="Configurator home" data-lang-link data-i18n="backConfigurator" data-i18n-aria-label="backConfiguratorAria">‹ TOLF Configurator</a>
+      <a class="back" href="/" aria-label="Configurator home" data-lang-link data-i18n-aria-label="backConfiguratorAria"><span aria-hidden="true">‹</span><span class="tolf-wordmark" aria-hidden="true">TOLF</span><span class="back-product" data-i18n="rootHeading">Configurator</span></a>
+      <h1 class="header-title">IKEv2</h1>
 
       <div class="tolf-language language" aria-label="Language">
         <button type="button" data-lang="en" lang="en" aria-label="English">EN</button>
@@ -311,10 +368,7 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
 
     <div class="configurator-hero">
       <div class="configurator-hero-copy">
-        <div class="title-row">
-          <h1>IKEv2</h1>
-          <span class="build-number">Build 2026-09-26.1</span>
-        </div>
+        <h1 class="mobile-title">IKEv2</h1>
 
         <p class="subtitle" data-i18n="ikev2Subtitle">
           Create IKEv2 configuration files for Apple devices, strongSwan on Android, and Windows PowerShell.
@@ -616,7 +670,7 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
 
   </main>
 
-  <script src="../i18n.20260920-1.js?v=20260921-import-formats"></script>
+  <script src="../i18n.20260920-1.js?v=ikev2-header-20260928-1"></script>
   <script src="app.js?v=20260918.5"></script>
   <script src="windows.js?v=20260919.1"></script>
   <script src="platform.js?v=20260921-import-formats"></script>
