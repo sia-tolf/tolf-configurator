@@ -18,6 +18,9 @@
   const text = {
     en: {
       rootTitle: "TOLF Configurator",
+      rootHeading: "Konfigurators",
+      rootHeading: "Конфигуратор",
+      rootHeading: "Configurator",
       backTolf: "‹ TOLF",
       backTolfAria: "TOLF home",
       rootSubtitle: "Generate network configuration profiles directly in your browser.",

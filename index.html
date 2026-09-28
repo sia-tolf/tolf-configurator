@@ -42,7 +42,7 @@
       min-height: 58px;
       margin-left: calc(50% - 50vw);
       margin-right: calc(50% - 50vw);
-      margin-bottom: 30px;
+      margin-bottom: 12px;
       padding: 8px max(16px, calc((100vw - 720px) / 2));
       display: flex;
       align-items: center;
@@ -102,8 +102,34 @@
       letter-spacing: -0.02em;
     }
 
+    .page-top .top-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: calc(100% - 350px);
+      margin: 0;
+      overflow: hidden;
+      color: inherit;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", sans-serif;
+      font-size: 24px;
+      font-weight: 650;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mobile-title { display: none; }
+
+    @media (max-width: 699px) {
+      .page-top { margin-bottom: 20px; }
+      .page-top .top-title { display: none; }
+      .mobile-title { display: block; }
+    }
+
     .subtitle {
-      margin: 0 0 42px;
+      margin: 0 0 26px;
       color: #5f5f63;
       font-size: 17px;
       line-height: 1.5;
@@ -285,6 +311,8 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
     <div class="page-top">
       <a class="back" href="https://tolf.is/" aria-label="TOLF home" data-lang-link data-i18n="backTolf" data-i18n-aria-label="backTolfAria">‹ TOLF</a>
 
+      <h1 class="top-title" data-i18n="rootHeading">Configurator</h1>
+
       <div class="tolf-language language" aria-label="Language">
         <button type="button" data-lang="en" lang="en" aria-label="English">EN</button>
         <button type="button" data-lang="ru" lang="ru" aria-label="Русский">RU</button>
@@ -292,7 +320,7 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
       </div>
     </div>
 
-    <h1 data-i18n="rootTitle">TOLF Configurator</h1>
+    <h1 class="mobile-title" data-i18n="rootHeading">Configurator</h1>
 
     <p class="subtitle" data-i18n="rootSubtitle">
       Generate network configuration profiles directly in your browser.
@@ -329,6 +357,6 @@ html[data-tolf-ui] .page-top .back .tolf-wordmark::before {
     </footer>
   </main>
 
-  <script src="i18n.20260920-1.js?v=dns-1"></script>
+  <script src="i18n.20260920-1.js?v=root-heading-20260928-1"></script>
 </body>
 </html>
