@@ -176,6 +176,17 @@ textarea{resize:vertical}
   .dns-help-note{color:#a1a1a6}
 }
 .profile-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(min-width:621px){
+  .profile-actions:has(#preview.hidden){
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .profile-actions:has(#preview.hidden) > button:not(.hidden){
+    min-height:44px;
+    height:44px;
+    padding:0 12px;
+    line-height:1.2;
+  }
+}
 .profile-actions .preview-button{
   width:100%;
   min-height:50px;
