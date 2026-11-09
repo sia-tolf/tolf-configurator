@@ -51,3 +51,12 @@ html[data-tolf-ui="home"] .authenticated-account-logout { flex: 0 0 auto; }
     text-align: center;
   }
 }
+
+/* Keep unavailable actions visibly bounded on both page themes. */
+html[data-tolf-ui] { --tolf-disabled-border: #71829a; }
+@media (prefers-color-scheme: dark) {
+  html[data-tolf-ui] { --tolf-disabled-border: #8da4bf; }
+}
+html[data-tolf-ui] :is(button, .button, .button-link):is(:disabled, [aria-disabled="true"]) {
+  border: 1px solid var(--tolf-disabled-border) !important;
+}
