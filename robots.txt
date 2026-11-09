@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://configurator.tolf.is/sitemap.xml
