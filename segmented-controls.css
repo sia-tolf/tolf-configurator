@@ -66,7 +66,7 @@ html :is(.tolf-language,
   .auth-methods,
   .admin-tabs,
   #anyConnectModeSelector,
-  html[data-tolf-ui="quick"] header nav[aria-label="Language"]) > :is(button, a):hover:not(:disabled):not([aria-disabled="true"]) {
+  html[data-tolf-ui="quick"] header nav[aria-label="Language"]) > :is(button, a):hover:not(:disabled):not([aria-disabled="true"]):not(:is(.active, .selected, [aria-pressed="true"], [aria-selected="true"], [aria-current="page"])) {
   background: var(--tolf-segment-hover) !important;
 }
 html :is(.tolf-language,
