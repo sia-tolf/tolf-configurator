@@ -1,9 +1,18 @@
-/* Shared frames for segmented choices and their selected options. */
+/* Shared segmented controls: one selected state on every TOLF page. */
 :root {
   --tolf-segment-border: #aab3c2;
+  --tolf-segment-text: #1d1d1f;
+  --tolf-segment-selected: #0c3f85;
+  --tolf-segment-selected-border: #0c3f85;
+  --tolf-segment-hover: rgba(0, 0, 0, .05);
 }
 @media (prefers-color-scheme: dark) {
-  :root { --tolf-segment-border: #647184; }
+  :root {
+    --tolf-segment-border: #647184;
+    --tolf-segment-text: #f5f7fa;
+    --tolf-segment-selected-border: #8eb4e7;
+    --tolf-segment-hover: rgba(255, 255, 255, .07);
+  }
 }
 html :is(.tolf-language,
   .language,
@@ -17,7 +26,6 @@ html :is(.tolf-language,
   .target-platform-selector,
   .mode-tabs,
   .auth-methods,
-  .vpn-setup-tabs,
   .admin-tabs,
   #anyConnectModeSelector,
   html[data-tolf-ui="quick"] header nav[aria-label="Language"]) {
@@ -35,13 +43,14 @@ html :is(.tolf-language,
   .target-platform-selector,
   .mode-tabs,
   .auth-methods,
-  .vpn-setup-tabs,
   .admin-tabs,
   #anyConnectModeSelector,
   html[data-tolf-ui="quick"] header nav[aria-label="Language"]) > :is(button, a) {
   box-sizing: border-box;
-  border-width: 1px !important;
-  border-style: solid !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--tolf-segment-text) !important;
+  box-shadow: none !important;
 }
 html :is(.tolf-language,
   .language,
@@ -55,13 +64,53 @@ html :is(.tolf-language,
   .target-platform-selector,
   .mode-tabs,
   .auth-methods,
-  .vpn-setup-tabs,
+  .admin-tabs,
+  #anyConnectModeSelector,
+  html[data-tolf-ui="quick"] header nav[aria-label="Language"]) > :is(button, a):hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--tolf-segment-hover) !important;
+}
+html :is(.tolf-language,
+  .language,
+  .language-switcher,
+  .admin-languages,
+  .public-language,
+  .billing-language,
+  .visits-languages,
+  .platform-switcher,
+  .platform-options,
+  .target-platform-selector,
+  .mode-tabs,
+  .auth-methods,
   .admin-tabs,
   #anyConnectModeSelector,
   html[data-tolf-ui="quick"] header nav[aria-label="Language"]) > :is(button, a):is(.active, .selected, [aria-pressed="true"], [aria-selected="true"], [aria-current="page"]),
 html #anyConnectModeSelector .anyconnect-mode-button.active,
 html .target-platform-choice input:checked + .target-platform-segment {
-  border: 1px solid var(--tolf-segment-border) !important;
+  border: 1px solid var(--tolf-segment-selected-border) !important;
+  background: var(--tolf-segment-selected) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+:is(html :is(.tolf-language,  .language,  .language-switcher,  .admin-languages,  .public-language,  .billing-language,  .visits-languages,  .platform-switcher,  .platform-options,  .target-platform-selector,  .mode-tabs,  .auth-methods,  .admin-tabs,  #anyConnectModeSelector,  html[data-tolf-ui="quick"] header nav[aria-label="Language"]) > :is(button, a):is(.active, .selected, [aria-pressed="true"], [aria-selected="true"], [aria-current="page"]),html #anyConnectModeSelector .anyconnect-mode-button.active,html .target-platform-choice input:checked + .target-platform-segment) :is(span, small, strong, svg) {
+  color: inherit !important;
+}
+html :is(.tolf-language,
+  .language,
+  .language-switcher,
+  .admin-languages,
+  .public-language,
+  .billing-language,
+  .visits-languages,
+  .platform-switcher,
+  .platform-options,
+  .target-platform-selector,
+  .mode-tabs,
+  .auth-methods,
+  .admin-tabs,
+  #anyConnectModeSelector,
+  html[data-tolf-ui="quick"] header nav[aria-label="Language"]) > :is(button, a):focus-visible {
+  outline: 2px solid var(--tolf-segment-selected-border);
+  outline-offset: 2px;
 }
 html .platform-options {
   padding: 4px;
