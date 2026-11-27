@@ -223,6 +223,14 @@
       white-space: nowrap;
     }
 
+    /* Fill each complete grid segment, independently of its label length. */
+    html[data-tolf-ui="configurator"] .target-platform-selector .target-platform-segment {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+    }
+
     .target-platform-icon {
       width: 19px;
       height: 19px;
